@@ -1,0 +1,183 @@
+.ntt-combobox {
+    &:hover {
+        .custom-combobox {
+            background-color: var(--background-input-hover-color);
+            .input-text-base {
+                background-color: transparent;
+            }
+            .btn-icon {
+                background-color: transparent !important;
+            }
+        }
+    }
+}
+
+.label-dropdown {
+    cursor: default;
+}
+.dropdown {
+    input {
+        padding-right: 48px;
+        border-top-right-radius: 4px !important;
+        border-bottom-right-radius: 4px !important;
+    }
+
+    button {
+        pointer-events: none;
+        position: absolute !important;
+        right: 0;
+        background-color: transparent !important;
+    }
+}
+.custom-combobox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    border: 1px solid var(--border-gray);
+    cursor: pointer;
+    button {
+        background-color: transparent;
+        transition: 0s ease-in-out;
+    }
+    .error-message {
+        bottom: -26px;
+    }
+    &:hover {
+        background-color: var(--background-input-hover-color);
+        .input-text-base {
+            background-color: transparent;
+        }
+        .btn-icon {
+            background-color: transparent !important;
+        }
+    }
+    // overflow: hidden;
+    &:focus-within .wrapper-select {
+        display: block;
+    }
+    &:focus-within {
+        border: 1px solid var(--primary-color);
+    }
+
+    .input-text-base {
+        width: 100%;
+        padding-right: 12px;
+        height: 34px;
+        border-right: 1px solid var(--border-gray);
+        cursor: pointer;
+        &:focus {
+            border: none;
+        }
+    }
+    .btn-icon {
+        position: relative;
+    }
+
+    .combobox__i-group {
+        // class của button
+        border: none;
+        background-color: #fff;
+        margin: 0;
+        &:first-child {
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+        &:nth-child(2) {
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            border-top-right-radius: 4px !important;
+            border-bottom-right-radius: 4px !important;
+            cursor: pointer;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .wrapper-select {
+        background-color: #fff;
+        padding-right: 4px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+
+        // box-shadow: 0 0 20px var(--grey-color5);
+        border: 1px solid var(--border-gray);
+        padding-bottom: 8px;
+        padding-left: 4px;
+        padding-top: 6px;
+        font-size: 14px;
+        border-radius: 4px;
+        display: none;
+        position: absolute;
+        width: 100%;
+        top: calc(100% + 2px);
+        left: 0;
+        z-index: 2;
+        &:active {
+            display: block;
+        }
+        ul {
+            max-height: 216px;
+            overflow-y: auto;
+            .selected-list {
+                color: var(--primary-color);
+                cursor: default;
+            }
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 36px;
+                transition: 0.1s ease-in-out;
+                padding-left: 4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+                .ms-icon {
+                    background-color: var(--primary-color);
+                }
+                img {
+                    height: 24px;
+                }
+                &:hover {
+                    background-color: var(--blue-color0);
+                }
+            }
+            .keydown-hover {
+                background-color: var(--blue-color0);
+            }
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 36px;
+                transition: 0.1s ease-in-out;
+                padding-left: 4px;
+                cursor: pointer;
+                border-radius: 4px;
+                img {
+                    height: 24px;
+                }
+                &:hover {
+                    background-color: var(--blue-color0);
+                }
+            }
+        }
+    }
+}
+.i-error {
+    border: 1px solid var(--red-color5) !important;
+}
+.select-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    label {
+        margin-bottom: 0;
+        min-width: 170px;
+    }
+    .custom-combobox {
+        flex: 1;
+    }
+}

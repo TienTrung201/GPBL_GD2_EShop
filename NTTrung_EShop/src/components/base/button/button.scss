@@ -1,0 +1,287 @@
+.wrapper-button {
+    position: relative;
+    background-color: transparent !important;
+}
+
+.disable {
+    pointer-events: none;
+    opacity: 56%;
+    cursor: auto !important;
+}
+.btn-pri {
+    color: #fff;
+    &:hover {
+        background-color: var(--button-hover-color);
+    }
+}
+.btn-base {
+    display: inline-block;
+    font-weight: 500;
+    font-size: 14px;
+    min-width: 60px;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 3px;
+    background: var(--button-default-color);
+    cursor: pointer;
+    text-align: center;
+    padding: 0 16px;
+    border: none;
+    user-select: none;
+    color: #fff;
+    transition: 0.1s ease-in-out;
+    position: relative;
+    &:active {
+        background-color: var(--primary-color);
+    }
+    &:focus {
+        outline: var(--primary-color) 3px solid;
+    }
+    .tooltip {
+        max-height: 30px;
+    }
+}
+.icon-down-btn {
+    width: 30px;
+    height: 10px;
+    display: flex;
+    // align-items: center;
+    justify-content: flex-end;
+    .mc-icon {
+    }
+}
+.btn-danger {
+    background-color: var(--red-color5);
+    color: #fff;
+    &:hover {
+        background-color: var(--red-color4);
+    }
+    &:focus {
+        outline: var(--red-color3) 3px solid;
+        background-color: var(--red-color5);
+    }
+    &:active {
+        background-color: var(--red-color6);
+    }
+}
+.btn-i-pri {
+    padding-left: 12px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+
+    .i-img {
+        height: 20px;
+        margin-right: 4px;
+    }
+
+    &:hover {
+        background-color: var(--button-hover-color) !important;
+    }
+    &:focus {
+        outline: var(--button-hover-color) 3px solid;
+    }
+    &:active {
+        background-color: var(--primary-color) !important;
+    }
+}
+.btn-link-icon {
+    background-color: transparent;
+    color: var(--button-default-color);
+    min-width: auto;
+    font-weight: bold;
+    border: transparent solid 1px;
+
+    .ms-icon {
+        background-color: var(--primary-color);
+    }
+    &:hover {
+        background-color: #fff !important;
+        border: var(--primary-color) solid 1px;
+    }
+    // font-weight: bold;
+    &:focus {
+        text-decoration: underline;
+        outline: var(--button-hover-color) 3px solid;
+        text-decoration: none;
+    }
+    &:active {
+        list-style: none;
+    }
+}
+.btn-sec-icon {
+    background-color: #fff !important;
+    border: 1px var(--primary-color) solid;
+    color: var(--button-default-color);
+    font-weight: bold;
+    &:hover {
+        background-color: #fff !important;
+        color: var(--blue-color3);
+    }
+    &:focus {
+        outline: var(--button-hover-color) 3px solid;
+    }
+    &:active {
+        background-color: #fff !important;
+    }
+    .ms-icon {
+        background-color: var(--primary-color);
+    }
+}
+.btn-sec.disable {
+    border: 1px var(--grey-color3) solid;
+    color: var(--grey-color5);
+    opacity: 1;
+    &:hover {
+        border: 1px var(--grey-color3) solid;
+        color: var(--grey-color5);
+    }
+}
+.btn-link {
+    background-color: transparent;
+    color: var(--primary-color);
+    padding: 0 0;
+    min-width: auto;
+    // font-weight: bold;
+    &:focus {
+        text-decoration: underline;
+        background-color: transparent;
+        outline: none;
+        text-decoration: none;
+    }
+    &:active {
+        color: var(--blue-color6);
+        list-style: none;
+    }
+}
+
+.btn-icon {
+    background-color: var(--button-default-color);
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    .i-img {
+        height: 20px;
+        width: 20px;
+    }
+}
+.icon-eshop {
+    border-radius: 50%;
+    border: none !important;
+    &:hover {
+        background-color: #eff0fc !important;
+    }
+    &:focus {
+        border: none;
+        // outline: none;
+    }
+}
+.wrapper-loading {
+    // width: 100%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    .circle-loading {
+        width: 20px;
+        height: 20px;
+        animation: rotate 1s linear infinite;
+        circle {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke-width: 2;
+            stroke: #fff;
+            stroke-linecap: round;
+            stroke-dasharray: 37;
+            stroke-dashoffset: 37;
+            animation: animate 2s linear infinite;
+        }
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes animate {
+            0%,
+            100% {
+                stroke-dashoffset: 37;
+            }
+            50% {
+                stroke-dashoffset: 0;
+            }
+            50.1% {
+                stroke-dashoffset: 78;
+            }
+        }
+    }
+}
+.pri-loading {
+    circle {
+        stroke: var(--button-default-color) !important;
+    }
+}
+.conbo-btn {
+    button {
+        &:first-child {
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+        &:last-child {
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+        }
+        &:not(:first-child) {
+            border-left: 2px solid var(--blue-color2);
+        }
+        &:not(:first-child):not(:last-child) {
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+        &:active {
+            background-color: var(--blue-color6);
+        }
+        &:focus {
+            outline: var(--blue-color3) 3px solid !important;
+        }
+    }
+}
+.btn-sec {
+    background-color: #fff;
+    border: 1px #e6e6e6 solid;
+    color: var(--text-primary-color);
+    &:hover {
+        border: 1px var(--primary-color) solid;
+        color: var(--primary-color);
+    }
+
+    &:focus {
+        background-color: #fff;
+        border: 1px var(--primary-color) solid;
+        color: var(--primary-color);
+    }
+    &:active {
+        border: 1px #e6e6e6 solid;
+        color: #000;
+    }
+    .wrapper-loading {
+        circle {
+            stroke: var(--primary-color);
+        }
+    }
+}
+.no-focus {
+    &:focus {
+        outline: none !important;
+    }
+    &:active {
+        outline: none !important;
+    }
+}

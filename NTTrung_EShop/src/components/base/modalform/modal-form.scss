@@ -1,0 +1,120 @@
+.overley-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #0000001f;
+    z-index: 2;
+    .ntt-modal-form {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: calc(100vw - 32px);
+        width: 950px;
+        height: fit-content;
+        box-shadow: 0 0 20px #0000002a;
+        border-radius: 10px;
+        background-color: #fff;
+        animation: opacity 0.2s ease;
+        z-index: 1;
+        // overflow: hidden;
+        @keyframes opacity {
+            from {
+                opacity: 0.4;
+                transform: translate(-50%, -100%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        .ntt-modal-form__header {
+            padding: 16px;
+            .ntt-modal--right {
+                display: flex;
+            }
+            .ntt-modal-form__title {
+                margin-right: 16px;
+            }
+            .ntt-modal-form__btn-close {
+                height: 28px;
+                width: 28px;
+                display: flex;
+                align-items: center;
+                border: none;
+                outline: none;
+                background-color: transparent;
+                cursor: pointer;
+                border-radius: 10px;
+                position: relative;
+                .ms-icon {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: var(--grey-color6);
+                    // transform: translateX(-1px);
+                }
+                &:hover {
+                    // border: var(--primary-color) solid 1px;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:active {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:focus {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+            }
+            .modal-close {
+                height: 24px;
+                width: 24px;
+                display: flex;
+                align-items: center;
+                border: none;
+                outline: none;
+                background-color: transparent;
+                cursor: pointer;
+                border-radius: 4px;
+                .ms-icon {
+                    background-color: #000;
+                }
+                &:hover {
+                    // border: var(--primary-color) solid 1px;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:active {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:focus {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+            }
+        }
+
+        .ntt-modal-form__body {
+            padding: 0 16px 0 16px;
+        }
+        .ntt-modal-form__footer {
+            padding: 16px 16px;
+        }
+    }
+}

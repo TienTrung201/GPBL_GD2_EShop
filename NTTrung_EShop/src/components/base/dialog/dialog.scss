@@ -1,0 +1,103 @@
+.overley-dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #0000001f;
+    z-index: 3;
+}
+.modal-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: calc(100vw - 32px);
+    width: 450px;
+    height: fit-content;
+    padding: 24px;
+    box-shadow: 0 0 20px var(--grey-color5);
+    border-radius: 4px;
+    background-color: #fff;
+    animation: down 0.2s ease;
+    @keyframes down {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -200%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+    .modal-content {
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            // align-items: center;
+            margin-bottom: 24px;
+            .modal-title {
+                font-size: 20px;
+                font-weight: bold;
+            }
+            .modal-close {
+                height: 24px;
+                width: 24px;
+                display: flex;
+                align-items: center;
+                border: none;
+                outline: none;
+                background-color: transparent;
+                cursor: pointer;
+                border-radius: 4px;
+                .ms-icon {
+                    background-color: #000;
+                }
+                &:hover {
+                    // border: var(--primary-color) solid 1px;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:active {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:focus {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+            }
+        }
+        .modal-body {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            .modal-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 8px;
+
+                .ms-icon {
+                    background-color: #fff;
+                }
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+
+            button {
+                margin-left: 8px;
+            }
+        }
+    }
+}

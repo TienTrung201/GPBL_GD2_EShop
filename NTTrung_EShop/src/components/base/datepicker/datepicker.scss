@@ -1,0 +1,223 @@
+.label-dapepicker {
+    cursor: default;
+}
+.dp__main {
+    height: 36px;
+}
+.dp-custom-input {
+    max-height: 36px;
+    height: 36px;
+    padding-left: 12px !important;
+    padding-bottom: 7px !important;
+    &:hover {
+        border-color: var(--border-color) !important;
+        background-color: var(--background-input-hover-color);
+    }
+    &:focus {
+        border-color: var(--primary-color) !important;
+        background-color: var(--background-input-hover-color);
+    }
+    &::placeholder {
+        font-style: italic;
+    }
+}
+.custom-date-picker {
+    .dp__input_icon {
+        left: calc(100% - 27px);
+        right: 0;
+        top: 29%;
+        transform: scale(1.15);
+        padding: 0;
+    }
+    .dp__clear_icon {
+        display: none;
+    }
+}
+
+.dp__arrow_top,
+.dp__arrow_bottom {
+    display: none;
+}
+.custom-month-year-component {
+    //Nơi css input select chọn tháng năm
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    .wrapper-select {
+        display: flex;
+        position: relative;
+        column-gap: 2px;
+        .select-input {
+            border: none;
+            outline: none;
+            -webkit-appearance: none; /* Safari and Chrome */
+            -moz-appearance: none; /* Firefox */
+            appearance: none; /* Standard syntax */
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 10px !important;
+            height: 36px;
+            padding-left: 2px;
+            &:focus {
+                border: 1px solid var(--border-color);
+            }
+            &:hover {
+                border: 1px solid var(--border-color);
+            }
+        }
+        .select-input-custom {
+            width: 60px;
+        }
+    }
+    .datepicker-select {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+        .icon-datepicker--down {
+            rotate: 90deg;
+            transform: scale(0.8);
+            background-color: #65696e;
+        }
+    }
+}
+
+.dp__menu_inner {
+    padding: 0;
+    max-width: 320px;
+}
+.wrapper-change-month {
+    //nơi chứa sự kiện chuyển tháng bằng button
+    display: flex;
+    column-gap: 4px;
+    .custom-icon {
+        background-color: #fff;
+        transform: translateX(8px);
+
+        &:hover {
+            background-color: var(--blue-color0);
+        }
+        &:focus {
+            background-color: var(--blue-color0) !important;
+        }
+    }
+    .icon-datepicker--left {
+        background-color: var(--text-primary-color);
+    }
+}
+
+.dp-custom-menu {
+    //to nhất bọc
+    padding-top: 17px;
+    padding-bottom: 0;
+    .dp__instance_calendar {
+        // class bọc phần bên trên
+        padding: 0 24px;
+        .dp__calendar_header_separator {
+            height: 0;
+            display: none;
+        }
+        .dp__calendar_header {
+            justify-content: space-between;
+            column-gap: 8px;
+            .dp__calendar_header_item {
+                //class của thứ
+                width: 32px !important;
+                height: 32px !important;
+                max-width: 32px;
+                text-align: center;
+                // padding: 0;
+                color: var(--text-sec-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        .dp__calendar {
+            //class bọc thứ và ngày
+            .dp__calendar_item {
+                //các ô ngày
+                display: flex;
+                justify-content: center;
+
+                .dp-custom-cell {
+                    border-radius: 50% !important;
+                    margin: 0;
+                    max-width: 32px;
+                    max-height: 32px;
+                    width: 32px;
+                    height: 32px;
+                    padding: 0;
+                    padding-bottom: 1px;
+                    border: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    &:hover {
+                        background-color: var(--blue-color0);
+                    }
+                    // background-color: var(--primary-color);
+                }
+                .dp__today {
+                    border: 1px solid var(--primary-color) !important;
+                }
+
+                .dp__active_date {
+                    background-color: var(--primary-color) !important;
+                }
+            }
+
+            padding-top: 5px;
+            .dp__calendar_row {
+                //hàng chứa các ngày
+                column-gap: 8px;
+            }
+        }
+    }
+    .dp__action_row {
+        //button chọn chày hôm nay bên dưới
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        width: 100% !important;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+        padding: 0;
+
+        // padding: 15px 0 !important;
+        // padding-top: 14px !important;
+
+        .nttrung_action-row {
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+            color: var(--primary-color);
+            cursor: pointer;
+            &:hover {
+                background-color: var(--blue-color0);
+            }
+            // padding: 2px 0;
+        }
+        .nttrung-no-select-today {
+            &:hover {
+                background-color: #fff;
+            }
+            cursor: not-allowed;
+        }
+        .dp__action_buttons {
+            // justify-content: center;
+            margin: 0;
+            button {
+                border: none;
+                font-size: 14px;
+                color: var(--primary-color);
+                cursor: pointer;
+            }
+        }
+    }
+}

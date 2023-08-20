@@ -1,0 +1,119 @@
+.ntt-group-toast-message {
+    position: fixed;
+    right: 24px;
+    bottom: 48px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column-reverse;
+    row-gap: 8px;
+}
+.toast {
+    background-color: #fff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px;
+    width: 550px;
+    box-shadow: 0 0 20px var(--grey-color5);
+    border-radius: 4px;
+    // animation: to_left 0.3s ease-in-out, fadeOut linear 0.5s 4.5s forwards;
+    animation: to_left 0.3s ease-in-out;
+    transition: all linear 0.3s;
+    @keyframes to_left {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0%);
+            // transform: translate(-50%, -50%);
+        }
+    }
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+        }
+    }
+
+    .left-toast {
+        display: flex;
+        align-items: center;
+        height: fit-content;
+        .i-toast {
+            // border-radius: 50%;
+            height: 24px;
+            width: 24px;
+            margin-right: 8px;
+            span {
+                height: 24px;
+                width: 24px;
+            }
+        }
+        .toast-title {
+            font-weight: bold;
+            margin-right: 4px;
+            font-size: 14px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+        .toast-text {
+            font-size: 14px;
+            color: var(--grey-color8);
+            // flex-shrink: 0;
+        }
+    }
+
+    .right-toast {
+        display: flex;
+        align-items: center;
+
+        .toast-action {
+            margin-right: 16px;
+            text-decoration: underline;
+            font-size: 14px;
+            cursor: pointer;
+            flex-shrink: 1;
+        }
+        .btn-close {
+            border: none;
+            opacity: 0.56;
+            cursor: pointer;
+            background-color: #fff;
+            &:hover {
+                opacity: 1;
+            }
+            img {
+                height: 20px;
+            }
+        }
+    }
+}
+.ms-icon {
+    background-color: #fff;
+}
+.toast-success {
+    .toast-title {
+        color: var(--green-color5);
+    }
+}
+.toast-error {
+    flex-direction: column;
+    .toast-title {
+        color: var(--red-color5);
+    }
+    .right-toast {
+        padding-left: 86px;
+    }
+}
+.toast-warning {
+    .toast-title {
+        color: #f49342;
+    }
+}
+.toast-info {
+    .toast-title {
+        color: var(--primary-color);
+    }
+}

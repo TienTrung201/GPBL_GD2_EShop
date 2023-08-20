@@ -1,0 +1,18 @@
+.tt-continer__table {
+    border-radius: 0;
+
+    .tt-continer__controll-table {
+        background-color: var(--button-default-color);
+        .tt-continer__controll-list {
+            display: flex;
+            button {
+                outline: none;
+                border-radius: 0;
+                border-right: 1px solid #190472;
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+    }
+}

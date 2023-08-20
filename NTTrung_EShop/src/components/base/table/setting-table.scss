@@ -1,0 +1,219 @@
+.table-setting {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 312px;
+    // padding: 10px;
+    // height: 400px;
+    // overflow-y: scroll;
+    overflow: hidden;
+    background-color: #fff;
+    z-index: 2;
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--grey-color3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    animation: to_left 0.2s ease;
+    border: 1px solid var(--border-color);
+    // transition: all linear 0.1s;
+    @keyframes to_left {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0%);
+            // transform: translate(-50%, -50%);
+        }
+    }
+    .table-setting--top {
+        // position: sticky;
+        top: 0;
+        right: 0;
+        left: 0;
+        padding-top: 16px;
+        background-color: #fff;
+        z-index: 1;
+        .seting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            // height: 40px;
+            padding: 0 16px;
+            .title {
+                font-size: 20px;
+            }
+            .table-setting__close {
+                height: 24px;
+                width: 24px;
+                display: flex;
+                align-items: center;
+                border: none;
+                outline: none;
+                background-color: transparent;
+                cursor: pointer;
+                border-radius: 4px;
+                position: relative;
+
+                .ms-icon {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: #000;
+                    // transform: translateX(-1px);
+                }
+                &:hover {
+                    // border: var(--primary-color) solid 1px;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:active {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:focus {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+            }
+            .modal-close {
+                height: 24px;
+                width: 24px;
+                display: flex;
+                align-items: center;
+                border: none;
+                outline: none;
+                background-color: transparent;
+                cursor: pointer;
+                border-radius: 4px;
+                .ms-icon {
+                    background-color: #000;
+                }
+                &:hover {
+                    border: var(--primary-color) solid 1px;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:active {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &:focus {
+                    outline: var(--blue-color3) 3px solid !important;
+                    .ms-icon {
+                        background-color: var(--primary-color);
+                    }
+                }
+            }
+        }
+        .setting-search {
+            padding: 16px;
+            padding-bottom: 12px;
+        }
+    }
+
+    .wrapper-setting {
+        // padding: 10px;
+        position: absolute;
+        padding-top: 0;
+        flex: 1;
+        top: 106px;
+        bottom: 56px;
+        right: 0;
+        left: 0;
+        overflow-y: auto;
+        .setting-list {
+            background-color: transparent;
+            padding-top: 0;
+            padding-bottom: 10px;
+            .setting-item--left {
+                padding-left: 4px;
+                display: flex;
+                flex: 1;
+                align-items: center;
+                column-gap: 12px;
+                background-color: transparent;
+            }
+
+            .setting-item {
+                cursor: pointer;
+                padding: 0 16px;
+                .wrapper-item {
+                    display: flex;
+                    align-items: center;
+                    border-radius: 4px;
+                    height: 48px;
+                }
+                .setting-item--right {
+                    display: flex;
+                    align-items: center;
+                    column-gap: 12px;
+
+                    .wrapper-icon {
+                        width: 15px;
+                        &:last-child {
+                            transform: translateY(-13%);
+                            &:hover {
+                                .ms-icon {
+                                    background-color: var(--primary-color);
+                                }
+                            }
+                        }
+                        .icon-drag {
+                            visibility: hidden;
+                        }
+                        column-gap: 2px;
+                        // padding-right: 2px;
+                    }
+                    .setting-item__icon {
+                        cursor: pointer;
+                        background-color: var(--grey-color6);
+                    }
+
+                    .active {
+                        background-color: var(--primary-color);
+                    }
+                }
+                .item-content {
+                    font-size: 14px;
+                }
+                &:hover {
+                    background-color: var(--blue-color0);
+                    .icon-drag {
+                        visibility: visible !important;
+                    }
+                    .wrapper-icon {
+                        &:last-child {
+                            transform: translateY(-13%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .wrapper-save {
+        // position: sticky;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        padding: 10px;
+        height: 56px;
+        border-top: solid 1px var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        column-gap: 8px;
+        background-color: var(--background-color);
+    }
+}

@@ -1,0 +1,40 @@
+﻿using AutoMapper;
+using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
+{
+    public abstract class CodeService<TEntity, TModel, TEntityDto, TEntityCreateDto, TEntityUpdateDto>
+    : CRUDService<TEntity, TModel, TEntityDto, TEntityCreateDto, TEntityUpdateDto>,
+        ICodeService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel>
+
+    {
+        #region Fields
+        protected readonly ICodeRepository<TEntity, TModel> _codeRepository;
+        #endregion
+        #region Constructor
+        protected CodeService(ICodeRepository<TEntity, TModel> codeRepository, IMapper mapper, IUnitOfWork unitOfWork) : base(codeRepository, mapper, unitOfWork)
+        {
+            _codeRepository = codeRepository;
+        }
+        #endregion
+        #region Methods
+        /// <summary>
+        /// Get code mới nhất
+        /// </summary>
+        /// <returns>Mã code mới</returns>
+        /// CreatedBy: NTTrung (14/07/2023)
+        public async Task<string> GetNewCodeAsync()
+        {
+            var newCode = await _codeRepository.GetNewCodeAsync();
+            return newCode;
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,137 @@
+<template lang="">
+    <label class="label-input" :class="{ 'label-input-row': props.row }"
+        ><p>{{ props.label }}<span v-if="require" :style="{ color: '#E60000', marginLeft: '4px' }">*</span></p>
+        <div class="wrapper-input">
+            <input
+                :autocomplete="false"
+                @focus="input.select()"
+                ref="input"
+                :class="[
+                    'input-text-base',
+                    { 'ntt-success': props.isSuccess },
+                    { readonly: props.readonly },
+                    { validate: props.validate },
+                    { 'ntt-error': errorMessage },
+                ]"
+                :type="type"
+                :name="''"
+                :placeholder="props.placeholder"
+                :readonly="props.readonly"
+                :value="value"
+                @input="handleChangeInput"
+                @blur="onBlur"
+                :title="tooltip"
+            />
+            <span v-if="props.isSuccess">
+                <img class="success-icon" src="../../../assets/icons/check-circle.svg" alt="" />
+            </span>
+            <div v-if="false" class="wrapper-svg center">
+                <svg class="circle-svg">
+                    <circle cx="50%" cy="50%" r="6"></circle>
+                </svg>
+            </div>
+        </div>
+        <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
+    </label>
+</template>
+<script setup>
+import { onMounted, ref } from 'vue';
+
+const emit = defineEmits(['update:value', 'input-validation', 'blur']);
+const props = defineProps({
+    name: { String, default: () => 'name' }, //name input
+    isSuccess: { Boolean, default: () => null },
+    label: { String, default: () => '' }, //label input
+    validate: { Boolean, default: () => false }, //có validate thì input nhập vào có màu
+    errorMessage: { String, default: () => '' }, //tex cảnh báo lỗi
+    placeholder: { String, default: () => '' }, //placeholder
+    type: { String, default: () => 'text' }, //loại input
+    value: { String, default: () => '' }, //value input
+    readonly: { Boolean, default: false }, // chỉ đọc
+    focus: Boolean, //focus input
+    require: { type: Boolean, default: false },
+    tooltip: { type: String, default: '' }, //tooltip cho input
+    checkNumber: { type: Boolean, default: false }, //Props quy định nhập số
+    isName: { type: Boolean, default: false }, // Nếu là kiểu nhập tên thì In Hoa chữ cái đầu
+    maxLength: {
+        type: Number,
+    },
+    row: { type: Boolean, default: false },
+});
+const input = ref(null);
+/**
+ * Author: Tiến Trung (29/06/2023)
+ * Description: hàm sự kiện blur
+ */
+const onBlur = (e) => {
+    try {
+        emit('blur', e.target.value);
+        if (props.isName) {
+            const wordsUpperCase = convertToTitleCase(e.target.value);
+            emit('update:value', wordsUpperCase);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+/**
+ * Author: Tiến Trung (29/06/2023)
+ * Description: hàm để binding Input
+ */
+const handleChangeInput = (e) => {
+    //Nếu có max length thì
+    if (e.target.value.length > props.maxLength) {
+        input.value.value = props.value;
+        return;
+    }
+    if (props.checkNumber) {
+        if (/^\d+$/.test(e.target.value) || e.target.value === '') {
+            emit('update:value', e.target.value);
+            emit('input-validation', e.target.value);
+        } else {
+            input.value.value = props.value;
+        }
+    } else {
+        emit('update:value', e.target.value);
+        emit('input-validation', e.target.value);
+    }
+    // Nếu là chữ thì không cho nhập khi truyền props chỉ nhập số
+};
+/**
+ * Author: Tiến Trung (13/07/2023)
+ * Description: khi component dược tạo xong thì chủ
+ * động focus vào input có prop focus
+ */
+onMounted(() => {
+    if (props.focus) {
+        autoFocus();
+    }
+});
+/**
+ * Author: Tiến Trung (13/07/2023)
+ * Description: Hàm convert chữ thường thành hoa
+ */
+function convertToTitleCase(input) {
+    if (!input) return '';
+
+    // Tách các từ trong chuỗi bằng khoảng trắng hoặc dấu cách
+    const words = input.toLowerCase().split(/[\s]+/);
+    // Chuyển chữ cái đầu của từ thành chữ in hoa
+    const capitalizedWords = words.map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    });
+    // Ghép các từ đã chuyển thành chuỗi mới
+    return capitalizedWords.join(' ');
+}
+/**
+ * Author: Tiến Trung (13/07/2023)
+ * Description: Hàm chủ động focus vào input
+ */
+const autoFocus = () => {
+    input.value.focus();
+};
+defineExpose({ autoFocus });
+</script>
+<style lang="scss">
+@import './input.scss';
+</style>

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZjQcwa8Z3RuYszbvCvAw4xqwXVE5D9gMuMTdQOjhV+tiBvchNfR7E7IouWqdZw/C2az0fQdrtBd1Sl6SwA1tYQ==",
+  "success": true,
+  "projectFilePath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.5.0\\swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

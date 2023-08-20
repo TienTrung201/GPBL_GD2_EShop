@@ -1,0 +1,75 @@
+.tooltip {
+    position: fixed;
+    transform: translate(-50%, -12%);
+    color: #fff;
+    min-width: 50px;
+    width: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 6px;
+    background-color: var(--grey-color8);
+    border-radius: 4px;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    animation: fadeIn 0.2s linear;
+    z-index: 999;
+    user-select: none;
+    pointer-events: none;
+}
+.tooltip-absolute--top {
+    position: absolute;
+    bottom: calc(100% + 9px);
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+    /* height: 30px; */
+}
+.tooltip-absolute--top::after {
+    content: '';
+    position: absolute;
+    border: 8px solid;
+    border-color: var(--grey-color8) transparent transparent transparent;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -13px;
+}
+.tooltip-absolute--bottom {
+    position: absolute;
+    top: calc(100% + 9px);
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+    /* max-height: 30px; */
+}
+.tooltip-absolute--bottom::after {
+    content: '';
+    position: absolute;
+    border: 8px solid;
+    border-color: transparent transparent var(--grey-color8) transparent;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -13px;
+}
+.tooltip-top::after {
+    content: '';
+    position: absolute;
+    border: 8px solid;
+    border-color: var(--grey-color8) transparent transparent transparent;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -13px;
+}
+.tippy-box[data-theme~='custom'] {
+    font-family: var(--pri-font);
+    font-size: 13px;
+    font-weight: lighter;
+    color: #fff;
+    border: var(--grey-color8);
+    min-height: 30px;
+}
+.tippy-box[data-theme~='custom'] > .tippy-svg-arrow {
+    transform: scale(4);
+}

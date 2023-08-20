@@ -1,0 +1,152 @@
+.label-input {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-primary-color);
+    position: relative;
+    cursor: pointer;
+    // width: ;
+}
+
+.input-text-base {
+    width: 100%;
+    height: 36px;
+    padding: 0px 12px;
+    border-radius: 3px;
+    border: 1px solid var(--grey-color3);
+
+    &::placeholder {
+        color: var(--grey-color5);
+        font-size: 14px;
+    }
+
+    &:hover {
+        background-color: var(--background-input-hover-color);
+        // cursor: pointer;
+    }
+
+    &:focus {
+        border: 1px solid var(--grey-color3);
+        outline: none;
+    }
+}
+.label-input-row {
+    width: 100%;
+    p {
+        min-width: 170px;
+    }
+    .wrapper-input {
+        flex: 1;
+        margin-top: 0;
+    }
+    flex-direction: row;
+    align-items: center;
+    .input-text-base {
+    }
+}
+.input-text-base.readonly {
+    cursor: auto;
+}
+
+.validate {
+    &:focus {
+        border: 1px solid var(--primary-color);
+        outline: none;
+    }
+}
+
+.ntt-success {
+    padding-right: 38px;
+    border: 1px solid var(--primary-color);
+}
+
+.wrapper-input {
+    position: relative;
+    margin-top: 8px;
+
+    .i-success {
+        border: 1px solid var(--green-color5);
+    }
+
+    .success-icon {
+        position: absolute;
+        width: 20px;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+    }
+
+    .wrapper-svg {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        .circle-svg {
+            width: 20px;
+            height: 20px;
+            animation: rotate 1.5s linear infinite;
+
+            circle {
+                width: 100%;
+                height: 100%;
+                fill: none;
+                stroke-width: 2;
+                stroke: var(--green-color5);
+                stroke-linecap: round;
+                stroke-dasharray: 37;
+                stroke-dashoffset: 37;
+                animation: animate 3s linear infinite;
+            }
+
+            @keyframes rotate {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes animate {
+                0%,
+                100% {
+                    stroke-dashoffset: 37;
+                }
+
+                50% {
+                    stroke-dashoffset: 0;
+                }
+
+                50.1% {
+                    stroke-dashoffset: 78;
+                }
+            }
+        }
+    }
+}
+
+.readonly {
+    background-color: #e6e6e6;
+}
+
+.error-message {
+    position: absolute;
+    // margin-top: 8px;
+    color: var(--red-color5);
+    font-size: 12px;
+    // bottom: -8px;
+    bottom: -25px;
+    left: 0;
+}
+
+.ntt-error {
+    border: 1px solid var(--red-color5);
+
+    &:focus {
+        border: 1px solid var(--red-color5) !important;
+        outline: none;
+    }
+}
