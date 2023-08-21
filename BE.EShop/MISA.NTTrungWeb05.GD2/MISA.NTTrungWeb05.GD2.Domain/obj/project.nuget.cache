@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZjQcwa8Z3RuYszbvCvAw4xqwXVE5D9gMuMTdQOjhV+tiBvchNfR7E7IouWqdZw/C2az0fQdrtBd1Sl6SwA1tYQ==",
+  "dgSpecHash": "pd80yQgVE6yebGmYPQICppnsGHvLtJWICMw4Apfts+BfA5vUPcyKiw8qiUPBkZ/izeQZatA5gt09VC2JK4g1hA==",
   "success": true,
-  "projectFilePath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
+  "projectFilePath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",

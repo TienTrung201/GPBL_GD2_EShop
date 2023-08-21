@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj": {}
+    "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj": {}
   },
   "projects": {
-    "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj": {
+    "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
+        "projectUniqueName": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
         "projectName": "MISA.NTTrungWeb05.GD2.Domain",
-        "projectPath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
+        "projectPath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj",
         "packagesPath": "C:\\Users\\Tien Trung\\.nuget\\packages\\",
-        "outputPath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\obj\\",
+        "outputPath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tien Trung\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -65,14 +65,14 @@
         }
       }
     },
-    "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj": {
+    "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj",
+        "projectUniqueName": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj",
         "projectName": "MISA.NTTrungWeb05.GD2.Infastructurce",
-        "projectPath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj",
+        "projectPath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\MISA.NTTrungWeb05.GD2.Infastructurce.csproj",
         "packagesPath": "C:\\Users\\Tien Trung\\.nuget\\packages\\",
-        "outputPath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\obj\\",
+        "outputPath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Infastructurce\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tien Trung\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -89,8 +89,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj": {
-                "projectPath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj"
+              "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj": {
+                "projectPath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Domain\\MISA.NTTrungWeb05.GD2.Domain.csproj"
               }
             }
           }

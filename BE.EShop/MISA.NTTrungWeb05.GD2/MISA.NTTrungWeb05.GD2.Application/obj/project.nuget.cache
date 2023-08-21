@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EZ46ms3Y01YkEGDd471mXJ0whOtM4my79HkB37Yi4Ta3NcNtUUFHgOaolSujAyAAGMZs0kNrnJn0wnupRH9ANw==",
+  "dgSpecHash": "LdfvPpx1qj+v1SXTmlDWHy3Zv4vHhG1TZ5owHdJ4J+4BSGOsHGjqJVlaS3CtvT/zJyGpIgOv82r85MUABodhBA==",
   "success": true,
-  "projectFilePath": "D:\\Wep\\learnCode\\Misa\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Application\\MISA.NTTrungWeb05.GD2.Application.csproj",
+  "projectFilePath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.Application\\MISA.NTTrungWeb05.GD2.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tien Trung\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
