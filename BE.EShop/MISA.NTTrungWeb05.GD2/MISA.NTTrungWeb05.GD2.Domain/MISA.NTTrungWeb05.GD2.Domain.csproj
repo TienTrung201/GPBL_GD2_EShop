@@ -10,7 +10,6 @@
 		<Folder Include="Interface\Entity\" />
 		<Folder Include="Interface\Manager\" />
 		<Folder Include="Interface\Repository\" />
-		<Folder Include="Model\" />
 		<Folder Include="Service\" />
 	</ItemGroup>
 	<ItemGroup>

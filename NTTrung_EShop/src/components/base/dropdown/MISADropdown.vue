@@ -49,7 +49,9 @@
                         ]"
                     >
                         - {{ placeholder }} -
-                        <img v-if="!value" src="../../../assets/icons/blue-check.svg" alt="" />
+                        <span v-if="!value" class="center">
+                            <MISAIcon width="20" height="20" icon="check"></MISAIcon>
+                        </span>
                     </li>
                     <li
                         ref="itemDropdown"
@@ -364,6 +366,7 @@ defineExpose({ autoFocus });
 </script>
 <style lang="scss" scoped>
 @import './dropdown.scss';
+
 label {
     margin-bottom: 8px;
 }

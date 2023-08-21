@@ -1,5 +1,5 @@
 <template lang="">
-    <div class="wrapper-tag">
+    <div @focusout="handleAddTag" class="wrapper-tag">
         <div class="name-tag">
             <p>{{ label }}</p>
         </div>
@@ -11,8 +11,9 @@
                         <MISAIcon width="10" height="10" icon="close-eshop" />
                     </span>
                 </p>
+                <input @blur="addTag" ref="input" @keydown="handleAddTag" v-model="value" type="text" />
             </div>
-            <input ref="input" @keydown="handleAddTag" v-model="value" type="text" />
+            
         </div>
     </div>
 </template>
@@ -41,32 +42,42 @@ const handleAddTag = (e) => {
     }
     //nếu là enter hoặc , thì add tag
     if (e.keyCode === Enum.Keyboard.Enter || e.keyCode === Enum.Keyboard.Comma) {
-        //Nếu giá trị nhập trùng thì không thêm
-        if (
-            listTag.value.findIndex(
-                (data) =>
-                    removeVietnameseTones(data[props.type]).toLocaleLowerCase() ===
-                    removeVietnameseTones(value.value).toLocaleLowerCase(),
-            ) !== -1
-        ) {
-            setTimeout(() => {
-                value.value = '';
-                e.target.value = '';
-            }, 2);
-        } else if (value.value.trim('') !== '') {
-            listTag.value.push({ [props.type]: value.value, [props.type + 'Code']: autoCode(value.value, props.type) });
-            emits('update-tag');
-            setTimeout(() => {
-                value.value = '';
-                e.target.value = '';
-            }, 2);
-        }
+        addTag(e)
     }
     //nếu là nut BackSpace thì xóa tag cuối
     if (e.keyCode === Enum.Keyboard.BackSpace && value.value.trim('') === '') {
         listTag.value.pop();
+        emits('update-tag');
     }
 };
+/**
+ * Author: Tiến Trung (19/08/2023)
+ * Description: Hàm thêm tag
+ */
+const addTag = (e) => {
+    //Nếu giá trị nhập trùng thì không thêm
+    const findTag = listTag.value.findIndex(
+        (data) =>
+            data[props.type].toLocaleLowerCase() ===
+            value.value.toLocaleLowerCase(),
+    )
+    if (findTag !== -1) {
+        setTimeout(() => {
+            value.value = '';
+            e.target.value = '';
+        }, 2);
+        return
+    }
+    if (value.value.trim('') !== '') {
+        const valueTag = value.value.trim().replace(/\s+/g, ' ')// biểu thức chính quy xóa các khoảng trắng đầu tiên
+        listTag.value.push({ [props.type]: valueTag, [props.type + 'Code']: autoCode(valueTag, props.type) });
+        emits('update-tag');
+        setTimeout(() => {
+            value.value = '';
+            e.target.value = '';
+        }, 2);
+    }
+}
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm tự động sinh code cho thuộc tính
@@ -74,21 +85,58 @@ const handleAddTag = (e) => {
 const autoCode = (value, type) => {
     let autoCode = '';
     const removeVietNameseTonesValue = removeVietnameseTones(value).toLocaleUpperCase();
-    const lengthValue = removeVietNameseTonesValue.split(' ');
+    const listWord = removeVietNameseTonesValue.split(' ');//từ trong chuỗi
+    //color và size có kiểu auto code khác nhau
     switch (type) {
         case Enum.TypeProperties.Size:
-            autoCode = removeVietNameseTonesValue.replace(' ', '');
+            autoCode = validateAutoCode(removeVietNameseTonesValue.replace(' ', ''), true);
             break;
         default:
-            if (lengthValue.length > 1) {
-                autoCode = lengthValue.map((item) => item.charAt(0)).join('');
+            if (listWord.length > 1) {
+                autoCode = validateAutoCode(listWord.map((item) => item.charAt(0)).join(''), false, listWord[listWord.length - 1]);
             } else {
-                autoCode = removeVietNameseTonesValue.substring(0, 2);
+                autoCode = validateAutoCode(removeVietNameseTonesValue.substring(0, 2), true);
             }
             break;
     }
     return autoCode;
 };
+/**
+ * Author: Tiến Trung (21/08/2023)
+ * Description: Hàm validate color code
+ */
+const validateAutoCode = (currentCode, upNumber, lastWord) => {
+    let newCode = currentCode
+    let autoNumber = 0
+    let findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+    if (upNumber) {
+        while (findCode !== -1) {
+            autoNumber++
+            newCode = currentCode + `${autoNumber < 10 ? '0' + autoNumber : autoNumber}`
+            findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+        }
+    } else {
+        let currentWordIndex = 0
+        const arrayLastWord = lastWord.split('')
+        while (findCode !== -1) {
+            if (currentWordIndex < arrayLastWord.length - 1) {
+                currentWordIndex++
+                newCode = currentCode + arrayLastWord[currentWordIndex]
+                currentCode = newCode
+                findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+                if (findCode !== -1) {
+                    continue
+                } else {
+                    break
+                }
+            }
+            autoNumber++
+            newCode = currentCode + `${autoNumber < 10 ? '0' + autoNumber : autoNumber}`
+            findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+        }
+    }
+    return newCode
+}
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm xóa tag ở vị trí bất kỳ
@@ -109,8 +157,4 @@ onMounted(() => {
 </script>
 <style lang="scss">
 @import './input-tag.scss';
-.wrapper-table {
-    height: 300px;
-    border: 1px solid var(--border-color);
-}
 </style>

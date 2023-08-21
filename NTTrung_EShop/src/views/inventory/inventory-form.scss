@@ -14,9 +14,12 @@
     }
     .input-text-base {
         height: 32px;
+        max-width: 240px;
     }
+
     .custom-combobox {
         height: 32px;
+        max-width: 240px;
         .input-text-base {
             height: 30px !important;
         }
@@ -39,6 +42,10 @@
         padding: 8px 16px 16px;
         flex: 1;
         overflow: auto;
+        .wrapper-table {
+            height: 230px;
+            border: 1px solid var(--border-color);
+        }
         .form-table {
             margin-top: 48px;
             // padding-bottom: 20px;
@@ -53,7 +60,7 @@
     .wrapper__label-image {
         display: flex !important;
         .label {
-            min-width: 100px;
+            min-width: 170px;
         }
     }
     .form-image {

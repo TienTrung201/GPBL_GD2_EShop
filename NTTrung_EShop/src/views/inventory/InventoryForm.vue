@@ -242,7 +242,7 @@ const pushDataTable = (color, size) => {
     genDataTable.value.push({
         InventoryName: nameDetail,
         UnitName: 'Chai',
-        SKUCode: `S${colorCodeDetail ? '-' + colorCodeDetail : ''}${sizeCodeDetail ? '-' + sizeCodeDetail : ''}`,
+        SKUCode: `${formData.value.SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${sizeCodeDetail ? '-' + sizeCodeDetail : ''}`,
         Color: colorDetail,
         ColorCode: colorCodeDetail,
         Size: sizeDetail,
@@ -373,109 +373,76 @@ onUnmounted(() => {
                 <h3 class="form__title">THÔNG TIN CƠ BẢN</h3>
             </div>
             <div class="wrapper-form">
-                <MISARow gutter="12" justify="flex-start">
-                    <MISACol gutter="12" display="flex" direction="column" rowGap="12" span="11">
+                <MISARow justify="flex-start">
+                    <MISACol display="flex" direction="column" rowGap="12">
                         <MISARow>
                             <MISARadioGroup :label="'Trạng thái kinh doanh'" row>
-                                <MISARadio
-                                    v-model:value="formData.isActive"
-                                    :valueRadio="1"
-                                    :optionName="'Đang kinh doanh'"
-                                    name="active"
-                                ></MISARadio>
-                                <MISARadio
-                                    v-model:value="formData.isActive"
-                                    :valueRadio="0"
-                                    :optionName="'Ngừng kinh doanh'"
-                                    name="active"
-                                ></MISARadio>
+                                <MISARadio v-model:value="formData.isActive" :valueRadio="1" :optionName="'Đang kinh doanh'"
+                                    name="active"></MISARadio>
+                                <MISARadio v-model:value="formData.isActive" :valueRadio="0"
+                                    :optionName="'Ngừng kinh doanh'" name="active"></MISARadio>
                             </MISARadioGroup>
                         </MISARow>
                         <MISARow>
-                            <MISAInput
-                                v-model:value="formData.inventoryName"
-                                ref="iInventoryName"
-                                :label="'Tên hàng hóa'"
-                                type="text"
-                                validate="true"
-                                row
-                                require
-                            ></MISAInput> </MISARow
-                        ><MISARow>
-                            <MISADropdown
-                                @next-tab-enter="iSKUCode.autoFocus()"
-                                combobox
+                            <MISAInput v-model:value="formData.inventoryName" ref="iInventoryName" :label="'Tên hàng hóa'"
+                                type="text" validate="true" row require></MISAInput>
+                        </MISARow>
+                        <MISARow>
+                            <MISADropdown @next-tab-enter="iSKUCode.autoFocus()" combobox
                                 v-model:value="formData.itemCategoryId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
-                                :label="'Nhóm hàng hóa'"
-                                row
-                            ></MISADropdown>
+                                :label="'Nhóm hàng hóa'" row></MISADropdown>
                         </MISARow>
                         <MISARow>
-                            <MISAInput
-                                v-model:value="formData.SKUCode"
-                                ref="iSKUCode"
-                                :label="'Mã SKU'"
-                                type="text"
-                                validate="true"
-                                row
-                            ></MISAInput>
+                            <MISAInput v-model:value="formData.SKUCode" ref="iSKUCode" :label="'Mã SKU'" type="text"
+                                validate="true" row></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <MISAInput
-                                v-model:value="formData.costPrice"
-                                ref="iCostPrice"
-                                :label="'Giá mua'"
-                                type="text"
-                                validate="true"
-                                checkNumber
-                                row
-                            ></MISAInput>
+                            <MISAInput v-model:value="formData.costPrice" ref="iCostPrice" :label="'Giá mua'" type="text"
+                                validate="true" checkNumber row></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <MISAInput
-                                v-model:value="formData.unitPrice"
-                                ref="iUnitPrice"
-                                :label="'Giá Bán'"
-                                type="text"
-                                validate="true"
-                                checkNumber
-                                row
-                            ></MISAInput>
+                            <MISAInput v-model:value="formData.unitPrice" ref="iUnitPrice" :label="'Giá Bán'" type="text"
+                                validate="true" checkNumber row></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <MISADropdown
-                                @next-tab-enter="iIsShowMenu.autoFocus()"
-                                combobox
-                                :options="departments"
+                            <MISADropdown @next-tab-enter="iIsShowMenu.autoFocus()" combobox :options="departments"
                                 v-model:value="formData.departmentId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
-                                :label="'Đơn vị tính'"
-                                row
-                            ></MISADropdown>
+                                :label="'Đơn vị tính'" row></MISADropdown>
                         </MISARow>
                         <MISARow></MISARow>
                         <MISARow>
-                            <MISACheckbox
-                                custom
-                                :valueCheckbox="formData.isShowMenu"
-                                v-model:value="formData.isShowMenu"
-                                :lable="'Hiển thị trên màn hình bán hàng'"
-                            >
+                            <MISACheckbox custom :valueCheckbox="formData.isShowMenu" v-model:value="formData.isShowMenu"
+                                :lable="'Hiển thị trên màn hình bán hàng'">
                             </MISACheckbox>
                         </MISARow>
                     </MISACol>
-                    <MISACol display="flex" direction="column" rowGap="12" gutter="12" span="13">
+
+                </MISARow>
+            </div>
+            <div sty class="ntt-form__header" :style="{ marginTop: '30px' }">
+                <h3 class="form__title">THÔNG TIN THUỘC TÍNH</h3>
+            </div>
+            <div class="wrapper-form">
+                <MISAInputManyTag @update-tag="updateTag" :properties="properties.color" :type="Enum.TypeProperties.Color"
+                    label="Màu sắc"></MISAInputManyTag>
+                <MISAInputManyTag @update-tag="updateTag" :properties="properties.size" :type="Enum.TypeProperties.Size"
+                    label="Size"></MISAInputManyTag>
+            </div>
+            <div class="form-table">
+                <MISATableDetail @delete-detail="deleteDetail" :columns="columnTable" :dataTable="dataTable">
+                </MISATableDetail>
+            </div>
+            <div sty class="ntt-form__header" :style="{ marginTop: '10px' }">
+                <h3 class="form__title">THÔNG TIN BỔ SUNG</h3>
+            </div>
+            <div class="wrapper-form">
+                <MISARow>
+                    <MISACol display="flex" direction="column" rowGap="12">
                         <MISARow>
-                            <MISATextArea
-                                ref="iDescription"
-                                isName
-                                v-model:value="formData.description"
-                                :label="'Mô tả'"
-                                validate="true"
-                                row
-                                class="custom-label"
-                            >
+                            <MISATextArea ref="iDescription" isName v-model:value="formData.description" :label="'Mô tả'"
+                                validate="true" row class="custom-label">
                             </MISATextArea>
                         </MISARow>
                         <MISARow>
@@ -483,21 +450,12 @@ onUnmounted(() => {
                                 <div class="wrapper__label-image">
                                     <p class="label">Ảnh hàng hóa</p>
                                     <div class="wrapper-image">
-                                        <input
-                                            @change="handleChangeImg($event.target.files[0])"
-                                            ref="file"
-                                            type="file"
-                                            name="inventory"
-                                            id=""
-                                        />
+                                        <input @change="handleChangeImg($event.target.files[0])" ref="file" type="file"
+                                            name="inventory" id="" />
                                         <img class="image-file" v-if="imgFile" :src="imgFile" alt="" />
 
-                                        <img
-                                            v-else
-                                            class="image-file"
-                                            src="../../assets/img/img-inventory-default.jpg"
-                                            alt=""
-                                        />
+                                        <img v-else class="image-file" src="../../assets/img/img-inventory-default.jpg"
+                                            alt="" />
                                         <button @click="file.click()" class="btn-file">...</button>
                                         <button class="btn-select__list-image">
                                             <p class="icon center">
@@ -507,7 +465,6 @@ onUnmounted(() => {
                                         </button>
                                     </div>
                                 </div>
-
                                 <div class="wrapper__content">
                                     <p class="image__content">- Lựa chọn biểu tượng để thay thế nếu không có ảnh</p>
                                     <p class="image__content">
@@ -519,30 +476,6 @@ onUnmounted(() => {
                     </MISACol>
                 </MISARow>
             </div>
-            <div sty class="ntt-form__header" :style="{ marginTop: '30px' }">
-                <h3 class="form__title">THÔNG TIN THUỘC TÍNH</h3>
-            </div>
-            <div class="wrapper-form">
-                <MISAInputManyTag
-                    @update-tag="updateTag"
-                    :properties="properties.color"
-                    :type="Enum.TypeProperties.Color"
-                    label="Màu sắc"
-                ></MISAInputManyTag>
-                <MISAInputManyTag
-                    @update-tag="updateTag"
-                    :properties="properties.size"
-                    :type="Enum.TypeProperties.Size"
-                    label="Size"
-                ></MISAInputManyTag>
-            </div>
-            <div class="form-table">
-                <MISATableDetail
-                    @delete-detail="deleteDetail"
-                    :columns="columnTable"
-                    :dataTable="dataTable"
-                ></MISATableDetail>
-            </div>
         </div>
 
         <div class="ntt-form__footer">
@@ -551,11 +484,8 @@ onUnmounted(() => {
                     <MISAIcon width="21" height="11" icon="save" />
                 </template>
             </MISAButton>
-            <MISAButton
-                :type="Enum.ButtonType.IconPri"
-                :action="MISAResource[resource.langCode]?.Button?.SaveAndReplication"
-                sec
-            >
+            <MISAButton :type="Enum.ButtonType.IconPri"
+                :action="MISAResource[resource.langCode]?.Button?.SaveAndReplication" sec>
                 <template #icon>
                     <MISAIcon width="25" height="15" icon="replication" />
                 </template>
@@ -565,12 +495,8 @@ onUnmounted(() => {
                     <MISAIcon width="21" height="10" icon="plus" />
                 </template>
             </MISAButton>
-            <MISAButton
-                @click="closeForm"
-                :type="Enum.ButtonType.IconPri"
-                :action="MISAResource[resource.langCode]?.Button?.Cancel"
-                link
-            >
+            <MISAButton @click="closeForm" :type="Enum.ButtonType.IconPri"
+                :action="MISAResource[resource.langCode]?.Button?.Cancel" link>
                 <template #icon>
                     <MISAIcon width="20" height="10" icon="close-eshop" />
                 </template>
@@ -581,7 +507,14 @@ onUnmounted(() => {
 
 <style lang="scss">
 @import './inventory-form.scss';
+
 .custom-checkbox {
     margin-left: 10px;
+}
+
+.custom-label {
+    .wrapper-input {
+        max-width: 500px;
+    }
 }
 </style>

@@ -98,19 +98,23 @@ defineExpose({ autoFocus });
 
 .input-text-area {
     padding: 12px;
-    min-height: 98px;
+    min-height: 74px;
     max-width: 100%;
     min-width: 100%;
     resize: none;
 }
+
 .label-input-row {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+
+
     p {
-        min-width: 100px;
+        min-width: 170px;
     }
 }
+
 .error-message {
     bottom: -20px;
 }
