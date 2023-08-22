@@ -27,7 +27,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// <summary>
         /// Mô tả
         /// </summary>
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         /// <summary>
         /// Lấy Id entity
         /// </summary>

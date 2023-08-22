@@ -5,10 +5,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Folder Include="Repository\Excel\" />
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.0.143" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
@@ -17,6 +13,7 @@
 		<PackageReference Include="EPPlus" Version="6.2.7" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\MISA.NTTrungWeb05.GD2.Application\MISA.NTTrungWeb05.GD2.Application.csproj" />
 		<ProjectReference Include="..\MISA.NTTrungWeb05.GD2.Domain\MISA.NTTrungWeb05.GD2.Domain.csproj" />
 	</ItemGroup>
 

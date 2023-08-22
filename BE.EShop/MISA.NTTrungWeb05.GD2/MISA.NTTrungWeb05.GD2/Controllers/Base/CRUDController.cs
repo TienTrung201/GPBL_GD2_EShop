@@ -5,15 +5,15 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CRUDController<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel> : ReadOnlyController<TModel, TEntityDto>
+    public class CRUDController<TResponseDto, TRequestDto, TModel> : ReadOnlyController<TModel, TResponseDto>
     {
         #region Fields
-        protected readonly ICRUDService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel> _crudService;
+        protected readonly ICRUDService<TResponseDto, TRequestDto, TModel> _crudService;
         #endregion
         #region Constructor
-        public CRUDController(ICRUDService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel> baseService) : base(baseService)
+        public CRUDController(ICRUDService<TResponseDto, TRequestDto, TModel> crudService) : base(crudService)
         {
-            _crudService = baseService;
+            _crudService = crudService;
         }
         #endregion
         #region Methods
@@ -24,7 +24,7 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
         /// <returns>Trạng thái HTTP 200 OK và số bản ghi thay đổi</returns>
         /// CreatedBy: NTTrung (13/07/2023)
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TEntityCreateDto entity)
+        public async Task<IActionResult> Post([FromBody] TRequestDto entity)
         {
             var result = await _crudService.CreatetAsync(entity);
             return StatusCode(StatusCodes.Status201Created, result);
@@ -36,7 +36,7 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
         /// <returns>Trạng thái HTTP 200 OK và số bản ghi thay đổi</returns>
         /// CreatedBy: NTTrung (13/07/2023)
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] TEntityUpdateDto entity)
+        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] TRequestDto entity)
         {
             var result = await _crudService.UpdateAsync(id, entity);
             return StatusCode(StatusCodes.Status200OK, result);

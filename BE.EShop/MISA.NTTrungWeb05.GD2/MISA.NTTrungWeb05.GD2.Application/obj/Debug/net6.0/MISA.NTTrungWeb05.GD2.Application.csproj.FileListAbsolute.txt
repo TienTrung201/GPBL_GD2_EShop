@@ -1,0 +1,16 @@
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.csproj.AssemblyReference.cache
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.AssemblyInfoInputs.cache
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.AssemblyInfo.cs
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.csproj.CoreCompileInputs.cache
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\bin\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.deps.json
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\bin\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\bin\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.pdb
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\bin\Debug\net6.0\MISA.NTTrungWeb05.GD2.Domain.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\bin\Debug\net6.0\MISA.NTTrungWeb05.GD2.Domain.pdb
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\bin\Debug\net6.0\en-US\MISA.NTTrungWeb05.GD2.Domain.resources.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.csproj.CopyComplete
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\refint\MISA.NTTrungWeb05.GD2.Application.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Application.pdb
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Application\obj\Debug\net6.0\ref\MISA.NTTrungWeb05.GD2.Application.dll

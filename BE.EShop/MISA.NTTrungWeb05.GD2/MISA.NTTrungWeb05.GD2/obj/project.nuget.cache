@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "mYRWYrvIr2KYiycfM0rGuai8PLbL1LW7be/rjQTfkve4lBI0YUhcqKLlhF/td7QNwc02Cr9TBHrpOc/XG4J2uA==",
+  "dgSpecHash": "2z1co7WmqKkJNzf8KNwuneTW+Zc1aoh9ycYF89o7E88dA/Ue6Msv4XrHJ4DkOmWbeZlyVa2Ux65wnV8hD+C4Sw==",
   "success": true,
   "projectFilePath": "D:\\Wep\\learnCode\\Misa\\GPBL_GD2_EShop\\BE.EShop\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2\\MISA.NTTrungWeb05.GD2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tien Trung\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\dapper\\2.0.143\\dapper.2.0.143.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\epplus\\6.2.7\\epplus.6.2.7.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\epplus.interfaces\\6.1.1\\epplus.interfaces.6.1.1.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\epplus.system.drawing\\6.1.1\\epplus.system.drawing.6.1.1.nupkg.sha512",
@@ -24,6 +25,7 @@
     "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.io.recyclablememorystream\\2.2.1\\microsoft.io.recyclablememorystream.2.2.1.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\Tien Trung\\.nuget\\packages\\mysqlconnector\\2.2.6\\mysqlconnector.2.2.6.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
     "C:\\Users\\Tien Trung\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",

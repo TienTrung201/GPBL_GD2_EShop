@@ -9,7 +9,6 @@
 	<ItemGroup>
 		<Folder Include="Interface\Entity\" />
 		<Folder Include="Interface\Manager\" />
-		<Folder Include="Interface\Repository\" />
 		<Folder Include="Service\" />
 	</ItemGroup>
 	<ItemGroup>

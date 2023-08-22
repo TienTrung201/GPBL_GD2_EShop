@@ -5,14 +5,13 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReadOnlyController<TModel, TEntityDto> : ControllerBase
+    public class ReadOnlyController<TModel, TResponseDto> : ControllerBase
     {
         #region Field
-        private readonly IReadOnlyService<TModel, TEntityDto> _readOnlyService;
-
+        private readonly IReadOnlyService<TModel, TResponseDto> _readOnlyService;
         #endregion
         #region Constructor
-        public ReadOnlyController(IReadOnlyService<TModel, TEntityDto> readOnlyService)
+        public ReadOnlyController(IReadOnlyService<TModel, TResponseDto> readOnlyService)
         {
             _readOnlyService = readOnlyService;
         }

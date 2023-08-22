@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Application.Service.Base;
 
 namespace MISA.NTTrungWeb05.GD2.Controllers.Base
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CodeController<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel> : CRUDController<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel>
+    public class CodeController<TResponseDto, TRequestDto, TModel> : CRUDController<TResponseDto, TRequestDto, TModel>
     {
         #region Fields
-        protected readonly ICodeService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel> _codeService;
+        protected readonly ICodeService<TResponseDto, TRequestDto, TModel> _codeService;
         #endregion
         #region Constructor
 
-        public CodeController(ICodeService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel> codeService) : base(codeService)
+        public CodeController(ICodeService<TResponseDto, TRequestDto, TModel> codeService) : base(codeService)
         {
             _codeService = codeService;
         }

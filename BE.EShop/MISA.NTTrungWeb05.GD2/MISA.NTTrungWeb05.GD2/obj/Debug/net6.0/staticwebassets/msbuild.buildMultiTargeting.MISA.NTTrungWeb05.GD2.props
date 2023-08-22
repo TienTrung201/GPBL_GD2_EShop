@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\MISA.NTTrungWeb05.GD2.props" />
+</Project>

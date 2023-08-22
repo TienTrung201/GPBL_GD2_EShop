@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
-    public abstract class CodeService<TEntity, TModel, TEntityDto, TEntityCreateDto, TEntityUpdateDto>
-    : CRUDService<TEntity, TModel, TEntityDto, TEntityCreateDto, TEntityUpdateDto>,
-        ICodeService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel>
+    public abstract class CodeService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>
+    : CRUDService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>,
+        ICodeService<TEntityResponseDto, TEntityRequestDto, TModel>
 
     {
         #region Fields

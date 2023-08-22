@@ -25,61 +25,65 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// </summary>
         public string SKUCode { get; set; } = string.Empty;
         /// <summary>
+        /// Mã hàng hóa
+        /// </summary>
+        public string SKUCodeCustom { get; set; } = string.Empty;
+        /// <summary>
         /// Mã vạch
         /// </summary>
         public string BarCode { get; set; } = string.Empty;
         /// <summary>
         /// Giá mua
         /// </summary>
-        public decimal CostPrice { get; set; }
+        public decimal? CostPrice { get; set; }
         /// <summary>
         /// Giá bán
         /// </summary>
-        public decimal UnitPrice { get; set; }
+        public decimal? UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>
-        public decimal AvgUnitPrice { get; set; }
+        public decimal? AvgUnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình mua
         /// </summary>
-        public decimal AvgCostPrice { get; set; }
+        public decimal? AvgCostPrice { get; set; }
         /// <summary>
         /// Màu sắc
         /// </summary>
-        public string Color { get; set; } = string.Empty;
+        public string? Color { get; set; } = string.Empty;
         /// <summary>
         /// Mã màu
         /// </summary>
-        public string ColorCode { get; set; } = string.Empty;
+        public string? ColorCode { get; set; } = string.Empty;
         /// <summary>
         /// Size
         /// </summary>
-        public string Size { get; set; } = string.Empty;
+        public string? Size { get; set; } = string.Empty;
         /// <summary>
         /// Mã size
         /// </summary>
-        public string SizeCode { get; set; } = string.Empty;
+        public string? SizeCode { get; set; } = string.Empty;
         /// <summary>
         /// Mô tả
         /// </summary>
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         /// <summary>
         /// Ảnh
         /// </summary>
-        public string Image { get; set; } = string.Empty;
+        public string? Image { get; set; } = string.Empty;
         /// <summary>
         /// Trạng thái kinh doanh
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         /// <summary>
         /// Trạng thái hiển thị
         /// </summary>
-        public bool IsShowMenu { get; set; }
+        public bool? IsShowMenu { get; set; }
         /// <summary>
         /// Id của master
         /// </summary>
-        public Guid ParentId { get; set; }
+        public Guid? ParentId { get; set; }
         /// <summary>
         /// Lấy Id Entity
         /// </summary>

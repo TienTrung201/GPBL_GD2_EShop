@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
-    public abstract class ReadOnlyService<TEntity, TModel, TEntityDto> : IReadOnlyService<TModel, TEntityDto>
+    public abstract class ReadOnlyService<TEntity, TModel, TEntityResponseDto> : IReadOnlyService<TModel, TEntityResponseDto>
     {
         #region Fields
         protected readonly IReadOnlyRepository<TEntity, TModel> _readOnlyRepository;
@@ -55,10 +55,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// </summary>
         /// <returns>Mã code mới</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<IEnumerable<TEntityDto>> GetAllAsync()
+        public async Task<IEnumerable<TEntityResponseDto>> GetAllAsync()
         {
             var model = await _readOnlyRepository.GetAllAsync();
-            var listEntityDto = _mapper.Map<List<TEntityDto>>(model);
+            var listEntityDto = _mapper.Map<List<TEntityResponseDto>>(model);
             return listEntityDto;
         }
         /// <summary>
@@ -67,10 +67,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <param name="id"></param>
         /// <returns>Bsản ghi tìm thấy</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<TEntityDto> GetByIdAsync(Guid id)
+        public async Task<TEntityResponseDto> GetByIdAsync(Guid id)
         {
             var entity = await _readOnlyRepository.GetByIdAsync(id);
-            var entityDto = _mapper.Map<TEntityDto>(entity);
+            var entityDto = _mapper.Map<TEntityResponseDto>(entity);
             return entityDto;
         }
         #endregion

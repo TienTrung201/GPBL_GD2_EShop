@@ -88,7 +88,7 @@ const properties = ref({ color: [], size: [] });
 const data = [
     {
         InventoryName: 'haha',
-        UnitName: 'Nhóm hh',
+        UnitName: 'Chiếc',
         SKUCode: 'S-XA-S',
         Color: 'Xanh',
         ColorCode: 'XA',
@@ -100,7 +100,7 @@ const data = [
     },
     {
         InventoryName: 'haha',
-        UnitName: 'Nhóm hh',
+        UnitName: 'Chiếc',
         SKUCode: 'S-XA-M',
         Color: 'Xanh',
         ColorCode: 'XA',
@@ -112,7 +112,7 @@ const data = [
     },
     {
         InventoryName: 'haha',
-        UnitName: 'Nhóm hh',
+        UnitName: 'Chiếc',
         SKUCode: 'S-DO-S',
         Color: 'Đỏ',
         ColorCode: 'DO',
@@ -124,7 +124,7 @@ const data = [
     },
     {
         InventoryName: 'haha',
-        UnitName: 'Nhóm hh',
+        UnitName: 'Chiếc',
         SKUCode: 'S-DO-M',
         Color: 'Đỏ',
         ColorCode: 'DO',

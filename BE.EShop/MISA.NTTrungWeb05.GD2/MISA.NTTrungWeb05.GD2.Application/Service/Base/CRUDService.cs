@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
-    public abstract class CRUDService<TEntity, TModel, TEntityDto, TEntityCreateDto, TEntityUpdateDto>
-        : ReadOnlyService<TEntity, TModel, TEntityDto>,
-        ICRUDService<TEntityDto, TEntityCreateDto, TEntityUpdateDto, TModel>
+    public abstract class CRUDService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>
+        : ReadOnlyService<TEntity, TModel, TEntityResponseDto>,
+        ICRUDService<TEntityResponseDto, TEntityRequestDto, TModel>
     {
         #region Fields
         protected readonly ICRUDRepository<TEntity, TModel> _baseRepository;
@@ -33,7 +33,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <paran name="entity">Thông tin chi tiết bản ghi được thêm</paran>
         /// <returns>số bản ghi thay đổi</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public virtual async Task<int> CreatetAsync(TEntityCreateDto entityCreateDto)
+        public virtual async Task<int> CreatetAsync(TEntityRequestDto entityCreateDto)
         {
             //validate nghiệp vụ
             var entity = await MapCreateDtoToEntityValidateAsync(entityCreateDto);
@@ -46,7 +46,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <paran name="entity">Thông tin chi tiết bản ghi sửa</paran>
         /// <returns>số bản ghi thay đổi</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public virtual async Task<int> UpdateAsync(Guid id, TEntityUpdateDto entityUpdateDto)
+        public virtual async Task<int> UpdateAsync(Guid id, TEntityRequestDto entityUpdateDto)
         {
             //validate nghiệp vụ
             var entity = await MapUpdateDtoToEntityValidateAsync(id, entityUpdateDto);
@@ -98,7 +98,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <paran name="createDto">thông tin bản ghi gửi đến</paran>
         /// <returns>Bản ghi</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public abstract Task<TEntity> MapCreateDtoToEntityValidateAsync(TEntityCreateDto createDto);
+        public abstract Task<TEntity> MapCreateDtoToEntityValidateAsync(TEntityRequestDto createDto);
         /// <summary>
         /// Validate nghiệp vụ
         /// </summary>
@@ -106,7 +106,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <paran name="createDto">thông tin bản ghi gửi đến</paran>
         /// <returns>Bản ghi</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public abstract Task<TEntity> MapUpdateDtoToEntityValidateAsync(Guid id, TEntityUpdateDto updateDto);
+        public abstract Task<TEntity> MapUpdateDtoToEntityValidateAsync(Guid id, TEntityRequestDto updateDto);
         #endregion
     }
 }
