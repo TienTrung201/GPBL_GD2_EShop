@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Excel;
-using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
-using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Excel;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
 using MISA.NTTrungWeb05.GD2.Controllers.Base;
@@ -12,14 +11,14 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UnitController : CodeController<UnitResponseDto, UnitRequestDto, UnitModel>
+    public class InventoriesController : CodeController<InventoryResponseDto, InventoryRequestDto, InventoryModel>
     {
         #region Field
-        private readonly IUnitExcelService _unitExcelService;
+        private readonly IInventoryExcelService _InventoryExcelService;
         #endregion
-        public UnitController(IUnitService unitService, IUnitExcelService unitExcelService) : base(unitService)
+        public InventoriesController(IInventoryService inventoryService, IInventoryExcelService unitExcelService) : base(inventoryService)
         {
-            _unitExcelService = unitExcelService;
+            _InventoryExcelService = unitExcelService;
         }
         // <summary>
         // Xuất file excel
@@ -29,7 +28,7 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
         [HttpPost("Excel")]
         public async Task<IActionResult> ExportToExcel([FromBody] ExcelRequestDto excelResquest)
         {
-            var excelFile = await _unitExcelService.ExportExcelAsync(excelResquest);
+            var excelFile = await _InventoryExcelService.ExportExcelAsync(excelResquest);
             return File(excelFile, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "excel.xlsx");
         }
     }

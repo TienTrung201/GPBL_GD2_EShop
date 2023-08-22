@@ -4,6 +4,7 @@ using MISA.NTTrungWeb05.GD2.Domain.Common;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,18 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Lấy bản ghi trong trang và lọc
+        /// </summary>
+        /// <paran name="entity">List Filter</paran>
+        /// <returns>Danh sách bản ghi trong trang</returns>
+        /// CreatedBy: NTTrung (14/07/2023)
+        /// <summary>
+        public async Task<Pagination<TModel>> FilterAsync(FilterSort listFilter)
+        {
+            var result = await _readOnlyRepository.FilterAsync(listFilter);
+            return result;
+        }
         /// <summary>
         /// Phân trang tìm kiếm
         /// </summary>

@@ -10,6 +10,14 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Base
     public interface IReadOnlyRepository<TEntity, TModel>
     {
         /// <summary>
+        /// Lấy bản ghi trong trang và lọc
+        /// </summary>
+        /// <paran name="entity">List Filter</paran>
+        /// <returns>Danh sách bản ghi trong trang</returns>
+        /// CreatedBy: NTTrung (14/07/2023)
+        /// <summary>
+        Task<Pagination<TModel>> FilterAsync(FilterSort listFilter);
+        /// <summary>
         /// Lấy tất cả bản ghi
         /// </summary>
         /// <returns>Tất cả bản ghi</returns>

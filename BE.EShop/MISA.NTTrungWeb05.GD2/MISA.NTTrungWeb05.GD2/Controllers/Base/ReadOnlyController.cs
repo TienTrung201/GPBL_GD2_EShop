@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Common;
 
 namespace MISA.NTTrungWeb05.GD2.Controllers.Base
 {
@@ -17,6 +18,17 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
         }
         #endregion
 
+        // <summary>
+        // Phân trang lọc sắp xếp
+        // </summary>
+        // <returns>danh sách bản ghi tìm thấy</returns>
+        // createdby: nttrung (17/07/2023)
+        [HttpPost("filter")]
+        public async Task<IActionResult> FilterSortAsync([FromBody] FilterSort filter)
+        {
+            var result = await _readOnlyService.FilterAsync(filter);
+            return Ok(result);
+        }
         // <summary>
         // Phân trang tìm kiếm bản ghi
         // </summary>

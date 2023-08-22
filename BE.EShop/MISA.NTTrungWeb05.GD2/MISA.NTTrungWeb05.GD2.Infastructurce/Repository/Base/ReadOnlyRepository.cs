@@ -1,16 +1,20 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.OpenApi.Models;
 using MISA.NTTrungWeb05.GD2.Domain;
 using MISA.NTTrungWeb05.GD2.Domain.Common;
 using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
 {
@@ -36,9 +40,104 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         #endregion
         #region Methods
         /// <summary>
+        /// Lấy bản ghi trong trang và lọc
+        /// </summary>
+        /// <paran name="entity">List Filter</paran>
+        /// <returns>Danh sách bản ghi trong trang</returns>
+        /// CreatedBy: NTTrung (14/07/2023)
+        /// <summary>
+        public async Task<Pagination<TModel>> FilterAsync(FilterSort filter)
+        {
+            var storedProcedureName = $"Proc_Filter";
+            var parameters = new DynamicParameters();
+            var query = new StringBuilder();
+            query.Append($"Select SQL_CALC_FOUND_ROWS * from view_{TableName.ToLower()} as view Where ");
+            int indexList = 0;
+            int lengFilterProperties = filter.Filter.Count();
+            filter.Filter.ForEach((filter) =>
+            {
+                switch (filter.Operator)
+                {
+                    case Operator.EQual:
+                        query.Append($"view.{filter.Property} = {filter.Value} ");
+                        break;
+                    case Operator.NotEqual:
+                        query.Append($"view.{filter.Property} != {filter.Value} ");
+                        break;
+                    case Operator.Contain:
+                        query.Append($"view.{filter.Property} Like '%{filter.Value}%' ");
+                        break;
+                    case Operator.NotContain:
+                        query.Append($"view.{filter.Property} NotLike '%{filter.Value}%' ");
+                        break;
+                    case Operator.Smaller:
+                        query.Append($"view.{filter.Property} < {filter.Value} ");
+                        break;
+                    case Operator.Greater:
+                        query.Append($"view.{filter.Property} > {filter.Value} ");
+                        break;
+                    default:
+                        break;
+                }
+                if (indexList != lengFilterProperties - 1)
+                {
+                    query.Append("And ");
+                }
+                indexList++;
+            });
+            if (!string.IsNullOrEmpty(filter.PropertySort))
+            {
+                query.Append($"Order by view.{filter.PropertySort} ");
+                switch (filter.SortBy)
+                {
+                    case SortBy.Desc:
+                        query.Append($"Desc ");
+                        break;
+                    case SortBy.Asc:
+                        query.Append($"Asc ");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            query.Append($"Limit {filter.PageSize} Offset {(filter.CurrentPage - 1) * filter.PageSize}");
+            var queryString = query.ToString();
+            parameters.Add("@QueryString", queryString);
+            parameters.Add("@TotalRecords", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            var listData = await _uow.Connection.QueryAsync<TModel>(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
+            var totalRecords = parameters.Get<int>("@TotalRecords");
+
+            var result = new Pagination<TModel>(listData.ToList(), totalRecords);
+            return result;
+        }
+        //public void BuildQueryStringWhere(StringBuilder query, string propertyName, object value, Operator operatorType)
+        //{
+        //    switch (operatorType)
+        //    {
+        //        case Operator.EQual:
+        //            query.Append($"view.{propertyName} = {value} ");
+        //            break;
+        //        case Operator.NotEqual:
+        //            query.Append($"view.{propertyName} != {value} ");
+        //            break;
+        //        case Operator.Contain:
+        //            query.Append($"view.{propertyName} Like '%{value}%' ");
+        //            break;
+        //        case Operator.NotContain:
+        //            query.Append($"view.{propertyName} NotLike '%{value}%' ");
+        //            break;
+        //        case Operator.Smaller:
+        //            query.Append($"view.{propertyName} < {value} ");
+        //            break;
+        //        case Operator.Greater:
+        //            query.Append($"view.{propertyName} > {value} ");
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
         /// Lấy tất cả
         /// </summary>
-        /// <paran name="entity">Code</paran>
         /// <returns>Danh sách Đối tượng</returns>
         /// CreatedBy: NTTrung (14/07/2023)
         public async Task<IEnumerable<TModel>> GetAllAsync()

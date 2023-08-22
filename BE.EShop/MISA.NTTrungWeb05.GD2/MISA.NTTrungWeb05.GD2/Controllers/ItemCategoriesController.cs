@@ -12,12 +12,12 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemCategoryController : CodeController<ItemCategoryResponseDto, ItemCategoryRequestDto, ItemCategoryModel>
+    public class ItemCategoriesController : CodeController<ItemCategoryResponseDto, ItemCategoryRequestDto, ItemCategoryModel>
     {
         #region Field
         private readonly IItemCategoryExcelService _itemCategoryExcelService;
         #endregion
-        public ItemCategoryController(IItemCategoryService itemCategoryService, IItemCategoryExcelService itemCategoryExcelService) : base(itemCategoryService)
+        public ItemCategoriesController(IItemCategoryService itemCategoryService, IItemCategoryExcelService itemCategoryExcelService) : base(itemCategoryService)
         {
             _itemCategoryExcelService = itemCategoryExcelService;
         }

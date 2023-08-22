@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Domain.Model
 {
-    public class ItemCategoryModel : Inventory
+    public class ItemCategoryModel : ItemCategory
     {
     }
 }

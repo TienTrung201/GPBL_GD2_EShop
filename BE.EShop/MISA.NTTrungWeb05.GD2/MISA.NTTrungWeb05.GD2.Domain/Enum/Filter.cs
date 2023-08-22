@@ -20,14 +20,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
     }
     public enum Operator
     {
-        [Description("Like")]
-        Like = 1,
         [Description("Equal")]
-        EQual = 2,
+        EQual = 1,
         [Description("NotEqual")]
-        Date = 3,
+        NotEqual = 2,
         [Description("Contain")]
-        Contain = 4,
+        Contain = 3,
         [Description("NotContain")]
         NotContain = 4,
         [Description("Greater")]
@@ -41,5 +39,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         And = 1,
         [Description("Or")]
         Or = 2,
+    }
+    public enum SortBy
+    {
+        [Description("Desc")]
+        Desc = 1,
+        [Description("Asc")]
+        Asc = 2,
     }
 }
