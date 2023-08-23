@@ -72,7 +72,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Ảnh
         /// </summary>
-        public string? Image { get; set; } = string.Empty;
+        public Guid? PictureId { get; set; }
         /// <summary>
         /// Trạng thái kinh doanh
         /// </summary>

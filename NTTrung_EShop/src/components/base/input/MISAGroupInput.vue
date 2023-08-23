@@ -12,7 +12,7 @@
         />
         <MISAButton @click="handleSearch(), input.focus()" class="i-group" type="icon">
             <template #icon>
-                <img class="i-img" src="../../../assets/icons/search 2-1.svg" alt="" />
+                <!-- <img class="i-img" src="../../../assets/icons/search 2-1.svg" alt="" /> -->
             </template>
         </MISAButton>
     </div>
@@ -64,18 +64,22 @@ const input = ref();
     border-radius: 3px;
     border: 1px solid var(--border-gray);
     overflow: hidden;
+
     &:focus-within {
         border: 1px solid var(--primary-color);
     }
+
     .i-group {
         border: none;
         margin: 0;
         background-color: #fff;
+
         &:first-child {
             border-right: 1px solid var(--border-gray);
             border-top-right-radius: 0px;
             border-bottom-right-radius: 0px;
         }
+
         &:last-child {
             &:focus {
                 background-color: var(--border-gray);
@@ -83,12 +87,13 @@ const input = ref();
                 border-bottom-left-radius: 0;
             }
         }
+
         &:focus {
             outline: none;
         }
     }
 }
+
 .width300 {
     width: 300px;
-}
-</style>
+}</style>

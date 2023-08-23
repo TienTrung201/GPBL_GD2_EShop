@@ -35,6 +35,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
                 throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, newCode), (int)ErrorCode.DuplicateCode);
             }
         }
+
         /// <summary>
         /// Kiểm tra có tồn tại không
         /// </summary>
@@ -43,6 +44,32 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         public async Task CheckExistAsync(Guid id)
         {
             await _inventoryRepository.GetByIdAsync(id);
+        }
+        /// <summary>
+        /// Kiểm tra danh sách mã vạch trùng
+        /// </summary>
+        /// <param name="listCodes">Danh sách mã vạch</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        public async Task CheckDublicateListBarcodes(string listCode)
+        {
+            var result = await _inventoryRepository.GetBarcodeInvalid(listCode);
+            if (result != null)
+            {
+                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCode);
+            }
+        }
+        /// <summary>
+        /// Kiểm tra danh sách mã trùng
+        /// </summary>
+        /// <param name="listCodes">Danh sách mã</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        public async Task CheckDublicateListCodes(string listBarcode)
+        {
+            var result = await _inventoryRepository.GetSKUCodeInvalid(listBarcode);
+            if (result != null)
+            {
+                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCode);
+            }
         }
     }
 }

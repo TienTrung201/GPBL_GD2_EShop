@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MISA.NTTrungWeb05.GD2.Domain.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
     /// CreatedBy NTTrung (21/08/2023)
     public class InventoryRequestDto
     {
+        /// <summary>
+        /// Định danh hàng hóa
+        /// </summary>
+        public Guid InventoryId { get; set; }
         /// <summary>
         /// Tên hàng hóa
         /// </summary>
@@ -67,7 +72,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Ảnh
         /// </summary>
-        public string? Image { get; set; } = string.Empty;
+        public Guid? PictureId { get; set; }
         /// <summary>
         /// Trạng thái kinh doanh
         /// </summary>
@@ -88,5 +93,17 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Tên đơn vị tính
         /// </summary>  
         public Guid UnitId { get; set; }
+        /// <summary>
+        /// Sự thay đổi
+        /// </summary>  
+        public EditMode EditMode { get; set; } = EditMode.None;
+        /// <summary>
+        /// Sự thay đổi
+        /// </summary>  
+        public bool IsUpdateCode { get; set; } = false;
+        /// <summary>
+        /// Danh sách detail
+        /// </summary>  
+        public List<InventoryRequestDto>? Detail { get; set; }
     }
 }
