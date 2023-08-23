@@ -8,8 +8,6 @@
 
 	<ItemGroup>
 		<Folder Include="Interface\Entity\" />
-		<Folder Include="Interface\Manager\" />
-		<Folder Include="Service\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />

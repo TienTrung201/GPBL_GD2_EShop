@@ -18,5 +18,9 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Model
         /// Tên đơn vị tính
         /// </summary>  
         public string UnitName { get; set; } = string.Empty;
+        /// <summary>
+        /// Danh sách detail
+        /// </summary>  
+        public List<InventoryModel>? Detail { get; set; }
     }
 }

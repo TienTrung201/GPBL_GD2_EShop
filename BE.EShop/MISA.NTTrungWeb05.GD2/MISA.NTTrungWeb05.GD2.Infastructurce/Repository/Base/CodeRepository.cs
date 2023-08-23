@@ -34,7 +34,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         {
             var storedProcedureName = $"Proc_{TableName}_GetByCode";
             var param = new DynamicParameters();
-            param.Add($"@{TableName}Code", code);
+            param.Add($"@Code", code);
             var result = await _uow.Connection.QueryFirstOrDefaultAsync<TEntity>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
 
             return result;

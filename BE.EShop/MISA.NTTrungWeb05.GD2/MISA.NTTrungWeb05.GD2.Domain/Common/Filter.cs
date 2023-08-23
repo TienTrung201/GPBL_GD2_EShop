@@ -10,7 +10,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Common
 {
     public class FilterSort
     {
-        public List<Filter> Filter { get; set; }
+        public List<Filter>? Filter { get; set; }
         // <summary>
         // Tên bảng cần sắp xếp
         // </summary>

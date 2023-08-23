@@ -84,6 +84,14 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// Id của master
         /// </summary>
         public Guid? ParentId { get; set; }
+        /// /// <summary>
+        /// Nhóm hàng hóa
+        /// </summary>  
+        public Guid ItemCategoryId { get; set; }
+        /// <summary>
+        /// Tên đơn vị tính
+        /// </summary>  
+        public Guid UnitId { get; set; }
         /// <summary>
         /// Lấy Id Entity
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MISA.NTTrungWeb05.GD2.Domain.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -92,5 +93,9 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Tên đơn vị tính
         /// </summary>  
         public string UnitName { get; set; } = string.Empty;
+        /// <summary>
+        /// Danh sách detail
+        /// </summary>  
+        public List<InventoryResponseDto>? Detail { get; set; }
     }
 }

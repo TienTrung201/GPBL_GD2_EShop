@@ -190,9 +190,13 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             {
                 throw new NotFoundException(string.Format(ErrorMessage.NotFound, id), (int)ErrorCode.NotFoundCode);
             }
+            await CustomResult(result);
             return result;
         }
-
+        public virtual async Task<TModel> CustomResult(TModel result)
+        {
+            return result;
+        }
         /// <summary>
         /// Phân trang tìm kiếm
         /// </summary>

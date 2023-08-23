@@ -3,8 +3,10 @@ using MISA.NTTrungWeb05.GD2.Application.Interface.Excel;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
 using MISA.NTTrungWeb05.GD2.Application.Service;
 using MISA.NTTrungWeb05.GD2.Domain;
+using MISA.NTTrungWeb05.GD2.Domain.Interface.Manager;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Repository;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
+using MISA.NTTrungWeb05.GD2.Domain.Service;
 using MISA.NTTrungWeb05.GD2.Infastructurce.Repository;
 using MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Excel;
 using MISA.NTTrungWeb05.GD2.Infastructurce.Repository.UnitOfWork;
@@ -46,9 +48,9 @@ builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 //
-//builder.Services.AddScoped<IEmployeeManager, EmployeeManager>();
-//builder.Services.AddScoped<IItemCategoryManager, ItemCategoryManager>();
-//builder.Services.AddScoped<IUnitManager, UnitManager>();
+builder.Services.AddScoped<IInventoryManager, InventoryManager>();
+builder.Services.AddScoped<IItemCategoryManager, ItemCategoryManager>();
+builder.Services.AddScoped<IUnitManager, UnitManager>();
 //
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IItemCategoryService, ItemCategoryService>();
