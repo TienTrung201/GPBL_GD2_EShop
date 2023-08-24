@@ -1,9 +1,15 @@
 .wrapper-filter {
+    font-weight: 100;
+    border: 1px solid #eeeeee;
     .wrapper-input {
         margin: 0;
     }
     label {
         margin-bottom: 0 !important;
+    }
+    .filter_by {
+        display: flex;
+        align-items: center;
     }
     .filter__value {
         width: calc(100% - 36px);
@@ -13,11 +19,14 @@
     .custom-combobox {
         border: none !important;
         border-radius: 0;
+        width: 36px;
         .input-text-base {
             padding-left: 12px;
             border-radius: 0 !important;
         }
-
+        li {
+            height: 30px !important;
+        }
         &:hover {
             // background-color: #fff !important;
         }
@@ -42,6 +51,7 @@
     }
     .input-text-base {
         // padding: 0;
+        height: 26px !important;
         padding-left: 0;
         border: none;
         // width: calc(100% - 36px) !important;
@@ -51,6 +61,20 @@
         }
         &:focus {
             border: none;
+        }
+    }
+}
+.filter-select {
+    .filter__value {
+        width: calc(100%);
+    }
+    .custom-combobox {
+        width: 100% !important;
+        .wrapper-select {
+            width: 100% !important;
+        }
+        button {
+            display: block;
         }
     }
 }

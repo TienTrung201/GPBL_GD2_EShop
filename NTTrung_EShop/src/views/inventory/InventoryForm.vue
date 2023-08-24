@@ -157,7 +157,10 @@ const updateProperties = () => {
             (currentItem) => currentItem.color === item.color && currentItem.colorCode === item.colorCode,
         );
         if (foundIndex === -1) {
-            properties.value.color.push(item);
+            if (item.color) {
+                properties.value.color.push(item);
+            }
+
         }
     });
     const sizeData = dataTable.value.map((data) => {
@@ -171,7 +174,9 @@ const updateProperties = () => {
             (currentItem) => currentItem.size === item.size && currentItem.sizeCode === item.sizeCode,
         );
         if (foundIndex === -1) {
-            properties.value.size.push(item);
+            if (item.size) {
+                properties.value.size.push(item);
+            }
         }
     });
 };
@@ -249,8 +254,12 @@ const updateTag = () => {
  * Description: hàm nhận sự kiện emit xóa detail và cập nhật lại thuộc tính
  */
 const deleteDetail = (index) => {
-    dataTable.value.splice(index, 1);
-    updateProperties();
+    try {
+        dataTable.value.splice(index, 1);
+        updateProperties();
+    } catch (error) {
+        console.log(error)
+    }
 };
 
 /*
@@ -339,6 +348,12 @@ const getDetail = async () => {
 const updateForm = async () => {
     const newCode = 'CODE'; // await getNewEmployeeCode();
     const data = await getDetail();
+    let isActive = 1;
+    if (data.IsActive === undefined) {
+        isActive = 1
+    } else {
+        isActive = data.IsActive ? 1 : 0
+    }
     couterChangeForm.value = 0;
     formData.value = {
         inventoryName: data.InventoryName,
@@ -348,9 +363,9 @@ const updateForm = async () => {
         unitPrice: data.UnitPrice,
         unitId: data.UnitId,
         unitName: data.UnitName,
-        discription: data.Discription,
+        description: data.Description,
         image: data.Image,
-        isActive: data.IsActive ? data.IsActive : 1,
+        isActive: isActive,
         isShowMenu: data.IsShowMenu,
     };
     dataTable.value = data.Detail

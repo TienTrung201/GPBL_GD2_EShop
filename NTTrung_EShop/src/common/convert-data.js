@@ -1,7 +1,7 @@
 // import { useResource } from '../stores/resource';
 import Enum from './enum';
 import MISAResource from './resource';
-
+const langCode = localStorage.getItem('lang') || Enum.Language.VN;
 /**
  * @param {string} str
  * Author: ntTrung (06/07/2023)
@@ -112,6 +112,30 @@ export const convertCurrency = (currency) => {
     }
 };
 /**
+ * @param {string} value
+ * Author: Tiến Trung (24/08/2023)
+ * Description: hàm chuyển định dạng data thành có không
+ */
+export function convertShow(value) {
+    if (value) {
+        return MISAResource[langCode]?.Table?.Filter?.Yes;
+    } else {
+        return MISAResource[langCode]?.Table?.Filter?.No;
+    }
+}
+/**
+ * @param {string} value
+ * Author: Tiến Trung (24/08/2023)
+ * Description: hàm chuyển định dạng data
+ */
+export function convertBusiness(value) {
+    if (value) {
+        return MISAResource[langCode]?.Table?.Filter?.Business;
+    } else {
+        return MISAResource[langCode]?.Table?.Filter?.StopBusiness;
+    }
+}
+/**
  * @param {string} arr
  * Author: ntTrung (09/07/2023)
  * Description: Hàm chuyển chữ tiếng việt có dấu thành k dấu
@@ -122,14 +146,24 @@ export const convertDataTable = (arr, columnsTable, langCode) => {
             const convertData = { ...data };
             columnsTable.forEach((column) => {
                 const value = convertData[column.key];
-                if (column.type === Enum.TypeDataTable.Gender) {
-                    convertData[column.key] = convertGender(value, langCode);
-                }
-                if (column.type === Enum.TypeDataTable.Date) {
-                    convertData[column.key] = convertDate(value);
-                }
-                if (column.type === Enum.TypeDataTable.Money) {
-                    convertData[column.key] = convertCurrency(value);
+                switch (column.type) {
+                    case Enum.TypeDataTable.Gender:
+                        convertData[column.key] = convertGender(value, langCode);
+                        break;
+                    case Enum.TypeDataTable.Date:
+                        convertData[column.key] = convertDate(value);
+                        break;
+                    case Enum.TypeDataTable.Money:
+                        convertData[column.key] = convertCurrency(value);
+                        break;
+                    case Enum.TypeDataTable.Show:
+                        convertData[column.key] = convertShow(value);
+                        break;
+                    case Enum.TypeDataTable.Business:
+                        convertData[column.key] = convertBusiness(value, langCode);
+                        break;
+                    default:
+                        break;
                 }
             });
             return convertData;

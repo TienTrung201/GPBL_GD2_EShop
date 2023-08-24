@@ -148,11 +148,11 @@ const handleRemoveTag = (index) => {
 watch(
     () => props.properties,
     () => {
-        listTag.value = props.properties;
+        listTag.value = props.properties
     },
 );
 onMounted(() => {
-    listTag.value = props.properties;
+    listTag.value = props.properties
 });
 </script>
 <style lang="scss">

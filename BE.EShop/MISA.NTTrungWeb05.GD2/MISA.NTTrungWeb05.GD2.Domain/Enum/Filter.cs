@@ -32,6 +32,8 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         Greater = 5,
         [Description("Smaller")]
         Smaller = 6,
+        [Description("All")]
+        AllData =7
     }
     public enum RelationType
     {

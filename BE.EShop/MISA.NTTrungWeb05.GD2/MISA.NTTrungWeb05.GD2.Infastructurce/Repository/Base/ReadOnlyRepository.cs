@@ -83,6 +83,9 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                         case Operator.Greater:
                             query.Append($"view.{filter.Property} > '{filter.Value}' ");
                             break;
+                        case Operator.AllData:
+                            query.Append($"view.{filter.Property} = true or view.{filter.Property} = false ");
+                            break;
                         default:
                             break;
                     }
