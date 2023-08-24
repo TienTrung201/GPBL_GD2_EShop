@@ -1,7 +1,6 @@
 <script setup>
 import MISATable from '../../components/base/table/MISATable.vue';
 import MISASettingTable from '../../components/base/table/MISASettingTable.vue';
-import InventoryForm from './InventoryForm.vue';
 import { convertDataTable, deepCopy } from '@/common/convert-data.js';
 import { computed, ref, watch, onMounted, onUnmounted, onUpdated } from 'vue';
 import { useModalForm } from '../../stores/modalform';
@@ -29,7 +28,7 @@ const toast = useToast();
 const inventory = useInventory();
 const resource = useResource();
 const { objectData } = storeToRefs(dialog);
-const { isShow, method, object } = storeToRefs(modalForm);
+const { method, object } = storeToRefs(modalForm);
 const showSettingTable = ref(false);
 const columnsTable = ref();
 // const isImportExcel = ref(false);
@@ -42,17 +41,21 @@ const filter = ref({});
  */
 const getData = async (filterObject) => {
     try {
+        if (route.query?.page === undefined) {
+            router.push({ query: { page: 1 } })
+            return
+        }
         skeleton.value = true;
-        baseApi.path = Enum.Router.Inventory.Api
-        baseApi.method = Enum.ApiMethod.POST;
         const filterData = {
             pageSize: paging.value.pageSize,
             currentPage: paging.value.currentPage,
-            // search: searchData.value,
             ...filterObject,
         };
-        baseApi.data = filterData;
         filter.value = filterObject;
+
+        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.method = Enum.ApiMethod.POST
+        baseApi.data = filterData;
         const response = await baseApi.request('filter');
         console.log(response);
 
@@ -81,33 +84,19 @@ const getData = async (filterObject) => {
 //  * Author: Tiến Trung (12/07/2023)
 //  * Description: Hàm nhận emit filter data
 //  */
-const filterData = (filterObject, isDeleteAll) => {
+const filterData = (filterObject) => {
     dataTable.value = [];
     //Nếu ở trang khác 1 thì getdata về trang 1
     if (paging.value.currentPage === 1) {
         getData(filterObject);
     } else {
         //Nếu xóa hết filter thì không filter nữa
-        if (isDeleteAll) {
-            filter.value = {};
-        } else {
-            filter.value = { ...filter.value, ...filterObject };
-        }
+        filter.value = { ...filter.value, ...filterObject };
         router.push({
             path: Enum.Router.Inventory.Path,
             query: { page: 1 },
         });
     }
-};
-// /**
-//  * Author: Tiến Trung (12/07/2023)
-//  * Description: Hàm nhận emit Search filter
-//  */
-const handleSearchData = () => {
-    router.push({
-        path: Enum.Router.Inventory.Path,
-        query: { page: 1, search: searchData.value || undefined },
-    });
 };
 // /**
 //  * Author: Tiến Trung (11/07/2023)
@@ -121,7 +110,7 @@ const setPageSize = (pageSize) => {
         getData(filter.value);
     } else {
         router.push({
-            path: Enum.Router.Inventory.path,
+            path: Enum.Router.Inventory.Path,
             query: { page: 1 },
         });
     }
@@ -363,7 +352,7 @@ const deleteDataSelected = async () => {
     if (listIds.split(',').length === dataTable.value.length && paging.value.currentPage === paging.value.totalPage) {
         dataTable.value = [];
         router.push({
-            path: Enum.Router.Inventory.path,
+            path: Enum.Router.Inventory.Path,
             query: { page: paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1 },
         });
     } else {
@@ -648,6 +637,7 @@ onUnmounted(() => {
     window.removeEventListener('keydown', onKeyDownDelete);
     window.removeEventListener('click', closeMenuExport);
 });
+
 </script>
 <template lang="">
     <div class="tt-continer__body">
@@ -694,6 +684,7 @@ onUnmounted(() => {
                         </template>
                     </MISAButton>
                     <MISAButton
+                        @click="reset"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Reset"
                     >

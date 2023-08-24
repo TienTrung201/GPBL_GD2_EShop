@@ -34,8 +34,20 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
             {
                 throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, newCode), (int)ErrorCode.DuplicateCode);
             }
+        }/// <summary>
+         /// Kiểm tra mã trùng
+         /// </summary>
+         /// <param name="newCode">Mã mới</param>
+         /// <param name="oldCode">Mã cũ</param>
+         /// CreatedBy: NTTrung (24/08/2023)
+        public async Task CheckDublicateBarcode(string newCode, string? oldCode)
+        {
+            var entity = await _inventoryRepository.GetByBarcodeAsync(newCode);
+            if (entity != null && entity.BarCode != oldCode)
+            {
+                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, newCode), (int)ErrorCode.DuplicateCode);
+            }
         }
-
         /// <summary>
         /// Kiểm tra có tồn tại không
         /// </summary>

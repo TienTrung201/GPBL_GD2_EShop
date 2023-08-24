@@ -9,6 +9,13 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Manager
     public interface IInventoryManager
     {
         /// <summary>
+        /// Kiểm tra mã vạch trùng
+        /// </summary>
+        /// <param name="newCode">Mã mới</param>
+        /// <param name="oldCode">Mã cũ</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        Task CheckDublicateBarcode(string newCode, string? oldCode);
+        /// <summary>
         /// Kiểm tra có tồn tại không
         /// </summary>
         /// <paran name="id">Định danh</paran>

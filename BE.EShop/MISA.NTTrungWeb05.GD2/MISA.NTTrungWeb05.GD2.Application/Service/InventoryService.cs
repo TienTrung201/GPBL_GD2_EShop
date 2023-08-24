@@ -49,7 +49,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // validate nghiệp vụ
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(createDto.SKUCode, null);
-
+            // Kiểm tra trùng mã vạch
+            await _inventoryManager.CheckDublicateBarcode(createDto.BarCode, null);
             //// Kiểm tra UnitId và ItemCategory có hợp lệ không
             await _itemCategoryManager.CheckExistAsync(createDto.ItemCategoryId);
             await _unitManager.CheckExistAsync(createDto.UnitId);
@@ -73,6 +74,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
 
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(updateDto.SKUCode, entity.SKUCode);
+            // Kiểm tra trùng mã vạch
+            await _inventoryManager.CheckDublicateBarcode(updateDto.BarCode, entity.BarCode);
             // Kiểm tra PositionId và DepartmentId có hợp lệ không
             await _itemCategoryManager.CheckExistAsync(updateDto.ItemCategoryId);
             await _unitManager.CheckExistAsync(updateDto.UnitId);

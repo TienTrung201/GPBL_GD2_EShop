@@ -12,6 +12,13 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Repository
     public interface IInventoryRepository : ICodeRepository<Inventory, InventoryModel>
     {
         /// <summary>
+        /// Tìm data bằng mã vạch 
+        /// </summary>
+        /// <paran name="entity">Code</paran>
+        /// <returns>Đối tượng</returns>
+        /// CreatedBy: NTTrung (14/07/2023)
+        Task<Inventory?> GetByBarcodeAsync(string barcode);
+        /// <summary>
         /// Thêm nhiều
         /// </summary>
         /// <paran name="entity">Danh sách bản ghi thêm</paran>

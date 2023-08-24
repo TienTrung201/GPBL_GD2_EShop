@@ -75,7 +75,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                             query.Append($"view.{filter.Property} Like '%{filter.Value}%' ");
                             break;
                         case Operator.NotContain:
-                            query.Append($"view.{filter.Property} NotLike '%{filter.Value}%' ");
+                            query.Append($"view.{filter.Property} Not Like '%{filter.Value}%' ");
                             break;
                         case Operator.Smaller:
                             query.Append($"view.{filter.Property} < '{filter.Value}' ");

@@ -20,6 +20,27 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         public InventoryRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
+        /// <summary>
+        /// Tìm data bằng mã vạch 
+        /// </summary>
+        /// <paran name="entity">Code</paran>
+        /// <returns>Đối tượng</returns>
+        /// CreatedBy: NTTrung (14/07/2023)
+        public async Task<Inventory?> GetByBarcodeAsync(string barcode)
+        {
+            var storedProcedureName = $"Proc_{TableName}_GetByBarcode";
+            var param = new DynamicParameters();
+            param.Add($"@Barcode", barcode);
+            var result = await _uow.Connection.QueryFirstOrDefaultAsync<Inventory>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
+
+            return result;
+        }
+        /// <summary>
+        /// Hàm custtom kết quả cho master
+        /// </summary>
+        /// <paran name="entity">master</paran>
+        /// <returns>Hàng hóa đã có detail</returns>
+        /// CreatedBy: NTTrung (24/08/2023)
         public override async Task<InventoryModel> CustomResult(InventoryModel inventory)
         {
             var storedProcedureName = $"Proc_{TableName}_GetDetail";
@@ -35,7 +56,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// </summary>
         /// <paran name="entity">Danh sách bản ghi thêm</paran>
         /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
+        /// CreatedBy: NTTrung (24/08/2023)
         public async Task<int> InsertMultipleAsync(List<Inventory> listInventories, Guid? parentId)
         {
             var storedProcedureName = $"Proc_Excute";

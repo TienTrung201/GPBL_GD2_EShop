@@ -90,33 +90,11 @@ const filter = ref({
     Filter: [],
 });
 /**
- * Author: Tiến Trung (2/07/2023)
- * Description: computed chứa các trường đã được chọn để lọc
- */
-const listKeyFilter = computed(() => {
-    const listKey = props.columns.map((column) => {
-        return column.key;
-    });
-    const keysSelect = Object.keys(filter.value);
-
-    const listKeyFilterSelect = listKey.filter((key) => {
-        return keysSelect.find((keySelect) => {
-            return (
-                keySelect === key &&
-                filter.value[keySelect] !== null &&
-                filter.value[keySelect] !== undefined &&
-                filter.value[keySelect] !== ''
-            );
-        });
-    });
-    return listKeyFilterSelect;
-});
-
-/**
  * Author: Tiến Trung (06/07/2023)
  * Description: Hàm lọc
  */
 const emitFilterData = (filterObject) => {
+    //Nếu đang có giá trị để filter thì thêm vào
     if (filterObject.isFilter) {
         var currentFilter = filter.value.Filter.findIndex(filter => filter.property === filterObject.property)
         if (currentFilter != -1) {
@@ -124,31 +102,11 @@ const emitFilterData = (filterObject) => {
         } else {
             filter.value.Filter.push(filterObject);
         }
-
+        //Nếu không có thì xóa filter cũ đi
     } else {
         filter.value.Filter = filter.value.Filter.filter(filter => filter.property != filterObject.property)
     }
     emit('filter-data', filter.value);
-};
-/**
- * Author: Tiến Trung (06/07/2023)
- * Description: Hàm xóa lựa chọn lọc
- */
-const deleteFilter = (keyFilter) => {
-    filter.value[keyFilter] = null;
-    filter.value[keyFilter + 'FilterBy'] = null;
-    emit('filter-data', filter.value);
-};
-/**
- * Author: Tiến Trung (06/07/2023)
- * Description: Hàm tất cả lọc
- */
-const deleteAllFilter = () => {
-    filter.value = {
-        propertySort: filter.value.propertySort,
-        sortBy: filter.value.sortBy,
-    };
-    emit('filter-data', filter.value, true);
 };
 /**
  * Author: Tiến Trung (06/07/2023)
@@ -440,19 +398,6 @@ watch(
 defineExpose({ closeMenu });
 </script>
 <template lang="">
-    <div>
-        <div class="list-item-select">
-            <template v-for="(item, index) in listKeyFilter" :key="index">
-                <MISAFilterSelected
-                    @delete-filter="deleteFilter"
-                    :keySelected="item"
-                    :value="filter[item]"
-                    :filterBy="filter[item + 'FilterBy']"
-                ></MISAFilterSelected>
-            </template>
-            <span v-if="listKeyFilter.length > 0" @click="deleteAllFilter" class="center delete-all">Xóa tất cả</span>
-        </div>
-    </div>
     <div class="wrapper-table">
         <table ref="table" class="table">
             <thead class="table-header">
@@ -511,7 +456,6 @@ defineExpose({ closeMenu });
                                 <div class="th__filter">
                                     <div class="th__filter-type">
                                         <MISAFilter
-                                            :listKeyFilterSelected="listKeyFilter"
                                             :filterBy="filterBy"
                                             :filterValue="filterValue"
                                             :filterType="item.type"
@@ -641,7 +585,6 @@ defineExpose({ closeMenu });
                                     path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage === 1 ? currentPage : currentPage - 1,
-                                        search: searchData || undefined,
                                     },
                                 }"
                                 class="pagination-link"
@@ -654,7 +597,6 @@ defineExpose({ closeMenu });
                                     path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage === 1 || currentPage === 2 ? currentPage : currentPage - 2,
-                                        search: searchData || undefined,
                                     },
                                 }"
                                 :class="{ 'no-select': currentPage === 1 || currentPage === 2 }"
@@ -683,7 +625,6 @@ defineExpose({ closeMenu });
                                     path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage >= totalPage - 1 ? currentPage : currentPage + 2,
-                                        search: searchData || undefined,
                                     },
                                 }"
                                 :class="{ 'no-select': currentPage >= totalPage - 1 }"
@@ -697,7 +638,6 @@ defineExpose({ closeMenu });
                                     path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage === totalPage ? currentPage : currentPage + 1,
-                                        search: searchData || undefined,
                                     },
                                 }"
                                 :class="{ 'no-select': currentPage === totalPage }"
@@ -712,7 +652,7 @@ defineExpose({ closeMenu });
                     <MISADropdown v-model:value="pageSize" selectEmpty :options="pageSizeOption"></MISADropdown>
                 </p>
             </div>
-            <p class="table-total">
+            <p v-if="dataTable.length>0" class="table-total">
                 {{ pagination }}
             </p>
         </div>

@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia';
 import Enum from '../common/enum';
 import router from '../router';
-import { useTitleHeader } from './title-header';
-import MISAResource from '../common/resource';
-const langCode = localStorage.getItem('lang') || Enum.Language.VN;
 export const useInventory = defineStore('inventory', {
     state: () => ({
         uid: '',

@@ -7,6 +7,7 @@ import MISAResource from '../../common/resource';
 import { useInventory } from '../../stores/inventory';
 import { useTitleHeader } from '../../stores/title-header';
 import MISATableDetail from '../../components/base/table/MISATableDetail.vue';
+import baseApi from '../../api/base-api';
 
 const dialog = useDialog();
 const inventory = useInventory();
@@ -135,7 +136,6 @@ const data = [
         UnitPrice: 300000,
     },
 ];
-dataTable.value = data;
 const genDataTable = ref([]);
 /*
  **
@@ -175,7 +175,40 @@ const updateProperties = () => {
         }
     });
 };
-updateProperties();
+
+/*
+ **
+ * Author: Tiến Trung (19/08/2023)
+ * Description: hàm thêm data vào bảng tự động tạo bảng detail
+ */
+const pushDataTable = (color, size) => {
+    const sizeDetail = size ? size.size : '';
+    const colorDetail = color ? color.color : '';
+    const sizeCodeDetail = size ? size.sizeCode : '';
+    const colorCodeDetail = color ? color.colorCode : '';
+    let nameDetail = 'name';
+    if (sizeDetail && colorDetail) {
+        nameDetail = `${nameDetail} (${colorDetail}/${sizeDetail})`;
+    }
+    if (colorDetail && sizeDetail === '') {
+        nameDetail = `${nameDetail} (${colorDetail})`;
+    }
+    if (sizeDetail && colorDetail === '') {
+        nameDetail = `${nameDetail} (${sizeDetail})`;
+    }
+    genDataTable.value.push({
+        InventoryName: nameDetail,
+        UnitName: 'Chai',
+        SKUCode: `${formData.value.SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${sizeCodeDetail ? '-' + sizeCodeDetail : ''}`,
+        Color: colorDetail,
+        ColorCode: colorCodeDetail,
+        Size: sizeDetail,
+        SizeCode: sizeCodeDetail,
+        Barcode: 'test',
+        CostPrice: '',
+        UnitPrice: '',
+    });
+};
 /*
  **
  * Author: Tiến Trung (19/08/2023)
@@ -219,39 +252,7 @@ const deleteDetail = (index) => {
     dataTable.value.splice(index, 1);
     updateProperties();
 };
-/*
- **
- * Author: Tiến Trung (19/08/2023)
- * Description: hàm thêm data vào bảng tự động tạo bảng detail
- */
-const pushDataTable = (color, size) => {
-    const sizeDetail = size ? size.size : '';
-    const colorDetail = color ? color.color : '';
-    const sizeCodeDetail = size ? size.sizeCode : '';
-    const colorCodeDetail = color ? color.colorCode : '';
-    let nameDetail = 'name';
-    if (sizeDetail && colorDetail) {
-        nameDetail = `${nameDetail} (${colorDetail}/${sizeDetail})`;
-    }
-    if (colorDetail && sizeDetail === '') {
-        nameDetail = `${nameDetail} (${colorDetail})`;
-    }
-    if (sizeDetail && colorDetail === '') {
-        nameDetail = `${nameDetail} (${sizeDetail})`;
-    }
-    genDataTable.value.push({
-        InventoryName: nameDetail,
-        UnitName: 'Chai',
-        SKUCode: `${formData.value.SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${sizeCodeDetail ? '-' + sizeCodeDetail : ''}`,
-        Color: colorDetail,
-        ColorCode: colorCodeDetail,
-        Size: sizeDetail,
-        SizeCode: sizeCodeDetail,
-        Barcode: 'test',
-        CostPrice: '',
-        UnitPrice: '',
-    });
-};
+
 /*
  **
  * Author: Tiến Trung (19/08/2023)
@@ -320,27 +321,40 @@ function closeForm() {
 //         console.log(error);
 //     }
 // };
+const getDetail = async () => {
+    if (inventory.editMode === Enum.EditMode.Update) {
+        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.method = Enum.ApiMethod.GET
+        const response = await baseApi.request(inventory.uid);
+        console.log(response)
+        return response.data
+    } else {
+        return {}
+    }
+}
 /**
  * Author: Tiến Trung (05/07/2023)
  * Description: Hàm update form nếu form mới thì call api lấy newCode
  */
 const updateForm = async () => {
     const newCode = 'CODE'; // await getNewEmployeeCode();
-    const data = {}; //await getEmployee();
-
+    const data = await getDetail();
     couterChangeForm.value = 0;
     formData.value = {
         inventoryName: data.InventoryName,
         itemCategoryId: data.ItemCategoryId,
-        SKUCode: newCode,
+        SKUCode: data.SKUCode,
         costPrice: data.CostPrice,
         unitPrice: data.UnitPrice,
         unitId: data.UnitId,
+        unitName: data.UnitName,
         discription: data.Discription,
         image: data.Image,
         isActive: data.IsActive ? data.IsActive : 1,
         isShowMenu: data.IsShowMenu,
     };
+    dataTable.value = data.Detail
+    updateProperties();
     iInventoryName.value.autoFocus();
 };
 /**

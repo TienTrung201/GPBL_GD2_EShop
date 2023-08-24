@@ -1,5 +1,5 @@
 <template>
-    <div @keydown="handleKeyDown" @mousedown.stop :style="{
+    <div @mousedown.stop :style="{
         left: props.positionMenuFilter?.left + 'px',
         top: props.positionMenuFilter?.bottom + 'px',
     }" class="wrapper-filter">
@@ -12,7 +12,8 @@
                 v-if="props.filterType === Enum.TypeDataTable.Gender"></MISADropdown>
             <MISADatePicker :dateTime="filterDateSelect" v-model="filterDateSelect" posiiton="top"
                 v-if="props.filterType === Enum.TypeDataTable.Date"></MISADatePicker>
-            <MISAInput @blur="handleFilter" :maxLength="50" ref="iInput" v-model:value="filterSearch"
+            <MISAInput @enter="handleFilterData" @blur="handleFilterData" :maxLength="50" ref="iInput"
+                v-model:value="filterSearch"
                 v-if="props.filterType === Enum.TypeDataTable.Default || props.filterType === Enum.TypeDataTable.Money">
             </MISAInput>
         </div>
@@ -23,7 +24,6 @@ import { ref, onMounted, watch } from 'vue';
 import Enum from '../../../common/enum';
 import MISAResource from '../../../common/resource';
 import { useResource } from '../../../stores/resource.js';
-import { convertDateForBE } from '../../../common/convert-data';
 const resource = useResource();
 const emit = defineEmits(['filter-data', 'close-menu']);
 const props = defineProps({
@@ -42,6 +42,7 @@ const props = defineProps({
     //Danh sách khóa đã được lọc
     listKeyFilterSelected: Array,
 });
+const inputSearchOld = ref('')
 const iInput = ref(null);
 const buttonFilter = ref(null);
 const filterByOption = ref([
@@ -82,68 +83,19 @@ const filterBySelected = ref(Enum.FilterBy.Contain);
 const filterSearch = ref('');
 
 /**
- * Author: Tiến Trung (2/07/2023)
- * Description: hàm hủy tiêu chí lọc
- */
-const emitUnFilter = () => {
-    //Do Gender có giá trị 0 nên phải tách ra
-    //0 thì là false
-    if (
-        props.filterValue >= 0 &&
-        props.filterValue !== null &&
-        props.filterValue <= 2 &&
-        props.filterType === Enum.TypeDataTable.Gender
-    ) {
-        emit('filter-data', {
-            property: props.keyName,
-            isFilter: false
-        });
-    } else if (props.filterValue) {
-        emit('filter-data', {
-            property: props.keyName,
-            isFilter: false
-        });
-        //Nếu không có gì thay đổi chỉ close menu thôi không lọc
-    } else {
-        emit('close-menu');
-    }
-};
-/**
  * Author: Tiến Trung (2/08/2023)
  * Description: hàm gửi tiêu chí lọc
  */
-const emitFilter = () => {
-    let value = '';
-    //Thiết lập giá trị theo từng loại lọc
-    switch (props.filterType) {
-        case Enum.TypeDataTable.Gender:
-            value = Number(filterGenderSelected.value);
-            break;
-        case Enum.TypeDataTable.Date:
-            value = convertDateForBE(filterDateSelect.value);
-            break;
-        default:
-            value = filterSearch.value;
-            break;
-    }
+const emitFilter = (value) => {
     //Giới tính có giá trị 0 nên tách ra
-    if (props.filterType === Enum.TypeDataTable.Gender) {
-        emit('filter-data', {
-            property: props.keyName,
-            ['value']: value,
-            operator: filterBySelected.value,
-            isFilter: true
-        });
-    } else if (value !== null && value !== undefined && value.trim().length > 0) {
-        emit('filter-data', {
-            property: props.keyName,
-            ['value']: value,
-            operator: filterBySelected.value,
-            isFilter: true
-        });
-    } else {
-        emitUnFilter();
-    }
+    const isFilter = value.length === 0 ? false : true
+    emit('filter-data', {
+        property: props.keyName,
+        ['value']: value,
+        operator: filterBySelected.value,
+        isFilter: isFilter
+    });
+
 };
 /**
  * Author: Tiến Trung (02/08/2023)
@@ -239,39 +191,19 @@ onMounted(() => {
     }
 });
 /**
- * Author: Tiến Trung (02/08/2023)
- * Description: hàm click vào button filter
+ * Author: Tiến Trung (24/08/2023)
+ * Description: hàm khi input blur thì filter
  */
-const handleFilter = (isFilter) => {
-    try {
-        if (isFilter) {
-            emitFilter();
-        } else {
-            emitUnFilter();
-        }
-    } catch (error) {
-        console.log(error);
+const handleFilterData = (value) => {
+    if (value !== inputSearchOld.value) {
+        inputSearchOld.value = value
+        emitFilter(value);
     }
-};
-/**
- * Author: Tiến Trung (2/08/2023)
- * Description: hàm khi sử dụng phím để lọc và không lọc
- */
-const handleKeyDown = (e) => {
-    try {
-        if (e.keyCode === Enum.Keyboard.ESC) {
-            emit('close-menu');
-        }
-        if (e.keyCode === Enum.Keyboard.Enter) {
-            // e.preventDefault();
-            buttonFilter.value.$emit('click');
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
+}
 watch(() => filterBySelected.value, () => {
-    handleFilter(true)
+    if (inputSearchOld.value.trim('').length !== 0) {
+        emitFilter(inputSearchOld.value);
+    }
 })
 </script>
 <style lang="scss">

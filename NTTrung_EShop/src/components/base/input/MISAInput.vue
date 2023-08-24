@@ -20,6 +20,7 @@
                 :value="value"
                 @input="handleChangeInput"
                 @blur="onBlur"
+                @keydown.enter="onEnter"
                 :title="tooltip"
             />
             <span v-if="props.isSuccess">
@@ -37,7 +38,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 
-const emit = defineEmits(['update:value', 'input-validation', 'blur']);
+const emit = defineEmits(['update:value', 'input-validation', 'blur', 'enter']);
 const props = defineProps({
     name: { String, default: () => 'name' }, //name input
     isSuccess: { Boolean, default: () => null },
@@ -74,6 +75,9 @@ const onBlur = (e) => {
         console.log(error);
     }
 };
+const onEnter = (e) => {
+    emit('enter', e.target.value);
+}
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm để binding Input
