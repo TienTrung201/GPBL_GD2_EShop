@@ -50,28 +50,29 @@ const Enum = {
     },
     Router: {
         Employee: {
-            name: 'employee',
-            path: '/employee',
+            Name: 'employee',
+            Path: '/employee',
         },
         Position: {
-            name: 'position',
-            path: '/position',
+            Name: 'position',
+            Path: '/position',
         },
         Department: {
-            name: 'department',
-            path: '/department',
+            Name: 'department',
+            Path: '/department',
         },
         Home: {
-            name: 'home',
-            path: '/',
+            Name: 'home',
+            Path: '/',
         },
         Inventory: {
-            name: 'inventory',
-            path: '/inventory',
+            Name: 'inventory',
+            Path: '/inventory',
+            Api: '/inventories',
         },
         InventoryForm: {
-            name: 'inventory-form',
-            path: '/inventory-form',
+            Name: 'inventory-form',
+            Path: '/inventory-form',
         },
     },
     ErorCode: {
@@ -102,8 +103,8 @@ const Enum = {
         Left: 'left',
     },
     Sort: {
-        Desc: 'desc',
-        Asc: 'asc',
+        Desc: 1,
+        Asc: 2,
     },
     FilterBy: {
         Equal: 1,

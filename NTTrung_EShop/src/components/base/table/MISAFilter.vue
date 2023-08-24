@@ -1,41 +1,25 @@
 <template>
-    <div
-        @keydown="handleKeyDown"
-        @mousedown.stop
-        :style="{
-            left: props.positionMenuFilter?.left + 'px',
-            top: props.positionMenuFilter?.bottom + 'px',
-        }"
-        class="wrapper-filter"
-    >
+    <div @keydown="handleKeyDown" @mousedown.stop :style="{
+        left: props.positionMenuFilter?.left + 'px',
+        top: props.positionMenuFilter?.bottom + 'px',
+    }" class="wrapper-filter">
         <div class="filter__by">
             <MISASelectFilter v-model:value="filterBySelected" selectEmpty :options="filterByOption"></MISASelectFilter>
         </div>
         <div class="filter__value">
             <!-- :placeholder="MISAResource[resource.langCode]?.Table?.Filter?.ValueFilter" -->
-            <MISADropdown
-                selectEmpty
-                :options="genderSelect"
-                v-model:value="filterGenderSelected"
-                v-if="props.filterType === Enum.TypeDataTable.Gender"
-            ></MISADropdown>
-            <MISADatePicker
-                :dateTime="filterDateSelect"
-                v-model="filterDateSelect"
-                posiiton="top"
-                v-if="props.filterType === Enum.TypeDataTable.Date"
-            ></MISADatePicker>
-            <MISAInput
-                :maxLength="50"
-                ref="iInput"
-                v-model:value="filterSearch"
-                v-if="props.filterType === Enum.TypeDataTable.Default"
-            ></MISAInput>
+            <MISADropdown selectEmpty :options="genderSelect" v-model:value="filterGenderSelected"
+                v-if="props.filterType === Enum.TypeDataTable.Gender"></MISADropdown>
+            <MISADatePicker :dateTime="filterDateSelect" v-model="filterDateSelect" posiiton="top"
+                v-if="props.filterType === Enum.TypeDataTable.Date"></MISADatePicker>
+            <MISAInput @blur="handleFilter" :maxLength="50" ref="iInput" v-model:value="filterSearch"
+                v-if="props.filterType === Enum.TypeDataTable.Default || props.filterType === Enum.TypeDataTable.Money">
+            </MISAInput>
         </div>
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Enum from '../../../common/enum';
 import MISAResource from '../../../common/resource';
 import { useResource } from '../../../stores/resource.js';
@@ -59,7 +43,6 @@ const props = defineProps({
     listKeyFilterSelected: Array,
 });
 const iInput = ref(null);
-const buttonUnFilter = ref(null);
 const buttonFilter = ref(null);
 const filterByOption = ref([
     {
@@ -112,13 +95,13 @@ const emitUnFilter = () => {
         props.filterType === Enum.TypeDataTable.Gender
     ) {
         emit('filter-data', {
-            [props.keyName + 'FilterBy']: null,
-            [props.keyName]: null,
+            property: props.keyName,
+            isFilter: false
         });
     } else if (props.filterValue) {
         emit('filter-data', {
-            [props.keyName + 'FilterBy']: null,
-            [props.keyName]: null,
+            property: props.keyName,
+            isFilter: false
         });
         //Nếu không có gì thay đổi chỉ close menu thôi không lọc
     } else {
@@ -146,13 +129,17 @@ const emitFilter = () => {
     //Giới tính có giá trị 0 nên tách ra
     if (props.filterType === Enum.TypeDataTable.Gender) {
         emit('filter-data', {
-            [props.keyName + 'FilterBy']: filterBySelected.value,
-            [props.keyName]: value,
+            property: props.keyName,
+            ['value']: value,
+            operator: filterBySelected.value,
+            isFilter: true
         });
     } else if (value !== null && value !== undefined && value.trim().length > 0) {
         emit('filter-data', {
-            [props.keyName + 'FilterBy']: filterBySelected.value,
-            [props.keyName]: value,
+            property: props.keyName,
+            ['value']: value,
+            operator: filterBySelected.value,
+            isFilter: true
         });
     } else {
         emitUnFilter();
@@ -208,6 +195,39 @@ onMounted(() => {
                 filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Equal;
                 filterDateSelect.value = newDate;
                 break;
+            case Enum.TypeDataTable.Money:
+                filterByOption.value = [
+                    {
+                        option: MISAResource[resource.langCode]?.Table?.Filter?.Contain,
+                        value: Enum.FilterBy.Contain,
+                    },
+                    {
+                        option: MISAResource[resource.langCode]?.Table?.Filter?.NotContain,
+                        value: Enum.FilterBy.NotContain,
+                    },
+                    {
+                        option: MISAResource[resource.langCode]?.Table?.Filter?.Equal,
+                        value: Enum.FilterBy.Equal,
+                    },
+                    {
+                        option: MISAResource[resource.langCode]?.Table?.Filter?.NotEqual,
+                        value: Enum.FilterBy.NotEqual,
+                    },
+                    {
+                        option: MISAResource[resource.langCode]?.Table?.Filter?.Greater,
+                        value: Enum.FilterBy.Greater,
+                    },
+                    {
+                        option: MISAResource[resource.langCode]?.Table?.Filter?.Smaller,
+                        value: Enum.FilterBy.Smaller,
+                    },
+
+
+                ];
+                filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Contain;
+                filterSearch.value = props.filterValue ? props.filterValue : '';
+                break;
+
             default:
                 filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Contain;
                 filterSearch.value = props.filterValue ? props.filterValue : '';
@@ -222,7 +242,7 @@ onMounted(() => {
  * Author: Tiến Trung (02/08/2023)
  * Description: hàm click vào button filter
  */
-const handleClickFilter = (isFilter) => {
+const handleFilter = (isFilter) => {
     try {
         if (isFilter) {
             emitFilter();
@@ -250,6 +270,9 @@ const handleKeyDown = (e) => {
         console.log(error);
     }
 };
+watch(() => filterBySelected.value, () => {
+    handleFilter(true)
+})
 </script>
 <style lang="scss">
 @import './filter-table.scss';

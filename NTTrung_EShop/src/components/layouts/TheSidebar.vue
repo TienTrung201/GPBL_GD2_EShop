@@ -4,8 +4,8 @@
         <nav>
             <ul class="menuBar">
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Home.name)"
-                    :class="{ active: pathName === '' || pathName === Enum.Router.Home.name }"
+                    @click="handleNavigateToPage(Enum.Router.Home.Name)"
+                    :class="{ active: pathName === '' || pathName === Enum.Router.Home.Name }"
                     class="menuBar__item"
                 >
                     <a class="menuBar__item-link" to="/">
@@ -18,11 +18,11 @@
                     <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Home }}</p>
                 </li>
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Inventory.name)"
-                    :class="{ active: pathName === Enum.Router.Inventory.name }"
+                    @click="handleNavigateToPage(Enum.Router.Inventory.Name)"
+                    :class="{ active: pathName === Enum.Router.Inventory.Name }"
                     class="menuBar__item"
                 >
-                    <a class="menuBar__item-link" :to="Enum.Router.Inventory.path">
+                    <a class="menuBar__item-link" :to="Enum.Router.Inventory.Path">
                         <p class="menuBar__icon center">
                             <MISAIcon icon="product"></MISAIcon>
                         </p>
@@ -32,11 +32,11 @@
                     <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Inventory }}</p>
                 </li>
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Department.name)"
-                    :class="{ active: pathName === Enum.Router.Department.name }"
+                    @click="handleNavigateToPage(Enum.Router.Department.Name)"
+                    :class="{ active: pathName === Enum.Router.Department.Name }"
                     class="menuBar__item"
                 >
-                    <a class="menuBar__item-link" :to="Enum.Router.Department.path">
+                    <a class="menuBar__item-link" :to="Enum.Router.Department.Path">
                         <p class="menuBar__icon center">
                             <MISAIcon icon="product"></MISAIcon>
                         </p>
@@ -47,11 +47,11 @@
                 </li>
 
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Employee.name)"
-                    :class="{ active: pathName === Enum.Router.Employee.name }"
+                    @click="handleNavigateToPage(Enum.Router.Employee.Name)"
+                    :class="{ active: pathName === Enum.Router.Employee.Name }"
                     class="menuBar__item"
                 >
-                    <a class="menuBar__item-link" :to="Enum.Router.Employee.path">
+                    <a class="menuBar__item-link" :to="Enum.Router.Employee.Path">
                         <p class="menuBar__icon center">
                             <MISAIcon icon="profile"></MISAIcon>
                         </p>
@@ -63,11 +63,11 @@
                 </li>
 
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Position.name)"
-                    :class="{ active: pathName === Enum.Router.Position.name }"
+                    @click="handleNavigateToPage(Enum.Router.Position.Name)"
+                    :class="{ active: pathName === Enum.Router.Position.Name }"
                     class="menuBar__item"
                 >
-                    <a class="menuBar__item-link" :to="Enum.Router.Position.path">
+                    <a class="menuBar__item-link" :to="Enum.Router.Position.Path">
                         <p class="menuBar__icon center">
                             <MISAIcon icon="position"></MISAIcon>
                         </p>

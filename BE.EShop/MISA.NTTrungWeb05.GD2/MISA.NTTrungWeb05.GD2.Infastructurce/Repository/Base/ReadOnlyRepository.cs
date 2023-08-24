@@ -51,40 +51,49 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             var storedProcedureName = $"Proc_Filter";
             var parameters = new DynamicParameters();
             var query = new StringBuilder();
-            query.Append($"Select SQL_CALC_FOUND_ROWS * from view_{TableName.ToLower()} as view Where ");
+            query.Append($"Select SQL_CALC_FOUND_ROWS * from view_{TableName.ToLower()} as view ");
             int indexList = 0;
-            int lengFilterProperties = filter.Filter.Count();
-            filter.Filter.ForEach((filter) =>
+            if (filter.Filter != null)
             {
-                switch (filter.Operator)
+                if (filter.Filter.Count() > 0)
                 {
-                    case Operator.EQual:
-                        query.Append($"view.{filter.Property} = {filter.Value} ");
-                        break;
-                    case Operator.NotEqual:
-                        query.Append($"view.{filter.Property} != {filter.Value} ");
-                        break;
-                    case Operator.Contain:
-                        query.Append($"view.{filter.Property} Like '%{filter.Value}%' ");
-                        break;
-                    case Operator.NotContain:
-                        query.Append($"view.{filter.Property} NotLike '%{filter.Value}%' ");
-                        break;
-                    case Operator.Smaller:
-                        query.Append($"view.{filter.Property} < {filter.Value} ");
-                        break;
-                    case Operator.Greater:
-                        query.Append($"view.{filter.Property} > {filter.Value} ");
-                        break;
-                    default:
-                        break;
+                    query.Append("Where ");
                 }
-                if (indexList != lengFilterProperties - 1)
+
+                int lengFilterProperties = filter.Filter.Count();
+                filter.Filter.ForEach((filter) =>
                 {
-                    query.Append("And ");
-                }
-                indexList++;
-            });
+                    switch (filter.Operator)
+                    {
+                        case Operator.EQual:
+                            query.Append($"view.{filter.Property} = '{filter.Value}' ");
+                            break;
+                        case Operator.NotEqual:
+                            query.Append($"view.{filter.Property} != '{filter.Value}' ");
+                            break;
+                        case Operator.Contain:
+                            query.Append($"view.{filter.Property} Like '%{filter.Value}%' ");
+                            break;
+                        case Operator.NotContain:
+                            query.Append($"view.{filter.Property} NotLike '%{filter.Value}%' ");
+                            break;
+                        case Operator.Smaller:
+                            query.Append($"view.{filter.Property} < '{filter.Value}' ");
+                            break;
+                        case Operator.Greater:
+                            query.Append($"view.{filter.Property} > '{filter.Value}' ");
+                            break;
+                        default:
+                            break;
+                    }
+                    if (indexList != lengFilterProperties - 1)
+                    {
+                        query.Append("And ");
+                    }
+                    indexList++;
+                });
+            }
+
             if (!string.IsNullOrEmpty(filter.PropertySort))
             {
                 query.Append($"Order by view.{filter.PropertySort} ");

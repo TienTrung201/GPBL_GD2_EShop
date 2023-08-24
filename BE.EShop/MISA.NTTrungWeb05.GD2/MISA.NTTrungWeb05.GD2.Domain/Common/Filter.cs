@@ -15,12 +15,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Common
         // Tên bảng cần sắp xếp
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public string PropertySort { get; set; } = string.Empty;
+        public string? PropertySort { get; set; } = string.Empty;
         // <summary>
         // Sắp xếp theo kiểu nào
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public SortBy SortBy { get; set; }
+        public SortBy? SortBy { get; set; }
         // <summary>
         // Trang hiện tại
         // </summary>
@@ -40,26 +40,26 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Common
         // Tên thuộc tính
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public string Property { get; set; } = string.Empty;
+        public string? Property { get; set; } = string.Empty;
         // <summary>
         // Giá trị
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public string Value { get; set; } = string.Empty;
+        public string? Value { get; set; } = string.Empty;
         // <summary>
         // Loại giữ liệu
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public PropertyType PropertyType { get; set; }
+        public PropertyType? PropertyType { get; set; }
         // <summary>
-        // Số lượng bản ghi trong trang
+        // Kiểu so sánh
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public Operator Operator { get; set; }
+        public Operator? Operator { get; set; }
         // <summary>
         // Kiểu so sánh And Or
         // </summary>
         // createdby: nttrung (22/08/2023)
-        public RelationType RelationType { get; set; }
+        public RelationType? RelationType { get; set; }
     }
 }

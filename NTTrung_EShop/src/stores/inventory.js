@@ -19,7 +19,7 @@ export const useInventory = defineStore('inventory', {
         openForm(uid, editMode) {
             this.editMode = editMode;
             this.uid = uid;
-            router.push({ name: Enum.Router.InventoryForm.name });
+            router.push({ name: Enum.Router.InventoryForm.Name });
         },
         /**
          * Author: Tiến Trung 18/08/2023)
@@ -28,7 +28,7 @@ export const useInventory = defineStore('inventory', {
         closeForm() {
             this.uid = '';
             this.editMode = Enum.EditMode.None;
-            router.push({ name: Enum.Router.Inventory.name });
+            router.push({ name: Enum.Router.Inventory.Name });
         },
     },
 });

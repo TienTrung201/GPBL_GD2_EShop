@@ -4,7 +4,6 @@ import MISASettingTable from '../../components/base/table/MISASettingTable.vue';
 import InventoryForm from './InventoryForm.vue';
 import { convertDataTable, deepCopy } from '@/common/convert-data.js';
 import { computed, ref, watch, onMounted, onUnmounted, onUpdated } from 'vue';
-import employeeApi from '../../api/employee-api';
 import { useModalForm } from '../../stores/modalform';
 import { storeToRefs } from 'pinia';
 import Enum from '../../common/enum';
@@ -15,8 +14,8 @@ import MISAResource from '../../common/resource';
 import { useRoute } from 'vue-router';
 import router from '../../router';
 import { convertDateForBE } from '../../common/convert-data';
-import MISAMenuContext from '../../components/base/table/MISAMenuContext.vue';
 import { useInventory } from '../../stores/inventory';
+import baseApi from '../../api/base-api';
 const route = useRoute();
 const paging = ref({ totalPage: 1, currentPage: 1, pageSize: '10', TotalRecords: 0 });
 const searchData = ref('');
@@ -44,16 +43,17 @@ const filter = ref({});
 const getData = async (filterObject) => {
     try {
         skeleton.value = true;
-        employeeApi.method = Enum.ApiMethod.POST;
+        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.method = Enum.ApiMethod.POST;
         const filterData = {
             pageSize: paging.value.pageSize,
             currentPage: paging.value.currentPage,
-            search: searchData.value,
+            // search: searchData.value,
             ...filterObject,
         };
-        employeeApi.data = filterData;
+        baseApi.data = filterData;
         filter.value = filterObject;
-        const response = await employeeApi.request('filter');
+        const response = await baseApi.request('filter');
         console.log(response);
 
         paging.value.totalPage = Math.ceil(response.data.TotalRecords / paging.value.pageSize);
@@ -63,7 +63,7 @@ const getData = async (filterObject) => {
         if (response.data.Data.length === 0 && paging.value.TotalRecords > 0) {
             if (paging.value.currentPage > 1) {
                 router.push({
-                    path: Enum.Router.Employee.path,
+                    path: Enum.Router.Inventory.Path,
                     query: { page: paging.value.totalPage },
                 });
             }
@@ -94,7 +94,7 @@ const filterData = (filterObject, isDeleteAll) => {
             filter.value = { ...filter.value, ...filterObject };
         }
         router.push({
-            path: Enum.Router.Employee.path,
+            path: Enum.Router.Inventory.Path,
             query: { page: 1 },
         });
     }
@@ -105,7 +105,7 @@ const filterData = (filterObject, isDeleteAll) => {
 //  */
 const handleSearchData = () => {
     router.push({
-        path: Enum.Router.Employee.path,
+        path: Enum.Router.Inventory.Path,
         query: { page: 1, search: searchData.value || undefined },
     });
 };
@@ -134,121 +134,85 @@ const setPageSize = (pageSize) => {
 const setColumnTable = () => {
     columnsTable.value = [
         {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.EmployeeCode,
-            dataIndex: 'id',
-            key: 'EmployeeCode',
+            title: 'Mã hàng hóa',
+            dataIndex: 'code',
+            key: 'SKUCodeCustom',
             width: '170',
             isShow: true,
             filter: true,
             // pin: true,
         },
         {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.FullName,
+            title: 'Tên hàng hóa',
             dataIndex: 'name',
-            key: 'FullName',
+            key: 'InventoryName',
             width: '200',
             isShow: true,
             filter: true,
             // pin: true,
         },
         {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Gender,
-            dataIndex: 'sex',
-            type: Enum.TypeDataTable.Gender,
-            key: 'Gender',
+            title: 'Mã vạch',
+            dataIndex: 'Barcode',
+            key: 'BarCode',
             width: '170',
             isShow: true,
             filter: true,
             // type: 'gender',
         },
         {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.DateOfBirth,
-            dataIndex: 'DateOfBirth',
-            key: 'DateOfBirth',
-            type: Enum.TypeDataTable.Date,
+            title: 'Giá bán trung bình',
+            dataIndex: 'AvgCostPrice',
+            key: 'AvgCostPrice',
+            type: Enum.TypeDataTable.Money,
             width: '170',
-            align: Enum.AlignColumn.Center,
-            isShow: true,
-            filter: true,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.PhoneNumber,
-            dataIndex: 'phoneNumber',
-            key: 'PhoneNumber',
-            tooltip: MISAResource[resource.langCode]?.Tooltip?.PhoneNumber,
-            width: '170',
-            // align: Enum.AlignColumn.Right,
-            isShow: true,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.LandlinePhone,
-            dataIndex: 'landlinePhone',
-            key: 'LandlinePhone',
-            width: '170',
-            // align: Enum.AlignColumn.Right,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.IdentityNumber,
-            dataIndex: 'identitynumber',
-            key: 'IdentityNumber',
-            width: '170',
-            // align: Enum.AlignColumn.Right,
-            filter: true,
-            isShow: true,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.IdentityDate,
-            dataIndex: 'identitydate',
-            type: Enum.TypeDataTable.Date,
-            key: 'IdentityDate',
-            width: '170',
-            align: Enum.AlignColumn.Center,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.IdentityPlace,
-            dataIndex: 'identityPlace',
-            key: 'IdentityPlace',
-            width: '170',
-            isShow: true,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Name,
-            dataIndex: 'DepartmentName',
-            key: 'DepartmentName',
-            width: '250',
-            isShow: true,
-            filter: true,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Position?.Name,
-            dataIndex: 'PositionName',
-            key: 'PositionName',
-            width: '250',
-            isShow: true,
-            filter: true,
-        },
-        {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.BankAccount,
-            dataIndex: 'bankaccount',
-            key: 'BankAccount',
-            width: '230',
             align: Enum.AlignColumn.Right,
+            isShow: true,
             filter: true,
         },
         {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.BankBranch,
-            dataIndex: 'bankbranch',
-            key: 'BankBranch',
-            width: '230',
+            title: 'Giá mua trung bình',
+            dataIndex: 'AvgUnitPrice',
+            key: 'AvgUnitPrice',
+            type: Enum.TypeDataTable.Money,
+            width: '170',
+            align: Enum.AlignColumn.Right,
+            isShow: true,
             filter: true,
         },
         {
-            title: MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.BankName,
-            dataIndex: 'bankname',
-            key: 'BankName',
-            width: '230',
+            title: 'Nhóm hàng hóa',
+            dataIndex: 'ItemCategoryName',
+            key: 'ItemCategoryName',
+            width: '170',
+            isShow: true,
             filter: true,
         },
+        {
+            title: 'Đơn vị tính',
+            dataIndex: 'UnitName',
+            key: 'UnitName',
+            width: '170',
+            // align: Enum.AlignColumn.Right,
+            filter: true,
+            isShow: true,
+        },
+        {
+            title: 'Hiển thị trên màn hình bán hàng',
+            dataIndex: 'IsShowMenu',
+            key: 'IsShowMenu',
+            width: '250',
+            filter: true,
+            isShow: true,
+        },
+        {
+            title: 'Trạng thái kinh doanh',
+            dataIndex: 'IsActive',
+            key: 'IsActive',
+            width: '170',
+            isShow: true,
+            filter: true,
+        }
     ];
 };
 //Gọi khi created
@@ -265,9 +229,9 @@ watch(
 );
 // /**
 //  * Author: Tiến Trung (01/07/2023)
-//  * Description: computec lưu mảng employee đã chọn
+//  * Description: computec lưu mảng Inventory đã chọn
 //  */
-const employeeSelected = computed(() => {
+const dataSelected = computed(() => {
     return dataTable.value.filter((data) => data.isChecked === true);
 });
 
@@ -275,24 +239,25 @@ const employeeSelected = computed(() => {
 //  * Author: Tiến Trung (28/06/2023)
 //  * Description: hàm click vào button thêm
 //  */
-const showModalAddEmployee = () => {
+const showModalAddData = () => {
     // modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Employee?.Add);
     // modalForm.setObjectForm({});
     // modalForm.setMethod(Enum.EditMode.Add);
     // // dialog.setMethod(Enum.EditMode.Add);
     // modalForm.open();
-    inventory.openForm('uid');
+    inventory.openForm(null, Enum.EditMode.Add);
 };
 /**
  * Author: Tiến Trung (09/07/2023)
  * Description: Hàm nhận emit khi click sửa thông tin
  */
 const handleShowEditInfo = (data) => {
-    modalForm.open();
-    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Employee?.Update);
-    modalForm.setMethod(Enum.EditMode.Update);
+    // modalForm.open();
+    // modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Inventory?.Update);
+    // modalForm.setMethod(Enum.EditMode.Update);
+    // modalForm.setObjectForm(data);
     dialog.setMethod(Enum.EditMode.Update);
-    modalForm.setObjectForm(data);
+    inventory.openForm(data.InventoryId, Enum.EditMode.Update);
 };
 /**
  * Author: Tiến Trung (09/07/2023)
@@ -300,7 +265,7 @@ const handleShowEditInfo = (data) => {
  */
 const handleReplication = () => {
     modalForm.open();
-    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Employee?.Add);
+    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Inventory?.Add);
     modalForm.setMethod(Enum.EditMode.Copy);
     // dialog.setMethod(Enum.EditMode.Copy);
 };
@@ -310,11 +275,11 @@ const handleReplication = () => {
 //  */
 const selectRowTable = (isChecked, data) => {
     try {
-        dataTable.value = dataTable.value.map((employee) => {
-            if (employee.EmployeeId === data.EmployeeId) {
-                employee.isChecked = isChecked;
+        dataTable.value = dataTable.value.map((inventory) => {
+            if (inventory.InventoryId === data.InventoryId) {
+                inventory.isChecked = isChecked;
             }
-            return employee;
+            return inventory;
         });
     } catch (error) {
         console.log(error);
@@ -326,9 +291,9 @@ const selectRowTable = (isChecked, data) => {
 //  */
 const selectAllTable = (isChecked) => {
     try {
-        dataTable.value = dataTable.value.map((employee) => {
-            employee.isChecked = isChecked;
-            return employee;
+        dataTable.value = dataTable.value.map((entity) => {
+            entity.isChecked = isChecked;
+            return entity;
         });
     } catch (error) {
         console.log(error);
@@ -339,9 +304,9 @@ const selectAllTable = (isChecked) => {
  * Description: hàm click unCheck tất cả data báo cho component table con để bỏ check
  */
 const handleUnCheckedAll = () => {
-    dataTable.value = dataTable.value.map((employee) => {
-        employee.isChecked = false;
-        return employee;
+    dataTable.value = dataTable.value.map((entity) => {
+        entity.isChecked = false;
+        return entity;
     });
 };
 
@@ -351,8 +316,8 @@ const handleUnCheckedAll = () => {
  */
 const openDialogDeleteSelected = () => {
     dialog.open({
-        title: MISAResource[resource.langCode]?.Dialog?.DeleteEmployee?.Title,
-        content: MISAResource[resource.langCode]?.Dialog?.DeleteEmployee?.DeleteListContent,
+        title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
+        content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteListContent,
         action: MISAResource[resource.langCode]?.Button?.Delete,
         buttonSec: MISAResource[resource.langCode]?.Button?.No,
         type: Enum.ButtonType.Pri,
@@ -367,13 +332,14 @@ const openDialogDeleteSelected = () => {
  * Description: Hàm xóa nhân viên
  */
 const deleteData = async () => {
-    await employeeApi.request(`${objectData.value.EmployeeId}`);
+    baseApi.path = Enum.Router.Inventory.Path
+    await baseApi.request(`${objectData.value.InventoryId}`);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Delete);
     //Nếu đang xóa trang cuối còn 1 bản ghi thì quay vể trang cuối -1
     if (dataTable.value.length === 1) {
         dataTable.value = [];
         router.push({
-            path: Enum.Router.Employee.path,
+            path: Enum.Router.Inventory.Path,
             query: { page: paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1 },
         });
     } else {
@@ -386,17 +352,18 @@ const deleteData = async () => {
  * Description: Hàm xóa nhân viên
  */
 const deleteDataSelected = async () => {
-    const listIds = employeeSelected.value.map((data) => data.EmployeeId).join(',');
-    employeeApi.method = Enum.ApiMethod.DELETE;
-    employeeApi.data = listIds;
-    await employeeApi.request('DeleteMany');
+    const listIds = dataSelected.value.map((data) => data.Inventory).join(',');
+    baseApi.path = Enum.Router.Inventory.Api
+    baseApi.method = Enum.ApiMethod.DELETE;
+    baseApi.data = listIds;
+    await baseApi.request('DeleteMany');
     handleUnCheckedAll();
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Delete);
     //Nếu đang xóa trang cuối hết bản ghi quay về trang cuối -1
     if (listIds.split(',').length === dataTable.value.length && paging.value.currentPage === paging.value.totalPage) {
         dataTable.value = [];
         router.push({
-            path: Enum.Router.Employee.path,
+            path: Enum.Router.Inventory.path,
             query: { page: paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1 },
         });
     } else {
@@ -408,12 +375,13 @@ const deleteDataSelected = async () => {
  * Author: Tiến Trung (29/06/2023)
  * Description: Hàm xóa nhân viên
  */
-const deleteEmployee = async () => {
+const deleteEntity = async () => {
     try {
         //khi không xóa từng đối tượng thì không
         //có đối tượng nào được chọn và object rỗng
         //sẽ chạy vào xóa tất cả
-        employeeApi.method = Enum.ApiMethod.DELETE;
+        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.method = Enum.ApiMethod.DELETE;
         if (Object.keys(objectData.value).length === 0) {
             await deleteDataSelected();
         } else {
@@ -432,10 +400,10 @@ const handleDeleteData = () => {
         dialog.setMethod(Enum.EditMode.Delete);
         modalForm.setMethod(Enum.EditMode.Delete);
         dialog.open({
-            title: MISAResource[resource.langCode]?.Dialog?.DeleteEmployee?.Title,
-            content: MISAResource[resource.langCode]?.Dialog?.DeleteEmployee?.DeleteContent.replace(
-                'EmployeeCode',
-                dialog.objectData.EmployeeCode,
+            title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
+            content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteContent.replace(
+                'SKUCode',
+                dialog.objectData.SKUCode,
             ),
             action: MISAResource[resource.langCode]?.Button?.Delete,
             buttonSec: MISAResource[resource.langCode]?.Button?.No,
@@ -464,9 +432,10 @@ const setLoadingButton = (status, isAddNewForm) => {
  * Description: Hàm Thêm mới
  */
 const addNewData = async (data) => {
-    employeeApi.data = data;
-    employeeApi.method = Enum.ApiMethod.POST;
-    const res = await employeeApi.request();
+    baseApi.path = Enum.Router.Inventory.Api
+    baseApi.data = data;
+    baseApi.method = Enum.ApiMethod.POST;
+    const res = await baseApi.request();
     // const res = await employeeApi.create(data);
     console.log(res);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Add);
@@ -477,9 +446,10 @@ const addNewData = async (data) => {
  * Description: Hàm Update
  */
 const updateData = async (data) => {
-    employeeApi.data = data;
-    employeeApi.method = Enum.ApiMethod.PUT;
-    const res = await employeeApi.request(`${object.value.EmployeeId}`);
+    baseApi.path = Enum.Router.Inventory.Api
+    baseApi.data = data;
+    baseApi.method = Enum.ApiMethod.PUT;
+    const res = await baseApi.request(`${object.value.InventoryId}`);
     console.log(res);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Update);
     await getData(filter.value);
@@ -507,7 +477,7 @@ const submitFormData = async (data, isAddNewForm) => {
             });
         }
         if (isAddNewForm) {
-            showModalAddEmployee();
+            showModalAddData();
         } else {
             modalForm.close();
         }
@@ -523,7 +493,7 @@ const submitFormData = async (data, isAddNewForm) => {
  */
 async function reset() {
     router.push({
-        path: Enum.Router.Employee.path,
+        path: Enum.Router.Inventory.Path,
     });
     dialog.setObjectData({});
     dataTable.value = [];
@@ -538,15 +508,17 @@ const exportExcel = async (listIds, search) => {
         loadingExport.value = true;
         //Lấy ra mảng cột được hiển thị
         const columnTableExcel = columnsTable.value.filter((column) => column.isShow);
-        employeeApi.method = Enum.ApiMethod.GET;
+        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.method = Enum.ApiMethod.GET;
         const excelResquest = {
             columns: columnTableExcel,
             ids: listIds === null ? null : listIds,
             search: search ? search : '',
-            title: MISAResource[resource.langCode]?.Excel?.Employee.Title,
-            sheet: MISAResource[resource.langCode]?.Excel?.Employee.Sheet,
+            title: MISAResource[resource.langCode]?.Excel?.Inventory.Title,
+            sheet: MISAResource[resource.langCode]?.Excel?.Inventory.Sheet,
         };
-        const res = await employeeApi.downloadExcel(excelResquest);
+        baseApi.path = Enum.Router.Inventory.Api
+        const res = await baseApi.downloadExcel(excelResquest);
         // Tạo URL object từ dữ liệu trả về
         const url = window.URL.createObjectURL(
             new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
@@ -555,7 +527,7 @@ const exportExcel = async (listIds, search) => {
         // Tạo một link ẩn và sử dụng nó để tải xuống file
         const link = document.createElement('a');
         link.href = url;
-        link.download = MISAResource[resource.langCode].Excel.Employee.FileName;
+        link.download = MISAResource[resource.langCode].Excel.Inventory.FileName;
         link.click();
 
         // Giải phóng tài nguyên
@@ -572,7 +544,7 @@ const exportExcel = async (listIds, search) => {
  */
 const exportExcelFromDataSelected = async () => {
     try {
-        const listIds = employeeSelected.value.map((data) => data.EmployeeId).join(',');
+        const listIds = dataSelected.value.map((data) => data.InventoryId).join(',');
         await exportExcel(listIds);
     } catch (error) {
         console.log(error);
@@ -614,7 +586,7 @@ watch(
     () => route.query,
     () => {
         paging.value.currentPage = route.query.page ? Number(route.query.page) : 1;
-        searchData.value = route.query.page ? route.query.search : '';
+        // searchData.value = route.query.page ? route.query.search : '';
         dataTable.value = [];
         getData(filter.value);
     },
@@ -627,7 +599,7 @@ watch(
 const onKeyDownInsertNew = (e) => {
     if (e.ctrlKey && e.keyCode === Enum.Keyboard.Ctrl1) {
         e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
-        showModalAddEmployee();
+        showModalAddData();
     }
 };
 /**
@@ -635,7 +607,7 @@ const onKeyDownInsertNew = (e) => {
  * Description: Hàm sự kiện phím ctrl + D để xóa danh sách được chọn
  */
 const onKeyDownDelete = (e) => {
-    if (employeeSelected.value.length > 1) {
+    if (dataSelected.value.length > 1) {
         if (e.ctrlKey && e.keyCode === Enum.Keyboard.D) {
             e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
             openDialogDeleteSelected();
@@ -647,7 +619,7 @@ const onKeyDownDelete = (e) => {
  * Description: khi được update thì thêm sự kiện delete bằng phím
  */
 onUpdated(() => {
-    if (employeeSelected.value.length > 0) {
+    if (dataSelected.value.length > 0) {
         window.addEventListener('keydown', onKeyDownDelete);
     } else {
         window.removeEventListener('keydown', onKeyDownDelete);
@@ -692,7 +664,7 @@ onUnmounted(() => {
             <div class="tt-continer__controll-table">
                 <ul class="tt-continer__controll-list">
                     <MISAButton
-                        @click="showModalAddEmployee"
+                        @click="showModalAddData"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Add"
                     >
@@ -757,12 +729,12 @@ onUnmounted(() => {
                     @select-all="selectAllTable"
                     @edit-data="handleShowEditInfo"
                     @close-export="closeMenuExport"
-                    :allDataSelected="employeeSelected"
+                    :allDataSelected="dataSelected"
                     :dataTable="dataTable"
                     :columns="columnsTable"
                     :skeleton="skeleton"
                     :searchData="searchData"
-                    propertiesIdName="EmployeeId"
+                    propertiesIdName="InventoryId"
                     routerCurrent="Inventory"
                     @set-pagesize="setPageSize"
                     :totalPage="paging.totalPage"
@@ -784,8 +756,8 @@ onUnmounted(() => {
     </div>
     <Teleport to="#app">
         <!-- @loading-button="(isload) => (loadingButton = isload)" -->
-        <InventoryForm :buttonLoad="loadingButton" @submit-form="submitFormData" v-if="isShow"></InventoryForm>
-        <MISADialog v-if="dialog.isShow" @submit-form="submitFormData" @delete-data="deleteEmployee"></MISADialog>
+        <!-- <InventoryForm :buttonLoad="loadingButton" @submit-form="submitFormData" v-if="isShow"></InventoryForm> -->
+        <MISADialog v-if="dialog.isShow" @submit-form="submitFormData" @delete-data="deleteEntity"></MISADialog>
     </Teleport>
 </template>
 

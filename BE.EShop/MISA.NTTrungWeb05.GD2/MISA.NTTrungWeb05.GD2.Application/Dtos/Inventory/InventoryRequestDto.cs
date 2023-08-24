@@ -98,9 +98,13 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>  
         public EditMode EditMode { get; set; } = EditMode.None;
         /// <summary>
-        /// Sự thay đổi
+        /// Code thay đổi
         /// </summary>  
         public bool IsUpdateCode { get; set; } = false;
+        /// <summary>
+        /// Mã vạch thay đổi
+        /// </summary>  
+        public bool IsUpdateBarcode { get; set; } = false;
         /// <summary>
         /// Danh sách detail
         /// </summary>  

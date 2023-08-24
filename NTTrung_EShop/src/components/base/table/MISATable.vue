@@ -82,36 +82,12 @@ const positionMenuContext = ref({ left: 0, bottom: 0 });
 const pageSize = ref('10');
 const pageSizeOption = ref();
 const columnsTable = ref(props.columns);
-const typeFilter = ref(Enum.TypeDataTable.Default);
 const filterValue = ref(null);
 const filterBy = ref(null);
-const clickIconFilter = ref('');
-const isShowMenuFilter = ref(false);
-const keyNameSelectFilter = ref('');
-const positionMenuFilter = ref({ left: 0, bottom: 0 });
 const filter = ref({
-    sortColumn: '',
-    sortOrder: null,
-    // employeeCode: null,
-    // employeeCodeFilterBy: null,
-    // fullName: null,
-    // fullNameFilterBy: null,
-    // gender: null,
-    // genderFilterBy: null, // notequal ,contain, notcontain, equal
-    // dateOfBirth: null,
-    // dateOfBirthFilterBy: null,
-    // identityNumber: null,
-    // identityNumberFilterBy: null,
-    // positionName: null,
-    // positionNameFilterBy: null,
-    // departmentName: null,
-    // departmentNameFilterBy: null,
-    // bankAccount: null,
-    // bankAccountFilterBy: null,
-    // bankName: null,
-    // bankNameFilterBy: null,
-    // bankBranch: null,
-    // bankBranchFilterBy: null,
+    propertySort: null,
+    sortBy: null,
+    Filter: [],
 });
 /**
  * Author: Tiến Trung (2/07/2023)
@@ -141,9 +117,18 @@ const listKeyFilter = computed(() => {
  * Description: Hàm lọc
  */
 const emitFilterData = (filterObject) => {
-    filter.value = { ...filter.value, ...filterObject };
+    if (filterObject.isFilter) {
+        var currentFilter = filter.value.Filter.findIndex(filter => filter.property === filterObject.property)
+        if (currentFilter != -1) {
+            filter.value.Filter[currentFilter] = filterObject
+        } else {
+            filter.value.Filter.push(filterObject);
+        }
+
+    } else {
+        filter.value.Filter = filter.value.Filter.filter(filter => filter.property != filterObject.property)
+    }
     emit('filter-data', filter.value);
-    closeMenuFilter();
 };
 /**
  * Author: Tiến Trung (06/07/2023)
@@ -160,8 +145,8 @@ const deleteFilter = (keyFilter) => {
  */
 const deleteAllFilter = () => {
     filter.value = {
-        sortColumn: filter.value.sortColumn,
-        sortOrder: filter.value.sortOrder,
+        propertySort: filter.value.propertySort,
+        sortBy: filter.value.sortBy,
     };
     emit('filter-data', filter.value, true);
 };
@@ -171,22 +156,22 @@ const deleteAllFilter = () => {
  */
 const setSort = (keyName, isFilter) => {
     if (isFilter) {
-        if (filter.value.sortColumn === keyName) {
-            switch (filter.value.sortOrder) {
+        if (filter.value.propertySort === keyName) {
+            switch (filter.value.sortBy) {
                 case Enum.Sort.Desc:
-                    filter.value.sortOrder = Enum.Sort.Asc;
+                    filter.value.sortBy = Enum.Sort.Asc;
                     break;
                 case Enum.Sort.Asc:
-                    filter.value.sortOrder = null;
-                    filter.value.sortColumn = '';
+                    filter.value.sortBy = null;
+                    filter.value.propertySort = '';
                     break;
                 default:
-                    filter.value.sortOrder = Enum.Sort.Desc;
+                    filter.value.sortBy = Enum.Sort.Desc;
                     break;
             }
         } else {
-            filter.value.sortOrder = Enum.Sort.Desc;
-            filter.value.sortColumn = keyName;
+            filter.value.sortBy = Enum.Sort.Desc;
+            filter.value.propertySort = keyName;
         }
         emit('filter-data', filter.value);
     }
@@ -274,9 +259,8 @@ const pagination = computed(() => {
         '-' +
         (props.currentPage * Number(pageSize.value) - Number(pageSize.value) + props.dataTable.length);
 
-    return `${MISAResource[resource.langCode].Table?.Show} ${page} ${MISAResource[resource.langCode].Table.OutOf} ${
-        props.TotalRecords
-    } ${MISAResource[resource.langCode].Table.Record}`;
+    return `${MISAResource[resource.langCode].Table?.Show} ${page} ${MISAResource[resource.langCode].Table.OutOf} ${props.TotalRecords
+        } ${MISAResource[resource.langCode].Table.Record}`;
 });
 /**
  * Author: Tiến Trung (12/07/2023)
@@ -411,7 +395,6 @@ const openMenuContext = (e, index, data) => {
         modalForm.setObjectForm(data);
         emit('uncheck-all');
         emit('close-export');
-        closeMenuFilter();
         //Khối này để kiểm tra đóng mở menu khi click mở
         //nhiều đối tượng trong bảng biết menu nào
         if (curentMenucontext.value === index) {
@@ -438,60 +421,13 @@ const openMenuContext = (e, index, data) => {
 
 /**
  * Author: Tiến Trung (2/07/2023)
- * Description: Hàm hiện menufilter và set vị
- * trí cho menufilter theo icon dropdown
- */
-const openMenuFilter = (e, key, typeData) => {
-    try {
-        //Đóng mở menufiler
-        if (key === keyNameSelectFilter.value) {
-            keyNameSelectFilter.value = '';
-            clickIconFilter.value = '';
-            closeMenuFilter();
-            return;
-        } else {
-            clickIconFilter.value = key;
-            isShowMenuFilter.value = true;
-            keyNameSelectFilter.value = key;
-        }
-        typeFilter.value = typeData !== undefined ? typeData : Enum.TypeDataTable.Default;
-        filterValue.value = filter.value[key];
-        filterBy.value = filter.value[key + 'FilterBy'];
-        e.stopPropagation();
-        // dialog.setObjectData(data);
-        emit('uncheck-all');
-        emit('close-export');
-        closeMenu();
-        //Cài đặt vị trí cho menufilter dưới icon
-        const positionIcon = e.target.getBoundingClientRect();
-        const left = positionIcon.right;
-        const bottom = positionIcon.bottom + 10;
-
-        positionMenuFilter.value = { left: left, bottom: bottom };
-    } catch (error) {
-        console.log(error);
-    }
-};
-/**
- * Author: Tiến Trung (2/07/2023)
- * Description: Hàm đóng menufilter
- */
-const closeMenuFilter = () => {
-    isShowMenuFilter.value = false;
-    clickIconFilter.value = '';
-    keyNameSelectFilter.value = '';
-};
-/**
- * Author: Tiến Trung (2/07/2023)
  * Description: mount và unmount thêm và hủy sự kiện
  */
 onMounted(() => {
     window.addEventListener('click', closeMenu);
-    window.addEventListener('mousedown', closeMenuFilter);
 });
 onUnmounted(() => {
     window.removeEventListener('click', closeMenu);
-    window.removeEventListener('mousedown', closeMenuFilter);
 });
 
 watch(
@@ -501,7 +437,7 @@ watch(
     },
     { deep: true },
 );
-defineExpose({ closeMenu, closeMenuFilter });
+defineExpose({ closeMenu });
 </script>
 <template lang="">
     <div>
@@ -559,13 +495,12 @@ defineExpose({ closeMenu, closeMenuFilter });
                                     <span
                                         v-if="
                                             item.filter &&
-                                            filter.sortColumn === item.key &&
-                                            item.align !== Enum.AlignColumn.Right
+                                            filter.propertySort === item.key
                                         "
                                         class="icon-sort"
                                     >
                                         <MISAIcon
-                                            :class="{ asc: filter.sortOrder === Enum.Sort.Asc }"
+                                            :class="{ asc: filter.sortBy === Enum.Sort.Asc }"
                                             width="11"
                                             height="12"
                                             icon="desc"
@@ -703,7 +638,7 @@ defineExpose({ closeMenu, closeMenuFilter });
                             <RouterLink
                                 :class="{ 'no-select': currentPage === 1 }"
                                 :to="{
-                                    path: Enum.Router[routerCurrent].path,
+                                    path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage === 1 ? currentPage : currentPage - 1,
                                         search: searchData || undefined,
@@ -716,7 +651,7 @@ defineExpose({ closeMenu, closeMenuFilter });
                         <li v-if="currentPage !== 1 || true" class="pagination-item">
                             <RouterLink
                                 :to="{
-                                    path: Enum.Router[routerCurrent].path,
+                                    path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage === 1 || currentPage === 2 ? currentPage : currentPage - 2,
                                         search: searchData || undefined,
@@ -732,7 +667,7 @@ defineExpose({ closeMenu, closeMenuFilter });
                             <li :class="{ active: page === currentPage }" class="pagination-item">
                                 <RouterLink
                                     :to="{
-                                        path: Enum.Router[routerCurrent].path,
+                                        path: Enum.Router[routerCurrent].Path,
                                         query: { page: page, search: searchData || undefined },
                                     }"
                                     v-if="page !== '...'"
@@ -745,7 +680,7 @@ defineExpose({ closeMenu, closeMenuFilter });
                         <li v-if="currentPage !== totalPage || true" class="pagination-item">
                             <RouterLink
                                 :to="{
-                                    path: Enum.Router[routerCurrent].path,
+                                    path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage >= totalPage - 1 ? currentPage : currentPage + 2,
                                         search: searchData || undefined,
@@ -759,7 +694,7 @@ defineExpose({ closeMenu, closeMenuFilter });
                         <li class="pagination-item">
                             <RouterLink
                                 :to="{
-                                    path: Enum.Router[routerCurrent].path,
+                                    path: Enum.Router[routerCurrent].Path,
                                     query: {
                                         page: currentPage === totalPage ? currentPage : currentPage + 1,
                                         search: searchData || undefined,

@@ -12,18 +12,18 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: Enum.Router.Home.path,
-            name: Enum.Router.Home.name,
+            path: Enum.Router.Home.Path,
+            name: Enum.Router.Home.Name,
             component: HomePage,
         },
         {
-            path: Enum.Router.Employee.path,
-            name: Enum.Router.Employee.name,
+            path: Enum.Router.Employee.Path,
+            name: Enum.Router.Employee.Name,
             component: EmployeeList,
         },
         {
-            path: Enum.Router.Department.path,
-            name: Enum.Router.Department.name,
+            path: Enum.Router.Department.Path,
+            name: Enum.Router.Department.Name,
             component: DepartmentList,
         },
         {
@@ -32,8 +32,8 @@ const router = createRouter({
             component: ProductList,
         },
         {
-            path: Enum.Router.Position.path,
-            name: Enum.Router.Position.name,
+            path: Enum.Router.Position.Path,
+            name: Enum.Router.Position.Name,
             component: PositionList,
         },
         {
@@ -42,13 +42,13 @@ const router = createRouter({
             component: ImportExcel,
         },
         {
-            path: Enum.Router.Inventory.path,
-            name: Enum.Router.Inventory.name,
+            path: Enum.Router.Inventory.Path,
+            name: Enum.Router.Inventory.Name,
             component: Inventory,
         },
         {
-            path: Enum.Router.InventoryForm.path,
-            name: Enum.Router.InventoryForm.name,
+            path: Enum.Router.InventoryForm.Path,
+            name: Enum.Router.InventoryForm.Name,
             component: InventoryForm,
         },
     ],

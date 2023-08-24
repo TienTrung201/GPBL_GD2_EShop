@@ -146,8 +146,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 data.AvgUnitPrice = newAvgUnitPrice;
                 //---------------------------------------Update list hàng hóa-------------------------------
                 //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-                var listCodes = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update).Select((inventory) => inventory.SKUCode);
-                var listBarcodes = data.Detail.Where(inventory => inventory.EditMode != EditMode.Update).Select((inventory) => inventory.BarCode);
+                var listCodes = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCode);
+                var listBarcodes = data.Detail.Where(inventory => inventory.EditMode != EditMode.Update && inventory.IsUpdateBarcode).Select((inventory) => inventory.BarCode);
                 await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes)); 
                 await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodes));
                 //Không có lỗi thì Update
@@ -160,7 +160,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 var listBarcodesCreate = data.Detail.Where(inventory => inventory.EditMode != EditMode.Create).Select((inventory) => inventory.BarCode);
                 await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
                 await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));
-                //Không có lỗi thì Update
+                //Không có lỗi thì thêm mới
                 var listEntityCreate = _mapper.Map<List<Inventory>>(listCreate);
                 result += await _inventoryRepository.InsertMultipleAsync(listEntityCreate, master.ParentId);
 
