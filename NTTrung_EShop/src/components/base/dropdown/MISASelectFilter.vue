@@ -370,14 +370,13 @@ defineExpose({ autoFocus });
 </script>
 <style lang="scss" scoped>
 @import './dropdown.scss';
+
 .list__select {
     padding-left: 10px !important;
     font-weight: 100;
 }
+
 label {
     margin-bottom: 8px;
-}
-.custom-combobox {
-    width: 36px;
 }
 </style>

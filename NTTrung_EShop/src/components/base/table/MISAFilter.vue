@@ -2,11 +2,17 @@
     <div @mousedown.stop :style="{
         left: props.positionMenuFilter?.left + 'px',
         top: props.positionMenuFilter?.bottom + 'px',
-    }" class="wrapper-filter">
-        <div class="filter__by">
+    }" class="wrapper-filter"
+        :class="{ 'filter-select': props.filterType === Enum.TypeDataTable.Show || props.filterType === Enum.TypeDataTable.Business }">
+        <div v-if="props.filterType !== Enum.TypeDataTable.Show && props.filterType !== Enum.TypeDataTable.Business"
+            class="filter__by">
             <MISASelectFilter v-model:value="filterBySelected" selectEmpty :options="filterByOption"></MISASelectFilter>
         </div>
         <div class="filter__value">
+            <MISADropdown selectEmpty :options="isShowMenu" v-model:value="filterShow"
+                v-if="props.filterType === Enum.TypeDataTable.Show"></MISADropdown>
+            <MISADropdown selectEmpty :options="business" v-model:value="filterBusiness"
+                v-if="props.filterType === Enum.TypeDataTable.Business"></MISADropdown>
             <!-- :placeholder="MISAResource[resource.langCode]?.Table?.Filter?.ValueFilter" -->
             <MISADropdown selectEmpty :options="genderSelect" v-model:value="filterGenderSelected"
                 v-if="props.filterType === Enum.TypeDataTable.Gender"></MISADropdown>
@@ -77,8 +83,38 @@ const genderSelect = ref([
         value: '2',
     },
 ]);
+const isShowMenu = ref([
+    {
+        option: MISAResource[resource.langCode]?.Table?.Filter.All,
+        value: Enum.FilterBy.All,
+    },
+    {
+        option: MISAResource[resource.langCode]?.Table?.Filter.Yes,
+        value: Enum.FilterBy.True,
+    },
+    {
+        option: MISAResource[resource.langCode]?.Table?.Filter.No,
+        value: Enum.FilterBy.False,
+    },
+]);
+const business = ref([
+    {
+        option: MISAResource[resource.langCode]?.Table?.Filter.All,
+        value: Enum.FilterBy.All,
+    },
+    {
+        option: MISAResource[resource.langCode]?.Table?.Filter.Business,
+        value: Enum.FilterBy.True,
+    },
+    {
+        option: MISAResource[resource.langCode]?.Table?.Filter.StopBusiness,
+        value: Enum.FilterBy.False,
+    },
+]);
 const filterDateSelect = ref(null);
 const filterGenderSelected = ref('1');
+const filterShow = ref(Enum.FilterBy.All)
+const filterBusiness = ref(Enum.FilterBy.All)
 const filterBySelected = ref(Enum.FilterBy.Contain);
 const filterSearch = ref('');
 
@@ -87,7 +123,6 @@ const filterSearch = ref('');
  * Description: hàm gửi tiêu chí lọc
  */
 const emitFilter = (value) => {
-    //Giới tính có giá trị 0 nên tách ra
     const isFilter = value.length === 0 ? false : true
     emit('filter-data', {
         property: props.keyName,
@@ -124,6 +159,10 @@ onMounted(() => {
                 filterGenderSelected.value = props.filterValue
                     ? props.filterValue.toString()
                     : filterGenderSelected.value;
+                break;
+            case Enum.TypeDataTable.Show:
+            case Enum.TypeDataTable.Business:
+                filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Equal;
                 break;
             case Enum.TypeDataTable.Date:
                 filterByOption.value = [
@@ -200,10 +239,58 @@ const handleFilterData = (value) => {
         emitFilter(value);
     }
 }
+/**
+ * Author: Tiến Trung (24/08/2023)
+ * Description: watch theo dõi khi lựa chọn lọc thay đổi thì emit
+ */
 watch(() => filterBySelected.value, () => {
     if (inputSearchOld.value.trim('').length !== 0) {
         emitFilter(inputSearchOld.value);
     }
+})
+/**
+ * Author: Tiến Trung (24/08/2023)
+ * Description: watch theo dõi khi lựa chọn lọc hiển thị thay đổi
+ */
+watch(() => filterShow.value, () => {
+    if (filterShow.value === Enum.FilterBy.All) {
+        emit('filter-data', {
+            property: props.keyName,
+            ['value']: 'helo',
+            operator: Enum.FilterBy.AllData,
+            isFilter: true
+        });
+    } else {
+        emit('filter-data', {
+            property: props.keyName,
+            ['value']: filterShow.value,
+            operator: Enum.FilterBy.Equal,
+            isFilter: true
+        });
+    }
+
+})
+/**
+ * Author: Tiến Trung (24/08/2023)
+ * Description: watch theo dõi khi lựa chọn lọc trạng thái kinh doanh thay đổi
+ */
+watch(() => filterBusiness.value, () => {
+    if (filterBusiness.value === Enum.FilterBy.All) {
+        emit('filter-data', {
+            property: props.keyName,
+            ['value']: '',
+            operator: Enum.FilterBy.AllData,
+            isFilter: true
+        });
+    } else {
+        emit('filter-data', {
+            property: props.keyName,
+            ['value']: filterBusiness.value,
+            operator: Enum.FilterBy.Equal,
+            isFilter: true
+        });
+    }
+
 })
 </script>
 <style lang="scss">

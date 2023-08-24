@@ -39,6 +39,8 @@ const Enum = {
         Date: 1,
         Money: 2,
         Default: 3,
+        Show: 4,
+        Business: 5,
     },
     KeyboardShortcuts: {
         CtrlShiftS: 'Ctrl + Shift + S',
@@ -113,6 +115,10 @@ const Enum = {
         NotContain: 4,
         Greater: 5,
         Smaller: 6,
+        AllData: 7,
+        All: 'all',
+        True: '1',
+        False: '0',
     },
     TypeProperties: {
         Color: 'color',
