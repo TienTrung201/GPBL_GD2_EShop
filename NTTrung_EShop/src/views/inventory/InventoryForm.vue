@@ -8,7 +8,7 @@ import { useInventory } from '../../stores/inventory';
 import { useTitleHeader } from '../../stores/title-header';
 import MISATableDetail from '../../components/base/table/MISATableDetail.vue';
 import baseApi from '../../api/base-api';
-import { convertDataTable } from '../../common/convert-data';
+import { convertDataTable, convertToTitleCase } from '../../common/convert-data';
 
 const dialog = useDialog();
 const inventory = useInventory();
@@ -17,6 +17,9 @@ const resource = useResource();
 const formData = ref({});
 const departments = ref([]);
 const couterChangeForm = ref(0);
+const editModeForm = ref(Enum.EditMode.None);
+const dataDelete = ref([]);
+const isDeleteAll = ref(false);
 // const validateForm = ref({
 //     inventoryName: '',
 //     skuCode: '',
@@ -260,15 +263,55 @@ const updateTag = () => {
         });
     }
     //Tự động tạo bảng
-    dataTable.value = genDataTable.value.map((dataGen) => {
+    let isDeleteAllData = true;
+    const dataGenAuto = [];
+    genDataTable.value.forEach((dataGen, index) => {
         const dataOld = dataTable.value.find((dataOld) => dataOld.SKUCode === dataGen.SKUCode);
         if (dataOld) {
-            dataOld.InventoryName = dataGen.InventoryName;
-            return dataOld;
+            isDeleteAllData = false;
+            // dataOld.InventoryName = dataGen.InventoryName;
+            dataGenAuto.push(dataOld);
         } else {
-            return dataGen;
+            dataGen.EditMode = Enum.EditMode.Add;
+            dataGenAuto.push(dataGen);
         }
     });
+    //Kiểm tra xem data có bị xóa hết không nếu xóa hết thì add vào mảng data xóa
+    if (isDeleteAllData) {
+        //Chỉ return ra data cũ có ID thì sẽ không dính vào data mới
+        const findDataDelete = dataTable.value.filter((data) => {
+            data.EditMode = Enum.EditMode.Delete;
+            return data.InventoryId;
+        });
+        dataDelete.value.push(...findDataDelete);
+    }
+    dataTable.value = dataGenAuto;
+};
+/*
+ **
+ * Author: Tiến Trung (26/08/2023)
+ * Description: Hàm xử lý khi xóa tag thì xóa tất cả data có tag đấy
+ */
+const handleRemoveTag = (index, type, tagCode) => {
+    const findDataDelete = dataTable.value.filter((data) => {
+        return data[convertToTitleCase(type) + 'Code'] === tagCode && data.InventoryId;
+    });
+    dataDelete.value.push(...findDataDelete);
+    findDataDelete.forEach((dataDelete) => {
+        dataDelete.EditMode = Enum.EditMode.Delete;
+        dataTable.value = dataTable.value.filter((data) => data.SKUCode !== dataDelete.SKUCode);
+    });
+    properties.value[type].splice(index, 1);
+    updateTag();
+};
+/*
+ **
+ * Author: Tiến Trung (19/08/2023)
+ * Description: hàm khi blur tag thì update
+ */
+const onBlurInputFormUpdateData = (propertyName, SKUCode) => {
+    updateTag();
+    //Chỉ cần lặp qua tất cả data rồi update lại mã là xong
 };
 /*
  **
@@ -277,6 +320,11 @@ const updateTag = () => {
  */
 const deleteDetail = (index) => {
     try {
+        if (dataTable.value[index].InventoryId) {
+            dataTable.value[index].EditMode = Enum.EditMode.Delete;
+            dataDelete.value.push(dataTable.value[index]);
+        }
+
         dataTable.value.splice(index, 1);
         updateProperties();
     } catch (error) {
@@ -300,7 +348,7 @@ const handleChangeImg = (image) => {
  * nếu thay đổi dữ liệu mà đóng modal thì bật dialog
  */
 function closeForm() {
-    if (couterChangeForm.value > 1) {
+    if (editModeForm.value === Enum.EditMode.Update) {
         dialog.setObjectData(formData.value);
         // dialog.setMethod(modalForm.method);
         dialog.open({
@@ -390,14 +438,30 @@ const updateForm = async () => {
         image: data.Image,
         isActive: isActive,
         isShowMenu: data.IsShowMenu,
+        editMode: Enum.EditMode.None,
     };
     dataTable.value = convertDataTable(data.Detail ? data.Detail : [], columnTable.value, resource.langCode) || [];
     updateProperties();
     iInventoryName.value.autoFocus();
 };
-const onBlurUpdateTag = () => {
-    updateTag();
+const submitForm = () => {
+    const dataDetail = [...dataTable.value, ...dataDelete.value];
+    formData.value.detail = dataDetail;
+    console.log(formData.value);
 };
+
+watch(
+    () => formData.value,
+    () => {
+        if (couterChangeForm.value !== 0) {
+            editModeForm.value = Enum.EditMode.Update;
+            couterChangeForm.value++;
+        } else {
+            couterChangeForm.value++;
+        }
+    },
+    { deep: true },
+);
 /**
  * Author: Tiến Trung (2/07/2023)
  * Description: khi component được tạo thì get data
@@ -459,7 +523,7 @@ onUnmounted(() => {
                                 validate="true"
                                 row
                                 require
-                                @blur="onBlurUpdateTag"
+                                @blur="onBlurInputFormUpdateData"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -480,7 +544,7 @@ onUnmounted(() => {
                                 type="text"
                                 validate="true"
                                 row
-                                @blur="onBlurUpdateTag"
+                                @blur="onBlurInputFormUpdateData"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -535,12 +599,14 @@ onUnmounted(() => {
             <div class="wrapper-form">
                 <MISAInputManyTag
                     @update-tag="updateTag"
+                    @remove-tag="handleRemoveTag"
                     :properties="properties.color"
                     :type="Enum.TypeProperties.Color"
                     label="Màu sắc"
                 ></MISAInputManyTag>
                 <MISAInputManyTag
                     @update-tag="updateTag"
+                    @remove-tag="handleRemoveTag"
                     :properties="properties.size"
                     :type="Enum.TypeProperties.Size"
                     label="Size"
@@ -611,7 +677,11 @@ onUnmounted(() => {
         </div>
 
         <div class="ntt-form__footer">
-            <MISAButton :type="Enum.ButtonType.IconPri" :action="MISAResource[resource.langCode]?.Button?.Save">
+            <MISAButton
+                @click="submitForm"
+                :type="Enum.ButtonType.IconPri"
+                :action="MISAResource[resource.langCode]?.Button?.Save"
+            >
                 <template #icon>
                     <MISAIcon width="21" height="11" icon="save" />
                 </template>

@@ -5,7 +5,7 @@
         </div>
         <div @click="input.focus()" class="group-tag">
             <div class="wrapper__group-tag">
-                <p @click="handleRemoveTag(index)" v-for="(item, index) in listTag" :key="index" class="tag-item">
+                <p @click="handleRemoveTag(index, item)" v-for="(item, index) in listTag" :key="index" class="tag-item">
                     {{ item[props.type] }}
                     <span class="center">
                         <MISAIcon width="10" height="10" icon="close-eshop" />
@@ -13,14 +13,13 @@
                 </p>
                 <input @blur="addTag" ref="input" @keydown="handleAddTag" v-model="value" type="text" />
             </div>
-            
         </div>
     </div>
 </template>
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import Enum from '../../../common/enum';
-import { removeVietnameseTones } from '../../../common/convert-data';
+import { convertToTitleCase, removeVietnameseTones } from '../../../common/convert-data';
 const listTag = ref([]);
 const value = ref('');
 const input = ref(null);
@@ -29,7 +28,7 @@ const props = defineProps({
     properties: { type: Array, default: () => [{ Color: 'Xanh', ColorCode: 'XA' }] },
     type: { type: String, default: Enum.TypeProperties.Color },
 });
-const emits = defineEmits(['update-tag']);
+const emits = defineEmits(['update-tag', 'remove-tag']);
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm xử lý tag
@@ -42,7 +41,7 @@ const handleAddTag = (e) => {
     }
     //nếu là enter hoặc , thì add tag
     if (e.keyCode === Enum.Keyboard.Enter || e.keyCode === Enum.Keyboard.Comma) {
-        addTag(e)
+        addTag(e);
     }
     //nếu là nut BackSpace thì xóa tag cuối
     if (e.keyCode === Enum.Keyboard.BackSpace && value.value.trim('') === '') {
@@ -57,19 +56,17 @@ const handleAddTag = (e) => {
 const addTag = (e) => {
     //Nếu giá trị nhập trùng thì không thêm
     const findTag = listTag.value.findIndex(
-        (data) =>
-            data[props.type].toLocaleLowerCase() ===
-            value.value.toLocaleLowerCase(),
-    )
+        (data) => data[props.type].toLocaleLowerCase() === value.value.toLocaleLowerCase(),
+    );
     if (findTag !== -1) {
         setTimeout(() => {
             value.value = '';
             e.target.value = '';
         }, 2);
-        return
+        return;
     }
     if (value.value.trim('') !== '') {
-        const valueTag = value.value.trim().replace(/\s+/g, ' ')// biểu thức chính quy xóa các khoảng trắng đầu tiên
+        const valueTag = value.value.trim().replace(/\s+/g, ' '); // biểu thức chính quy xóa các khoảng trắng đầu tiên
         listTag.value.push({ [props.type]: valueTag, [props.type + 'Code']: autoCode(valueTag, props.type) });
         emits('update-tag');
         setTimeout(() => {
@@ -77,7 +74,7 @@ const addTag = (e) => {
             e.target.value = '';
         }, 2);
     }
-}
+};
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm tự động sinh code cho thuộc tính
@@ -85,7 +82,7 @@ const addTag = (e) => {
 const autoCode = (value, type) => {
     let autoCode = '';
     const removeVietNameseTonesValue = removeVietnameseTones(value).toLocaleUpperCase();
-    const listWord = removeVietNameseTonesValue.split(' ');//từ trong chuỗi
+    const listWord = removeVietNameseTonesValue.split(' '); //từ trong chuỗi
     //color và size có kiểu auto code khác nhau
     switch (type) {
         case Enum.TypeProperties.Size:
@@ -93,7 +90,11 @@ const autoCode = (value, type) => {
             break;
         default:
             if (listWord.length > 1) {
-                autoCode = validateAutoCode(listWord.map((item) => item.charAt(0)).join(''), false, listWord[listWord.length - 1]);
+                autoCode = validateAutoCode(
+                    listWord.map((item) => item.charAt(0)).join(''),
+                    false,
+                    listWord[listWord.length - 1],
+                );
             } else {
                 autoCode = validateAutoCode(removeVietNameseTonesValue.substring(0, 2), true);
             }
@@ -106,53 +107,52 @@ const autoCode = (value, type) => {
  * Description: Hàm validate color code
  */
 const validateAutoCode = (currentCode, upNumber, lastWord) => {
-    let newCode = currentCode
-    let autoNumber = 0
-    let findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+    let newCode = currentCode;
+    let autoNumber = 0;
+    let findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode);
     if (upNumber) {
         while (findCode !== -1) {
-            autoNumber++
-            newCode = currentCode + `${autoNumber < 10 ? '0' + autoNumber : autoNumber}`
-            findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+            autoNumber++;
+            newCode = currentCode + `${autoNumber < 10 ? '0' + autoNumber : autoNumber}`;
+            findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode);
         }
     } else {
-        let currentWordIndex = 0
-        const arrayLastWord = lastWord.split('')
+        let currentWordIndex = 0;
+        const arrayLastWord = lastWord.split('');
         while (findCode !== -1) {
             if (currentWordIndex < arrayLastWord.length - 1) {
-                currentWordIndex++
-                newCode = currentCode + arrayLastWord[currentWordIndex]
-                currentCode = newCode
-                findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+                currentWordIndex++;
+                newCode = currentCode + arrayLastWord[currentWordIndex];
+                currentCode = newCode;
+                findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode);
                 if (findCode !== -1) {
-                    continue
+                    continue;
                 } else {
-                    break
+                    break;
                 }
             }
-            autoNumber++
-            newCode = currentCode + `${autoNumber < 10 ? '0' + autoNumber : autoNumber}`
-            findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode)
+            autoNumber++;
+            newCode = currentCode + `${autoNumber < 10 ? '0' + autoNumber : autoNumber}`;
+            findCode = listTag.value.findIndex((tag) => tag[props.type + 'Code'] === newCode);
         }
     }
-    return newCode
-}
+    return newCode;
+};
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm xóa tag ở vị trí bất kỳ
  */
-const handleRemoveTag = (index) => {
-    listTag.value.splice(index, 1);
-    emits('update-tag');
+const handleRemoveTag = (index, tag) => {
+    emits('remove-tag', index, props.type, tag[props.type + 'Code']);
 };
 watch(
     () => props.properties,
     () => {
-        listTag.value = props.properties
+        listTag.value = props.properties;
     },
 );
 onMounted(() => {
-    listTag.value = props.properties
+    listTag.value = props.properties;
 });
 </script>
 <style lang="scss">

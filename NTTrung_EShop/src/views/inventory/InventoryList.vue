@@ -42,8 +42,8 @@ const filter = ref({});
 const getData = async (filterObject) => {
     try {
         if (route.query?.page === undefined) {
-            router.push({ query: { page: 1 } })
-            return
+            router.push({ query: { page: 1 } });
+            return;
         }
         skeleton.value = true;
         const filterData = {
@@ -53,8 +53,8 @@ const getData = async (filterObject) => {
         };
         filter.value = filterObject;
 
-        baseApi.path = Enum.Router.Inventory.Api
-        baseApi.method = Enum.ApiMethod.POST
+        baseApi.path = Enum.Router.Inventory.Api;
+        baseApi.method = Enum.ApiMethod.POST;
         baseApi.data = filterData;
         const response = await baseApi.request('filter');
         console.log(response);
@@ -211,7 +211,7 @@ const setColumnTable = () => {
             type: Enum.TypeDataTable.Business,
             isShow: true,
             filter: true,
-        }
+        },
     ];
 };
 //Gọi khi created
@@ -331,7 +331,7 @@ const openDialogDeleteSelected = () => {
  * Description: Hàm xóa nhân viên
  */
 const deleteData = async () => {
-    baseApi.path = Enum.Router.Inventory.Path
+    baseApi.path = Enum.Router.Inventory.Path;
     await baseApi.request(`${objectData.value.InventoryId}`);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Delete);
     //Nếu đang xóa trang cuối còn 1 bản ghi thì quay vể trang cuối -1
@@ -352,7 +352,7 @@ const deleteData = async () => {
  */
 const deleteDataSelected = async () => {
     const listIds = dataSelected.value.map((data) => data.Inventory).join(',');
-    baseApi.path = Enum.Router.Inventory.Api
+    baseApi.path = Enum.Router.Inventory.Api;
     baseApi.method = Enum.ApiMethod.DELETE;
     baseApi.data = listIds;
     await baseApi.request('DeleteMany');
@@ -379,7 +379,7 @@ const deleteEntity = async () => {
         //khi không xóa từng đối tượng thì không
         //có đối tượng nào được chọn và object rỗng
         //sẽ chạy vào xóa tất cả
-        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.path = Enum.Router.Inventory.Api;
         baseApi.method = Enum.ApiMethod.DELETE;
         if (Object.keys(objectData.value).length === 0) {
             await deleteDataSelected();
@@ -431,7 +431,7 @@ const setLoadingButton = (status, isAddNewForm) => {
  * Description: Hàm Thêm mới
  */
 const addNewData = async (data) => {
-    baseApi.path = Enum.Router.Inventory.Api
+    baseApi.path = Enum.Router.Inventory.Api;
     baseApi.data = data;
     baseApi.method = Enum.ApiMethod.POST;
     const res = await baseApi.request();
@@ -445,7 +445,7 @@ const addNewData = async (data) => {
  * Description: Hàm Update
  */
 const updateData = async (data) => {
-    baseApi.path = Enum.Router.Inventory.Api
+    baseApi.path = Enum.Router.Inventory.Api;
     baseApi.data = data;
     baseApi.method = Enum.ApiMethod.PUT;
     const res = await baseApi.request(`${object.value.InventoryId}`);
@@ -507,7 +507,7 @@ const exportExcel = async (listIds, search) => {
         loadingExport.value = true;
         //Lấy ra mảng cột được hiển thị
         const columnTableExcel = columnsTable.value.filter((column) => column.isShow);
-        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.path = Enum.Router.Inventory.Api;
         baseApi.method = Enum.ApiMethod.GET;
         const excelResquest = {
             columns: columnTableExcel,
@@ -516,7 +516,7 @@ const exportExcel = async (listIds, search) => {
             title: MISAResource[resource.langCode]?.Excel?.Inventory.Title,
             sheet: MISAResource[resource.langCode]?.Excel?.Inventory.Sheet,
         };
-        baseApi.path = Enum.Router.Inventory.Api
+        baseApi.path = Enum.Router.Inventory.Api;
         const res = await baseApi.downloadExcel(excelResquest);
         // Tạo URL object từ dữ liệu trả về
         const url = window.URL.createObjectURL(
@@ -647,7 +647,6 @@ onUnmounted(() => {
     window.removeEventListener('keydown', onKeyDownDelete);
     window.removeEventListener('click', closeMenuExport);
 });
-
 </script>
 <template lang="">
     <div class="tt-continer__body">
@@ -755,11 +754,6 @@ onUnmounted(() => {
             </div>
         </div>
     </div>
-    <Teleport to="#app">
-        <!-- @loading-button="(isload) => (loadingButton = isload)" -->
-        <!-- <InventoryForm :buttonLoad="loadingButton" @submit-form="submitFormData" v-if="isShow"></InventoryForm> -->
-        <MISADialog v-if="dialog.isShow" @submit-form="submitFormData" @delete-data="deleteEntity"></MISADialog>
-    </Teleport>
 </template>
 
 <style lang="scss" scoped>

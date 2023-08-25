@@ -1,4 +1,5 @@
-﻿using MISA.NTTrungWeb05.GD2.Domain.Model;
+﻿using MISA.NTTrungWeb05.GD2.Domain.Enum;
+using MISA.NTTrungWeb05.GD2.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,5 +106,9 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Danh sách detail
         /// </summary>  
         public List<InventoryResponseDto>? Detail { get; set; }
+        /// <summary>
+        /// Chế độ
+        /// </summary>  
+        public EditMode EditMode { get; set; } = EditMode.None;
     }
 }

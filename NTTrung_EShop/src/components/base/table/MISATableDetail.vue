@@ -205,6 +205,11 @@ const handleOpenEditColumn = (item, index) => {
         editIndex.value = index;
     }
 };
+const setDataEditMode = (data) => {
+    if (data.EditMode !== Enum.EditMode.Add) {
+        data.EditMode = Enum.EditMode.Update;
+    }
+};
 /**
  * Author: Tiến Trung (25/08/2023)
  * Description: khi component dc hiển thị thì gán dữ liệu  dataTableRefence
@@ -314,6 +319,7 @@ watch(
                                 </div>
                                 <MISAInput
                                     @blur="editIndex = ''"
+                                    @input-validation="setDataEditMode(rowData)"
                                     :money="item.type === Enum.TypeDataTable.Money"
                                     autoFocusMount
                                     v-if="editIndex === index + '' + indexCol"
