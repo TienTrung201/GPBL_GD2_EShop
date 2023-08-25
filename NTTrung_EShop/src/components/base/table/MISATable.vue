@@ -96,15 +96,15 @@ const filter = ref({
 const emitFilterData = (filterObject) => {
     //Nếu đang có giá trị để filter thì thêm vào
     if (filterObject.isFilter) {
-        var currentFilter = filter.value.Filter.findIndex(filter => filter.property === filterObject.property)
+        var currentFilter = filter.value.Filter.findIndex((filter) => filter.property === filterObject.property);
         if (currentFilter != -1) {
-            filter.value.Filter[currentFilter] = filterObject
+            filter.value.Filter[currentFilter] = filterObject;
         } else {
             filter.value.Filter.push(filterObject);
         }
         //Nếu không có thì xóa filter cũ đi
     } else {
-        filter.value.Filter = filter.value.Filter.filter(filter => filter.property != filterObject.property)
+        filter.value.Filter = filter.value.Filter.filter((filter) => filter.property != filterObject.property);
     }
     emit('filter-data', filter.value);
 };
@@ -217,8 +217,9 @@ const pagination = computed(() => {
         '-' +
         (props.currentPage * Number(pageSize.value) - Number(pageSize.value) + props.dataTable.length);
 
-    return `${MISAResource[resource.langCode].Table?.Show} ${page} ${MISAResource[resource.langCode].Table.OutOf} ${props.TotalRecords
-        } ${MISAResource[resource.langCode].Table.Record}`;
+    return `${MISAResource[resource.langCode].Table?.Show} ${page} ${MISAResource[resource.langCode].Table.OutOf} ${
+        props.TotalRecords
+    } ${MISAResource[resource.langCode].Table.Record}`;
 });
 /**
  * Author: Tiến Trung (12/07/2023)
@@ -416,9 +417,6 @@ defineExpose({ closeMenu });
                         <th
                             v-if="item.isShow"
                             :style="{
-                                textAlign: 'center',
-                                width: item.width + 'px',
-                                maxWidth: item.width + 'px',
                                 left: item.pin ? item.stickyLeft + 'px' : '',
                             }"
                             v-tooltip-tippy="{
@@ -435,15 +433,17 @@ defineExpose({ closeMenu });
                             ]"
                         >
                             <div class="th__wrapper">
-                                <p @mousedown="setSort(item.key, item.filter)" class="th__content">
+                                <p
+                                    :style="{
+                                        textAlign: 'center',
+                                        width: item.width + 'px',
+                                        maxWidth: item.width + 'px',
+                                    }"
+                                    @mousedown="setSort(item.key, item.filter)"
+                                    class="th__content"
+                                >
                                     {{ item.title }}
-                                    <span
-                                        v-if="
-                                            item.filter &&
-                                            filter.propertySort === item.key
-                                        "
-                                        class="icon-sort"
-                                    >
+                                    <span v-if="item.filter && filter.propertySort === item.key" class="icon-sort">
                                         <MISAIcon
                                             :class="{ asc: filter.sortBy === Enum.Sort.Asc }"
                                             width="11"
@@ -652,7 +652,7 @@ defineExpose({ closeMenu });
                     <MISADropdown v-model:value="pageSize" selectEmpty :options="pageSizeOption"></MISADropdown>
                 </p>
             </div>
-            <p v-if="dataTable.length>0" class="table-total">
+            <p v-if="dataTable.length > 0" class="table-total">
                 {{ pagination }}
             </p>
         </div>

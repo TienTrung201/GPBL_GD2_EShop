@@ -86,6 +86,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>
         public Guid? ParentId { get; set; }
         /// <summary>
+        /// Id nhóm hàng hóa
+        /// </summary>  
+        public Guid ItemCategoryId { get; set; }
+        /// <summary>
+        /// Id đơn vị tính
+        /// </summary>  
+        public Guid UnitId { get; set; }
+        /// <summary>
         /// Nhóm hàng hóa
         /// </summary>  
         public string ItemCategoryName { get; set; } = string.Empty;

@@ -74,7 +74,7 @@ const MISAResource = {
                 Description: 'Mô tả',
                 Picture: 'Ảnh',
                 IsActive: 'Trạng thái kinh doanh',
-                IsShowMenu: 'Hiển thị trên màn hình bán hàng',
+                IsShowMenu: 'Hiển thị trên MH bán hàng',
                 Unit: 'Đơn vị tính',
                 ItemCategory: 'Nhóm hàng hóa',
                 AvgUnitPrice: 'Giá mua TB',

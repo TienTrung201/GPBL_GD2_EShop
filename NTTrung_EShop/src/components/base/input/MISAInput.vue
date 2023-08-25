@@ -37,6 +37,7 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
+import { convertCurrency } from '../../../common/convert-data';
 
 const emit = defineEmits(['update:value', 'input-validation', 'blur', 'enter']);
 const props = defineProps({
@@ -58,6 +59,8 @@ const props = defineProps({
         type: Number,
     },
     row: { type: Boolean, default: false },
+    autoFocusMount: { type: Boolean, default: false }, //Khi mount thì input tự động focus
+    money: { type: Boolean, default: false }, //Định dạng tiền tệ
 });
 const input = ref(null);
 /**
@@ -77,7 +80,7 @@ const onBlur = (e) => {
 };
 const onEnter = (e) => {
     emit('enter', e.target.value);
-}
+};
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm để binding Input
@@ -95,6 +98,18 @@ const handleChangeInput = (e) => {
         } else {
             input.value.value = props.value;
         }
+    } else if (props.money) {
+        if (e.target.value.trim('').length === 0) {
+            emit('update:value', '');
+            emit('input-validation', '');
+        }
+        const value = e.target.value.replace(/\./g, '');
+        if (/^\d+$/.test(value)) {
+            emit('update:value', convertCurrency(Number(value)));
+            emit('input-validation', convertCurrency(Number(value)));
+        } else {
+            input.value.value = props.value;
+        }
     } else {
         emit('update:value', e.target.value);
         emit('input-validation', e.target.value);
@@ -108,6 +123,9 @@ const handleChangeInput = (e) => {
  */
 onMounted(() => {
     if (props.focus) {
+        autoFocus();
+    }
+    if (props.autoFocusMount) {
         autoFocus();
     }
 });

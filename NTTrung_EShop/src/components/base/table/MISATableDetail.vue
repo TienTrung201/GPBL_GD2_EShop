@@ -4,7 +4,7 @@ import { useResource } from '../../../stores/resource.js';
 // import MISAResource from '../../../common/resource';
 import Enum from '../../../common/enum';
 import { formatAlign } from '../../../common/convert-data';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 const emit = defineEmits([
     'select-row',
     'select-all',
@@ -69,6 +69,7 @@ const props = defineProps({
         default: 0,
     },
 });
+const editIndex = ref('');
 const table = ref(null);
 const dialog = useDialog();
 const resource = useResource();
@@ -77,6 +78,7 @@ const filter = ref({
     sortColumn: '',
     sortOrder: null,
 });
+const dataTableRefence = ref([]);
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm xóa detail
@@ -126,6 +128,7 @@ watch(
     },
     { deep: true },
 );
+
 setStickyTable();
 /**
  * Author: Tiến Trung (12/07/2023)
@@ -192,6 +195,29 @@ function startResize(e, columnKey) {
         window.removeEventListener('mousemove', mouseMove);
     }
 }
+
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: hàm gán tên cho editindex để mở input sửa
+ */
+const handleOpenEditColumn = (item, index) => {
+    if (item.isEdit) {
+        editIndex.value = index;
+    }
+};
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: khi component dc hiển thị thì gán dữ liệu  dataTableRefence
+ */
+onMounted(() => {
+    dataTableRefence.value = props.dataTable;
+});
+watch(
+    () => props.dataTable,
+    () => {
+        dataTableRefence.value = props.dataTable;
+    },
+);
 </script>
 <template lang="">
     <div class="wrapper-table">
@@ -256,16 +282,12 @@ function startResize(e, columnKey) {
 
             <tbody class="table-body">
                 <!-- dataTable -->
-                <tr v-for="(rowData, index) in dataTable" :key="rowData[propertiesIdName]">
-                    <template :key="item.dataIndex" v-for="item in columnsTable">
+                <tr v-for="(rowData, index) in dataTableRefence" :key="rowData[propertiesIdName]">
+                    <template :key="item.dataIndex" v-for="(item, indexCol) in columnsTable">
                         <td
                             v-if="item.isShow"
-                            :class="[{ sticky: item.pin }]"
-                            @dblclick="handleShowEditInfo(rowData)"
+                            :class="[{ sticky: item.pin }, { 'no-edit': !item.isEdit }]"
                             :style="{
-                                textAlign: formatAlign(item.align),
-                                width: item.width + 'px',
-                                maxWidth: item.width + 'px',
                                 left: item.pin ? item.stickyLeft + 'px' : '',
                             }"
                             v-tooltip-tippy="{
@@ -275,9 +297,30 @@ function startResize(e, columnKey) {
                                 placement: item.width > 400 ? 'left' : 'top',
                             }"
                         >
-                            <slot :name="item.key" v-bind="rowData">
-                                {{ rowData[item.key] }}
-                            </slot>
+                            <div @click="handleOpenEditColumn(item, index + '' + indexCol)" class="edit-data">
+                                <div
+                                    class="data-show"
+                                    v-if="editIndex !== index + '' + indexCol"
+                                    :style="{
+                                        textAlign: formatAlign(item.align),
+                                        width: item.width + 'px',
+                                        maxWidth: item.width + 'px',
+                                    }"
+                                    @input="handleEditData($event, item.key, index)"
+                                >
+                                    <slot :name="item.key" v-bind="rowData">
+                                        {{ rowData[item.key] }}
+                                    </slot>
+                                </div>
+                                <MISAInput
+                                    @blur="editIndex = ''"
+                                    :money="item.type === Enum.TypeDataTable.Money"
+                                    autoFocusMount
+                                    v-if="editIndex === index + '' + indexCol"
+                                    validate="true"
+                                    v-model:value="rowData[item.key]"
+                                ></MISAInput>
+                            </div>
                         </td>
                     </template>
                     <td class="text-align--center td-control">
@@ -317,5 +360,10 @@ function startResize(e, columnKey) {
 <style lang="scss" scoped>
 @import './misa-table.scss';
 .td-control {
+}
+td {
+    padding: 0 1px !important;
+    padding-top: 1px !important;
+    padding-right: 2px !important;
 }
 </style>
