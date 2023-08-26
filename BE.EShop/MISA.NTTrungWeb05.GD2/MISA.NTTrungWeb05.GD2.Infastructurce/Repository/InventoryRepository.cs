@@ -75,25 +75,53 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
             {
                 inventory.InventoryId = Guid.NewGuid();
                 inventory.CreatedDate = DateTime.Now;
+                inventory.AvgCostPrice = 0;
+                inventory.AvgUnitPrice = 0;
                 query.Append("( ");
                 int indexColumn = 0;
                 listPropertiesToString.ForEach(property =>
                 {
                     PropertyInfo propertyInfo = inventory.GetType().GetProperty(property);
+                    Type propertyType = propertyInfo.PropertyType;
+                    string typeName = "";
+                    if (Nullable.GetUnderlyingType(propertyType) != null)
+                    {
+                        Type underlyingType = Nullable.GetUnderlyingType(propertyType);
+                        typeName = underlyingType.FullName;
+                    }
                     var value = propertyInfo?.GetValue(inventory);
-                    string paramName = $"@{propertyInfo.Name}{indexData}";
-                    query.Append(paramName);
-                    parameters.Add(paramName, value);
+
+                    if (typeName == typeof(bool).FullName)
+                    {
+                        value = (bool)value ? 1 : 0;
+                    }
+                    if (typeName == typeof(DateTimeOffset).FullName)
+                    {
+                        if (value != null)
+                        {
+                            DateTimeOffset createdDate = (DateTimeOffset)value;
+                            string formattedDate = createdDate.ToString("yyyy-MM-dd HH:mm:ss");
+                            value = formattedDate;
+                        }
+                        else
+                        {
+                            value = null;
+                        }
+
+                    }
+                    //string paramName = $"@{propertyInfo.Name}{indexData}";
+                    //parameters.Add(paramName, value);
+                    query.Append(value == null ? "NULL" : $"'{value}'");
                     if (indexColumn != listPropertiesToString.Count() - 1)
                     {
                         query.Append(", ");
                     }
                     indexColumn++;
                 });
-                
+
                 if (indexData != listInventories.Count() - 1)
                 {
-                    query.Append("), ");   
+                    query.Append("), ");
                 }
                 else
                 {
@@ -126,24 +154,53 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
                 listPropertiesToString.Add(property.Name);
             }
 
-            int index = 1;
             listInventories.ForEach((inventory) =>
             {
+                inventory.ModifiedDate = DateTime.Now;
+                inventory.AvgCostPrice = 0;
+                inventory.AvgUnitPrice = 0;
                 query.Append("Update Inventory Set ");
                 int indexColumn = 0;
                 listPropertiesToString.ForEach(property =>
                 {
                     PropertyInfo propertyInfo = inventory.GetType().GetProperty(property);
+                    Type propertyType = propertyInfo.PropertyType;
+                    string typeName = "";
+                    if (Nullable.GetUnderlyingType(propertyType) != null)
+                    {
+                        Type underlyingType = Nullable.GetUnderlyingType(propertyType);
+                        typeName = underlyingType.FullName;
+                    }
                     var value = propertyInfo?.GetValue(inventory);
-                    query.Append($"{propertyInfo} = @{propertyInfo}{index} Where InventoryId = {inventory.GetKey()}");
-                    parameters.Add($"@{propertyInfo}{index}", value);
+
+                    if (typeName == typeof(bool).FullName)
+                    {
+                        value = (bool)value ? 1 : 0;
+                    }
+                    if (typeName == typeof(DateTimeOffset).FullName)
+                    {
+                        if (value != null)
+                        {
+                            DateTimeOffset createdDate = (DateTimeOffset)value;
+                            string formattedDate = createdDate.ToString("yyyy-MM-dd HH:mm:ss");
+                            value = formattedDate;
+                        }
+                        else
+                        {
+                            value = null;
+                        }
+
+                    }
+                    var valueData= value == null ? "NULL" : $"'{value}'";
+                    query.Append($"{propertyInfo.Name} = {valueData} ");
+                    //parameters.Add($"@{propertyInfo}{index}", value);
                     if (indexColumn != listPropertiesToString.Count() - 1)
                     {
                         query.Append(", ");
                     }
                     indexColumn++;
                 });
-                query.Append(";");
+                query.Append($"Where InventoryId = '{inventory.GetKey()}'; ");
             });
             var queryString = query.ToString();
             parameters.Add("@QueryString", queryString);

@@ -469,19 +469,21 @@ const submitForm = async () => {
     try {
         //vadidate nhập
         const copyObj = deepCopy(formData.value);
-        const dataDetail = [...dataTable.value, ...dataDelete.value];
-        dataDetail.forEach((data) => {
+        const dataCreateUpdate = dataTable.value.map((data) => {
             const costPrice = Number(data.CostPrice?.replace('.', ''));
             const unitPrice = Number(data.CostPrice?.replace('.', ''));
-
-            data.CostPrice = costPrice;
-            data.UnitPrice = unitPrice;
+            return {
+                ...data,
+                CostPrice: costPrice,
+                UnitPrice: unitPrice,
+                UnitId: formData.value.unitId,
+                ItemCategoryId: formData.value.itemCategoryId,
+            };
         });
-        copyObj.detail = dataDetail;
+        copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
         copyObj.isActive = copyObj.isActive ? true : false;
         copyObj.costPrice = Number(copyObj.costPrice?.replace('.', ''));
         copyObj.unitPrice = Number(copyObj.unitPrice?.replace('.', ''));
-        console.log(copyObj);
         await saveData(copyObj);
     } catch (error) {
         console.log(error);
