@@ -46,7 +46,6 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
             var storedProcedureName = $"Proc_{TableName}_GetDetail";
             var param = new DynamicParameters();
             param.Add("@ParentId", inventory.InventoryId);
-
             var result = await _uow.Connection.QueryAsync<InventoryModel>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
             inventory.Detail = result.ToList();
             return inventory;
@@ -57,7 +56,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// <paran name="entity">Danh sách bản ghi thêm</paran>
         /// <returns>Bản ghi</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<int> InsertMultipleAsync(List<Inventory> listInventories, Guid? parentId)
+        public async Task<int> InsertMultipleAsync(List<Inventory> listInventories)
         {
             var storedProcedureName = $"Proc_Excute";
             var parameters = new DynamicParameters();
@@ -71,25 +70,36 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
                 listPropertiesToString.Add(property.Name);
             }
             query.Append($"( {string.Join(", ", listPropertiesToString)} ) Values ");
-            int index = 1;
+            int indexData = 0;
             listInventories.ForEach((inventory) =>
             {
-                inventory.ParentId = parentId;
+                inventory.InventoryId = Guid.NewGuid();
+                inventory.CreatedDate = DateTime.Now;
                 query.Append("( ");
                 int indexColumn = 0;
                 listPropertiesToString.ForEach(property =>
                 {
                     PropertyInfo propertyInfo = inventory.GetType().GetProperty(property);
                     var value = propertyInfo?.GetValue(inventory);
-                    query.Append($"@{propertyInfo}{index}");
-                    parameters.Add($"@{propertyInfo}{index}", value);
+                    string paramName = $"@{propertyInfo.Name}{indexData}";
+                    query.Append(paramName);
+                    parameters.Add(paramName, value);
                     if (indexColumn != listPropertiesToString.Count() - 1)
                     {
                         query.Append(", ");
                     }
                     indexColumn++;
                 });
-                query.Append("), ");
+                
+                if (indexData != listInventories.Count() - 1)
+                {
+                    query.Append("), ");   
+                }
+                else
+                {
+                    query.Append(") ");
+                }
+                indexData++;
             });
             var queryString = query.ToString();
             parameters.Add("@QueryString", queryString);

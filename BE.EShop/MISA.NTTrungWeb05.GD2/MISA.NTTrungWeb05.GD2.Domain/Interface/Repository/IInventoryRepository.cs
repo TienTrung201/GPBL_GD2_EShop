@@ -22,10 +22,9 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Repository
         /// Thêm nhiều
         /// </summary>
         /// <paran name="entity">Danh sách bản ghi thêm</paran>
-        /// <paran name="parentId">Id của master</paran>
         /// <returns>Bản ghi</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> InsertMultipleAsync(List<Inventory> listInventories, Guid? parentId);
+        Task<int> InsertMultipleAsync(List<Inventory> listInventories);
         /// <summary>
         /// Sửa nhiều
         /// </summary>

@@ -94,80 +94,103 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         /// CreatedBy: NTTrung (23/08/2023)
         public async Task<int> SaveData(InventoryRequestDto data)
         {
-            var result = 0;
-            //Cập nhật Master
-            var master = new Inventory();
-            switch (data.EditMode)
+            try
             {
-                case EditMode.Create:
-                    master = await MapCreateDtoToEntityValidateAsync(data);
-                    result += await _inventoryRepository.InsertAsync(master);
-                    break;
-                case EditMode.Update:
-                    master = await MapUpdateDtoToEntityValidateAsync(data.InventoryId, data);
-                    result += await _inventoryRepository.UpdateAsync(master);
-                    break;
-                default:
-                    break;
-            }
-            if (data.Detail == null)
-            {
-                return result;
-            }
-            else
-            {
-                //Nếu có detail thì cập nhật Master và Detail
-
-                var listDelete = data.Detail.Where(inventory => inventory.EditMode == EditMode.Delete).ToArray();
-                var listUpdate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update).ToArray();
-                var listCreate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Create).ToArray();
-
-                //--------------------------------------Xóa những hàng hóa bị xóa--------------------------
-                var listIdsDelete = listDelete.Select(inventory => inventory.InventoryId.ToString());
-                var listIdsToString = string.Join(", ", listIdsDelete);
-                if (listIdsDelete.Count() > 0)
+                await _unitOfWork.BeginTransactionAsync();
+                var result = 0;
+                //Cập nhật Master
+                var master = new Inventory();
+                switch (data.EditMode)
                 {
-                    result += await _inventoryRepository.DeleteManyAsync(listIdsToString);
+                    case EditMode.Create:
+                        master = await MapCreateDtoToEntityValidateAsync(data);
+                        result += await _inventoryRepository.InsertAsync(master);
+                        break;
+                    case EditMode.Update:
+                        master = await MapUpdateDtoToEntityValidateAsync(data.InventoryId, data);
+                        result += await _inventoryRepository.UpdateAsync(master);
+                        break;
+                    default:
+                        break;
                 }
-                //Cập nhật giá trung bình
-                decimal? totalUnitPrice = 0;
-                decimal? totalCostPrice = 0;
-                data.Detail.ForEach(inventory =>
+                if (data.Detail == null)
                 {
-                    if (inventory.UnitPrice.HasValue)
-                    {
-                        totalUnitPrice += inventory.UnitPrice;
-                    }
-                    if (inventory.CostPrice.HasValue)
-                    {
-                        totalCostPrice += inventory.CostPrice;
-                    }
-                });
-                var newAvgUnitPrice = totalUnitPrice / data.Detail.Count();
-                var newAvgCostPrice = totalCostPrice / data.Detail.Count();
-                data.AvgCostPrice = newAvgCostPrice;
-                data.AvgUnitPrice = newAvgUnitPrice;
-                //---------------------------------------Update list hàng hóa-------------------------------
-                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-                var listCodes = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCode);
-                var listBarcodes = data.Detail.Where(inventory => inventory.EditMode != EditMode.Update && inventory.IsUpdateBarcode).Select((inventory) => inventory.BarCode);
-                await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes)); 
-                await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodes));
-                //Không có lỗi thì Update
-                var listEntityUpdate = _mapper.Map<List<Inventory>>(listUpdate);
-                result += await _inventoryRepository.UpdateMultipleAsync(listEntityUpdate);
+                    return result;
+                }
+                else
+                {
+                    //Nếu có detail thì cập nhật Master và Detail
 
-                //---------------------------------------Create list hàng hóa--------------------------------
-                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-                var listCodesCreate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCode);
-                var listBarcodesCreate = data.Detail.Where(inventory => inventory.EditMode != EditMode.Create).Select((inventory) => inventory.BarCode);
-                await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
-                await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));
-                //Không có lỗi thì thêm mới
-                var listEntityCreate = _mapper.Map<List<Inventory>>(listCreate);
-                result += await _inventoryRepository.InsertMultipleAsync(listEntityCreate, master.ParentId);
+                    var listDelete = data.Detail.Where(inventory => inventory.EditMode == EditMode.Delete).ToArray();
+                    var listUpdate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update).ToArray();
+                    var listCreate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Create).ToArray();
 
+                    //--------------------------------------Xóa những hàng hóa bị xóa--------------------------
+                    if (listDelete.Length > 0)
+                    {
+                        var listIdsDelete = listDelete.Select(inventory => inventory.InventoryId.ToString());
+                        var listIdsToString = string.Join(", ", listIdsDelete);
+                        result += await _inventoryRepository.DeleteManyAsync(listIdsToString);
+                    }
+
+                    //Cập nhật giá trung bình
+                    decimal? totalUnitPrice = 0;
+                    decimal? totalCostPrice = 0;
+                    data.Detail.ForEach(inventory =>
+                    {
+                        if (inventory.EditMode == EditMode.Create || inventory.EditMode == EditMode.Update)
+                        {
+                            if (inventory.UnitPrice.HasValue)
+                            {
+                                totalUnitPrice += inventory.UnitPrice;
+                            }
+                            if (inventory.CostPrice.HasValue)
+                            {
+                                totalCostPrice += inventory.CostPrice;
+                            }
+                        }
+                    });
+                    var newAvgUnitPrice = totalUnitPrice / data.Detail.Count();
+                    var newAvgCostPrice = totalCostPrice / data.Detail.Count();
+                    data.AvgCostPrice = newAvgCostPrice;
+                    data.AvgUnitPrice = newAvgUnitPrice;
+                    //---------------------------------------Update list hàng hóa-------------------------------
+                    //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
+                    if (listUpdate.Length > 0)
+                    {
+                        var listCodes = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCode);
+                        var listBarcodes = data.Detail.Where(inventory => inventory.EditMode != EditMode.Update && inventory.IsUpdateBarcode).Select((inventory) => inventory.BarCode);
+                        await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes));
+                        await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodes));
+                        //Không có lỗi thì Update
+                        var listEntityUpdate = _mapper.Map<List<Inventory>>(listUpdate);
+
+                        result += await _inventoryRepository.UpdateMultipleAsync(listEntityUpdate);
+
+                    }
+
+
+                    //---------------------------------------Create list hàng hóa--------------------------------
+                    //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
+                    if (listCreate.Length > 0)
+                    {
+                        var listCodesCreate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCode);
+                        var listBarcodesCreate = data.Detail.Where(inventory => inventory.EditMode != EditMode.Create).Select((inventory) => inventory.BarCode);
+                        await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
+                        await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));
+                        //Không có lỗi thì thêm mới
+                        var listEntityCreate = _mapper.Map<List<Inventory>>(listCreate);
+
+                        result += await _inventoryRepository.InsertMultipleAsync(listEntityCreate);
+                        await _unitOfWork.CommitAsync();
+                    }
+                }
                 return result;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollBackAsync();
+                throw;
             }
         }
     }

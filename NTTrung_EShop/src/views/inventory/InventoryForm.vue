@@ -8,18 +8,24 @@ import { useInventory } from '../../stores/inventory';
 import { useTitleHeader } from '../../stores/title-header';
 import MISATableDetail from '../../components/base/table/MISATableDetail.vue';
 import baseApi from '../../api/base-api';
-import { convertDataTable, convertToTitleCase } from '../../common/convert-data';
-
+import { convertCurrency, convertDataTable, convertToTitleCase, deepCopy } from '../../common/convert-data';
+import { useRoute } from 'vue-router';
+import { useToast } from '../../stores/toast';
 const dialog = useDialog();
+const route = useRoute();
 const inventory = useInventory();
+const inventoryId = ref(route.params.id); //Biến chứa Id trên param
+const itemCategories = ref([]);
+const units = ref([]);
 const title = useTitleHeader();
 const resource = useResource();
-const formData = ref({});
-const departments = ref([]);
-const couterChangeForm = ref(0);
-const editModeForm = ref(Enum.EditMode.None);
-const dataDelete = ref([]);
-const isDeleteAll = ref(false);
+const formData = ref({}); //Biến lưu data
+const couterChangeForm = ref(0); //Biến kiểm tra số lần form thay đổi
+const isEditForm = ref(Enum.EditMode.None); // Biến này nhận biết form có bị thay đổi không
+const formEditMode = ref(inventoryId.value ? Enum.EditMode.Update : Enum.EditMode.Add);
+const dataDelete = ref([]); //Data Detail bị delete
+const inputType = ref({ SKUCode: 1, Name: 2 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
+
 // const validateForm = ref({
 //     inventoryName: '',
 //     skuCode: '',
@@ -106,56 +112,6 @@ const columnTable = ref([
 ]);
 const dataTable = ref([]);
 const properties = ref({ color: [], size: [] });
-const data = [
-    {
-        InventoryName: 'haha',
-        UnitName: 'Chiếc',
-        SKUCode: 'S-XA-S',
-        Color: 'Xanh',
-        ColorCode: 'XA',
-        Size: 'S',
-        SizeCode: 'S',
-        Barcode: '100001',
-        CostPrice: 200000,
-        UnitPrice: 300000,
-    },
-    {
-        InventoryName: 'haha',
-        UnitName: 'Chiếc',
-        SKUCode: 'S-XA-M',
-        Color: 'Xanh',
-        ColorCode: 'XA',
-        Size: 'M',
-        SizeCode: 'M',
-        Barcode: '100001',
-        CostPrice: 200000,
-        UnitPrice: 300000,
-    },
-    {
-        InventoryName: 'haha',
-        UnitName: 'Chiếc',
-        SKUCode: 'S-DO-S',
-        Color: 'Đỏ',
-        ColorCode: 'DO',
-        Size: 'S',
-        SizeCode: 'S',
-        Barcode: '100001',
-        CostPrice: 200000,
-        UnitPrice: 300000,
-    },
-    {
-        InventoryName: 'haha',
-        UnitName: 'Chiếc',
-        SKUCode: 'S-DO-M',
-        Color: 'Đỏ',
-        ColorCode: 'DO',
-        Size: 'M',
-        SizeCode: 'M',
-        Barcode: '100001',
-        CostPrice: 200000,
-        UnitPrice: 300000,
-    },
-];
 const genDataTable = ref([]);
 /*
  **
@@ -199,18 +155,16 @@ const updateProperties = () => {
         }
     });
 };
-
-/*
- **
- * Author: Tiến Trung (19/08/2023)
- * Description: hàm thêm data vào bảng tự động tạo bảng detail
- */
-const pushDataTable = (color, size) => {
+const getPropertiesDetail = (color, size) => {
     const sizeDetail = size ? size.size : '';
     const colorDetail = color ? color.color : '';
     const sizeCodeDetail = size ? size.sizeCode : '';
     const colorCodeDetail = color ? color.colorCode : '';
-    let nameDetail = formData.value.inventoryName;
+    const SKUCode = formData.value.SKUCode ? formData.value.SKUCode : '';
+    const SKUCodeDetail = `${SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${
+        sizeCodeDetail ? '-' + sizeCodeDetail : ''
+    }`;
+    let nameDetail = formData.value.inventoryName ? formData.value.inventoryName : '';
     if (sizeDetail && colorDetail) {
         nameDetail = `${nameDetail} (${colorDetail}/${sizeDetail})`;
     }
@@ -220,22 +174,37 @@ const pushDataTable = (color, size) => {
     if (sizeDetail && colorDetail === '') {
         nameDetail = `${nameDetail} (${sizeDetail})`;
     }
+    return {
+        sizeDetail,
+        colorDetail,
+        sizeCodeDetail,
+        colorCodeDetail,
+        SKUCodeDetail,
+        nameDetail,
+    };
+};
+/*
+ **
+ * Author: Tiến Trung (19/08/2023)
+ * Description: hàm thêm data vào bảng tự động tạo bảng detail
+ */
+const pushDataTable = (color, size) => {
+    const propertiesDetail = getPropertiesDetail(color, size);
     genDataTable.value.push({
-        InventoryName: nameDetail,
-        UnitName: formData.value.unitName,
-        SKUCode: `${formData.value.SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${
-            sizeCodeDetail ? '-' + sizeCodeDetail : ''
-        }`,
-        SKUCodeCustom: `${formData.value.SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${
-            sizeCodeDetail ? '-' + sizeCodeDetail : ''
-        }`,
-        Color: colorDetail,
-        ColorCode: colorCodeDetail,
-        Size: sizeDetail,
-        SizeCode: sizeCodeDetail,
+        InventoryName: propertiesDetail.nameDetail ? propertiesDetail.nameDetail : '',
+        UnitName: formData.value.unitName ? formData.value.unitName : null,
+        SKUCode: propertiesDetail.SKUCodeDetail,
+        SKUCodeCustom: propertiesDetail.SKUCodeDetail,
+        Color: propertiesDetail.colorDetail,
+        ColorCode: propertiesDetail.colorCodeDetail,
+        Size: propertiesDetail.sizeDetail,
+        SizeCode: propertiesDetail.sizeCodeDetail,
         Barcode: '',
-        CostPrice: '',
-        UnitPrice: '',
+        CostPrice: '0',
+        UnitPrice: '0',
+        IsActive: true,
+        IsShowMenu: true,
+        ParentId: formData.value.inventoryId,
     });
 };
 /*
@@ -243,7 +212,7 @@ const pushDataTable = (color, size) => {
  * Author: Tiến Trung (19/08/2023)
  * Description: hàm update thuộc tính và tự động tạo bảng detail
  */
-const updateTag = () => {
+const autoDataTable = () => {
     genDataTable.value = [];
     if (properties.value.color.length === 0) {
         properties.value.size.forEach((size) => {
@@ -265,11 +234,13 @@ const updateTag = () => {
     //Tự động tạo bảng
     let isDeleteAllData = true;
     const dataGenAuto = [];
-    genDataTable.value.forEach((dataGen, index) => {
+    genDataTable.value.forEach((dataGen) => {
         const dataOld = dataTable.value.find((dataOld) => dataOld.SKUCode === dataGen.SKUCode);
         if (dataOld) {
             isDeleteAllData = false;
-            // dataOld.InventoryName = dataGen.InventoryName;
+            if (dataOld.EditMode === Enum.EditMode.None) {
+                dataOld.InventoryName = dataGen.InventoryName;
+            }
             dataGenAuto.push(dataOld);
         } else {
             dataGen.EditMode = Enum.EditMode.Add;
@@ -302,16 +273,47 @@ const handleRemoveTag = (index, type, tagCode) => {
         dataTable.value = dataTable.value.filter((data) => data.SKUCode !== dataDelete.SKUCode);
     });
     properties.value[type].splice(index, 1);
-    updateTag();
+    autoDataTable();
 };
 /*
  **
  * Author: Tiến Trung (19/08/2023)
  * Description: hàm khi blur tag thì update
  */
-const onBlurInputFormUpdateData = (propertyName, SKUCode) => {
-    updateTag();
+const onBlurInputFormUpdateData = (value, nameForm) => {
+    // autoDataTable();
+    if (isEditForm.value === Enum.EditMode.None) {
+        return;
+    }
+    dataTable.value.forEach((data) => {
+        const SKUCodeDetail = `${formData.value.SKUCode}${data.ColorCode ? '-' + data.ColorCode : ''}${
+            data.SizeCode ? '-' + data.SizeCode : ''
+        }`;
+        let nameDetail = formData.value.inventoryName;
+        if (data.Size && data.Color) {
+            nameDetail = `${nameDetail} (${data.Color}/${data.Size})`;
+        }
+        if (data.Color && data.Size === '') {
+            nameDetail = `${data.Size} (${data.Color})`;
+        }
+        if (data.Size && data.Color === '') {
+            nameDetail = `${nameDetail} (${data.Size})`;
+        }
+        switch (nameForm) {
+            case inputType.value.Name:
+                data.InventoryName = nameDetail;
+                break;
+            case inputType.value.SKUCode:
+                data.SKUCode = SKUCodeDetail;
+                data.SKUCodeCustom = SKUCodeDetail;
+                break;
+            default:
+                break;
+        }
+    });
     //Chỉ cần lặp qua tất cả data rồi update lại mã là xong
+    //Cập nhật lại hết detail thành update
+    //Nếu data mới gen check editmode create không dc update
 };
 /*
  **
@@ -348,7 +350,7 @@ const handleChangeImg = (image) => {
  * nếu thay đổi dữ liệu mà đóng modal thì bật dialog
  */
 function closeForm() {
-    if (editModeForm.value === Enum.EditMode.Update) {
+    if (isEditForm.value === Enum.EditMode.Update) {
         dialog.setObjectData(formData.value);
         // dialog.setMethod(modalForm.method);
         dialog.open({
@@ -401,10 +403,10 @@ function closeForm() {
 //     }
 // };
 const getDetail = async () => {
-    if (inventory.editMode === Enum.EditMode.Update) {
+    if (formEditMode.value === Enum.EditMode.Update) {
         baseApi.path = Enum.Router.Inventory.Api;
         baseApi.method = Enum.ApiMethod.GET;
-        const response = await baseApi.request(inventory.uid);
+        const response = await baseApi.request(inventoryId.value);
         console.log(response);
         return response.data;
     } else {
@@ -430,46 +432,102 @@ const updateForm = async () => {
         itemCategoryId: data.ItemCategoryId,
         SKUCode: data.SKUCode,
         SKUCodeCustom: data.SKUCodeCustom,
-        costPrice: data.CostPrice,
-        unitPrice: data.UnitPrice,
+        costPrice: data.CostPrice ? convertCurrency(data.CostPrice) : '0',
+        unitPrice: data.UnitPrice ? convertCurrency(data.UnitPrice) : '0',
         unitId: data.UnitId,
         unitName: data.UnitName,
         description: data.Description,
         image: data.Image,
         isActive: isActive,
-        isShowMenu: data.IsShowMenu,
-        editMode: Enum.EditMode.None,
+        isShowMenu: data.IsShowMenu ? true : false,
+        editMode: formEditMode.value,
+        inventoryId: data.InventoryId,
     };
     dataTable.value = convertDataTable(data.Detail ? data.Detail : [], columnTable.value, resource.langCode) || [];
     updateProperties();
     iInventoryName.value.autoFocus();
 };
-const submitForm = () => {
-    const dataDetail = [...dataTable.value, ...dataDelete.value];
-    formData.value.detail = dataDetail;
-    console.log(formData.value);
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: Hàm save data gọi api
+ */
+const toast = useToast();
+const saveData = async (data) => {
+    baseApi.path = Enum.Router.Inventory.Api;
+    baseApi.data = data;
+    baseApi.method = Enum.ApiMethod.POST;
+    const res = await baseApi.request('SaveData');
+    // const res = await employeeApi.create(data);
+    console.log(res);
+    toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Add);
+};
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: Hàm gửi form
+ */
+const submitForm = async () => {
+    try {
+        //vadidate nhập
+        const copyObj = deepCopy(formData.value);
+        const dataDetail = [...dataTable.value, ...dataDelete.value];
+        dataDetail.forEach((data) => {
+            const costPrice = Number(data.CostPrice?.replace('.', ''));
+            const unitPrice = Number(data.CostPrice?.replace('.', ''));
+
+            data.CostPrice = costPrice;
+            data.UnitPrice = unitPrice;
+        });
+        copyObj.detail = dataDetail;
+        copyObj.isActive = copyObj.isActive ? true : false;
+        copyObj.costPrice = Number(copyObj.costPrice?.replace('.', ''));
+        copyObj.unitPrice = Number(copyObj.unitPrice?.replace('.', ''));
+        console.log(copyObj);
+        await saveData(copyObj);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
-watch(
-    () => formData.value,
-    () => {
-        if (couterChangeForm.value !== 0) {
-            editModeForm.value = Enum.EditMode.Update;
-            couterChangeForm.value++;
-        } else {
-            couterChangeForm.value++;
-        }
-    },
-    { deep: true },
-);
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: hàm lấy nhóm hàng hóa
+ */
+const getItemCategory = async () => {
+    baseApi.method = Enum.ApiMethod.GET;
+    baseApi.path = Enum.Router.ItemCategory.Api;
+    const response = await baseApi.request();
+    itemCategories.value = response.data.map((data) => {
+        return {
+            option: data.ItemCategoryName,
+            value: data.ItemCategoryId,
+        };
+    });
+};
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: hàm lấy đơn vị tính
+ */
+const getUnit = async () => {
+    baseApi.method = Enum.ApiMethod.GET;
+    baseApi.path = Enum.Router.Unit.Api;
+    const response = await baseApi.request();
+    console.log(response);
+    units.value = response.data.map((data) => {
+        return {
+            option: data.UnitName,
+            value: data.UnitId,
+        };
+    });
+};
 /**
  * Author: Tiến Trung (2/07/2023)
  * Description: khi component được tạo thì get data
  * mỗi lần cất và thêm thì lại tạo form mới
  */
-
-onMounted(() => {
+onMounted(async () => {
     try {
+        await getItemCategory();
+        await getUnit();
         updateForm();
         title.setTitle(
             MISAResource[resource.langCode]?.SideBar?.Inventory,
@@ -482,12 +540,38 @@ onMounted(() => {
     }
 });
 /**
- * Author: Tiến Trung (2/07/2023)
+ * Author: Tiến Trung (26/08/2023)
  * Description: khi component hủy thì xóa sự kiện phím
  */
 onUnmounted(() => {
     title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
 });
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: theo dõi khi form thay đổi
+ */
+watch(
+    () => formData.value,
+    () => {
+        if (couterChangeForm.value !== 0) {
+            switch (formEditMode.value) {
+                case Enum.EditMode.Update:
+                    formData.value.editMode = Enum.EditMode.Update;
+                    break;
+                case Enum.EditMode.Add:
+                    formData.value.editMode = Enum.EditMode.Add;
+                    break;
+                default:
+                    break;
+            }
+            isEditForm.value = Enum.EditMode.Update;
+            couterChangeForm.value++;
+        } else {
+            couterChangeForm.value++;
+        }
+    },
+    { deep: true },
+);
 </script>
 <template>
     <div class="ntt-form">
@@ -523,18 +607,19 @@ onUnmounted(() => {
                                 validate="true"
                                 row
                                 require
-                                @blur="onBlurInputFormUpdateData"
+                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.Name)"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <!-- <MISADropdown
+                            <MISADropdown
                                 @next-tab-enter="iSKUCode.autoFocus()"
                                 combobox
+                                :options="itemCategories"
                                 v-model:value="formData.itemCategoryId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
                                 :label="'Nhóm hàng hóa'"
                                 row
-                            ></MISADropdown> -->
+                            ></MISADropdown>
                         </MISARow>
                         <MISARow>
                             <MISAInput
@@ -544,7 +629,7 @@ onUnmounted(() => {
                                 type="text"
                                 validate="true"
                                 row
-                                @blur="onBlurInputFormUpdateData"
+                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.SKUCode)"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -554,8 +639,8 @@ onUnmounted(() => {
                                 :label="'Giá mua'"
                                 type="text"
                                 validate="true"
-                                checkNumber
                                 row
+                                money
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -565,20 +650,20 @@ onUnmounted(() => {
                                 :label="'Giá Bán'"
                                 type="text"
                                 validate="true"
-                                checkNumber
                                 row
+                                money
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <!-- <MISADropdown
+                            <MISADropdown
                                 @next-tab-enter="iIsShowMenu.autoFocus()"
                                 combobox
-                                :options="departments"
-                                v-model:value="formData.departmentId"
+                                :options="units"
+                                v-model:value="formData.unitId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
                                 :label="'Đơn vị tính'"
                                 row
-                            ></MISADropdown> -->
+                            ></MISADropdown>
                         </MISARow>
                         <MISARow></MISARow>
                         <MISARow>
@@ -598,14 +683,14 @@ onUnmounted(() => {
             </div>
             <div class="wrapper-form">
                 <MISAInputManyTag
-                    @update-tag="updateTag"
+                    @update-tag="autoDataTable"
                     @remove-tag="handleRemoveTag"
                     :properties="properties.color"
                     :type="Enum.TypeProperties.Color"
                     label="Màu sắc"
                 ></MISAInputManyTag>
                 <MISAInputManyTag
-                    @update-tag="updateTag"
+                    @update-tag="autoDataTable"
                     @remove-tag="handleRemoveTag"
                     :properties="properties.size"
                     :type="Enum.TypeProperties.Size"

@@ -74,7 +74,19 @@ const Enum = {
         },
         InventoryForm: {
             Name: 'inventory-form',
+            NameDetail: 'inventory-form-detail',
             Path: '/inventory-form',
+            PathDetail: ':id',
+        },
+        ItemCategory: {
+            Name: 'item-category',
+            Path: '/item-category',
+            Api: '/ItemCategories',
+        },
+        Unit: {
+            Name: 'unit',
+            Path: '/unit',
+            Api: '/Units',
         },
     },
     ErorCode: {

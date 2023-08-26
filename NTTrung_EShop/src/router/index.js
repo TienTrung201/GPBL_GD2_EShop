@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import EmployeeList from '../Views/employee/EmployeeList.vue';
-import ProductList from '../Views/product/ProductList.vue';
-import ImportExcel from '../views/excel/ImportExcel.vue';
 import DepartmentList from '../views/department/DepartmentList.vue';
 import PositionList from '../views/position/PositionList.vue';
 import HomePage from '../views/home/HomePage.vue';
@@ -27,19 +25,9 @@ const router = createRouter({
             component: DepartmentList,
         },
         {
-            path: '/product',
-            name: 'product',
-            component: ProductList,
-        },
-        {
             path: Enum.Router.Position.Path,
             name: Enum.Router.Position.Name,
             component: PositionList,
-        },
-        {
-            path: '/excel',
-            name: 'excel',
-            component: ImportExcel,
         },
         {
             path: Enum.Router.Inventory.Path,
@@ -50,7 +38,19 @@ const router = createRouter({
             path: Enum.Router.InventoryForm.Path,
             name: Enum.Router.InventoryForm.Name,
             component: InventoryForm,
+            children: [
+                {
+                    path: Enum.Router.InventoryForm.PathDetail,
+                    name: Enum.Router.InventoryForm.NameDetail,
+                    component: InventoryForm,
+                },
+            ],
         },
+        // {
+        //     path: Enum.Router.InventoryForm.PathChildren,
+        //     name: Enum.Router.InventoryForm.Name,
+        //     component: InventoryForm,
+        // },
     ],
 });
 

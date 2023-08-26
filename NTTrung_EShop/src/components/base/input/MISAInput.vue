@@ -100,8 +100,8 @@ const handleChangeInput = (e) => {
         }
     } else if (props.money) {
         if (e.target.value.trim('').length === 0) {
-            emit('update:value', '');
-            emit('input-validation', '');
+            emit('update:value', '0');
+            emit('input-validation', '0');
         }
         const value = e.target.value.replace(/\./g, '');
         if (/^\d+$/.test(value)) {

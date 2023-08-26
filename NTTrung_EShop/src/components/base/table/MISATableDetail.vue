@@ -311,7 +311,6 @@ watch(
                                         width: item.width + 'px',
                                         maxWidth: item.width + 'px',
                                     }"
-                                    @input="handleEditData($event, item.key, index)"
                                 >
                                     <slot :name="item.key" v-bind="rowData">
                                         {{ rowData[item.key] }}
