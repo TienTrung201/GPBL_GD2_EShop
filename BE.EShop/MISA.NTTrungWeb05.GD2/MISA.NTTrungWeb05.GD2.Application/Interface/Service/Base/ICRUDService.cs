@@ -44,7 +44,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Interface.Base
         /// CreatedBy: NTTrung (23/08/2023)
         Task<int> SaveData(TEntityRequestDto data);
         /// <summary>
-        /// Hàm Thêm sửa xóa
+        /// Hàm Thêm sửa xóa(service nào gọi thì sẽ ăn vào TEntity đấy)
         /// </summary>
         /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
         /// <returns>Bản ghi thay đổi</returns>

@@ -194,7 +194,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                     indexColumn++; ;
                 }
                 indexData++;
-                query.Append($"Where ${TableName}Id = '{entity.GetKey()}'; ");
+                query.Append($"Where {TableName}Id = '{entity.GetKey()}'; ");
             });
             var queryString = query.ToString();
 

@@ -63,6 +63,7 @@ const props = defineProps({
     money: { type: Boolean, default: false }, //Định dạng tiền tệ
 });
 const input = ref(null);
+const oldValue = ref(props.value);
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm sự kiện blur
@@ -106,13 +107,13 @@ const handleChangeInput = (e) => {
         const value = e.target.value.replace(/\./g, '');
         if (/^\d+$/.test(value)) {
             emit('update:value', convertCurrency(Number(value)));
-            emit('input-validation', convertCurrency(Number(value)));
+            emit('input-validation', convertCurrency(Number(value)), convertCurrency(Number(oldValue.value)));
         } else {
             input.value.value = props.value;
         }
     } else {
         emit('update:value', e.target.value);
-        emit('input-validation', e.target.value);
+        emit('input-validation', e.target.value, oldValue.value);
     }
     // Nếu là chữ thì không cho nhập khi truyền props chỉ nhập số
 };
@@ -122,6 +123,7 @@ const handleChangeInput = (e) => {
  * động focus vào input có prop focus
  */
 onMounted(() => {
+    oldValue.value = props.value;
     if (props.focus) {
         autoFocus();
     }

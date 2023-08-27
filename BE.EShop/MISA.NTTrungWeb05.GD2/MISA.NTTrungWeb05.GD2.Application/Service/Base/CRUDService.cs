@@ -172,7 +172,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
                 //Hàm validate xóa
                 await ValidateListDelete(listDelete);
                 var listIdsDelete = listDelete.Select(entity => entity.GetKey().ToString());
-                var listIdsToString = string.Join(", ", listIdsDelete);
+                var listIdsToString = string.Join(",", listIdsDelete);
                 result += await _crudRepository.DeleteManyAsync(listIdsToString);
             }
             //---------------------------------------Update list hàng hóa-------------------------------
@@ -190,7 +190,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
             //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
             if (listCreate.Count() > 0)
             {
-                await ValidateListDelete(listCreate);
+                await ValidateListCreate(listCreate);
                 //Không có lỗi thì thêm mới
                 var listEntityCreate = _mapper.Map<List<TEntity>>(listCreate);
 

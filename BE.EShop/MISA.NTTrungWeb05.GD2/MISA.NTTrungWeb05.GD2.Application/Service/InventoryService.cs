@@ -50,7 +50,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(createDto.SKUCode, null);
             // Kiểm tra trùng mã vạch
-            await _inventoryManager.CheckDublicateBarcode(createDto.BarCode, null);
+            if (!string.IsNullOrEmpty(createDto.BarCode))
+            {
+                await _inventoryManager.CheckDublicateBarcode(createDto.BarCode, null);
+            }
             //// Kiểm tra UnitId và ItemCategory có hợp lệ không
             await _itemCategoryManager.CheckExistAsync(createDto.ItemCategoryId);
             await _unitManager.CheckExistAsync(createDto.UnitId);
@@ -96,30 +99,58 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         public override void PreSave(InventoryRequestDto data)
         {
             //Cập nhật giá trung bình
-            decimal? totalUnitPrice = 0;
-            decimal? totalCostPrice = 0;
-            if (data.Detail != null)
+            if (data.Detail?.Any() == true)//data.Detail?.Any() sẽ trả về giá trị true nếu danh sách có ít nhất một phần tử
             {
-                data.Detail.ForEach(inventory =>
-                            {
-                                if (inventory.EditMode == EditMode.Create || inventory.EditMode == EditMode.Update)
+                var dataUpdateCreate = data.Detail.Where((data) => data.EditMode == EditMode.Create || data.EditMode == EditMode.Update);
+                if (dataUpdateCreate.Count() > 0)
+                {
+                    decimal? totalUnitPrice = 0;
+                    decimal? totalCostPrice = 0;
+                    data.Detail.ForEach(inventory =>
                                 {
-                                    if (inventory.UnitPrice.HasValue)
+                                    if (inventory.EditMode == EditMode.Create || inventory.EditMode == EditMode.Update)
                                     {
-                                        totalUnitPrice += inventory.UnitPrice;
+                                        if (inventory.UnitPrice.HasValue)
+                                        {
+                                            totalUnitPrice += inventory.UnitPrice;
+                                        }
+                                        if (inventory.CostPrice.HasValue)
+                                        {
+                                            totalCostPrice += inventory.CostPrice;
+                                        }
                                     }
-                                    if (inventory.CostPrice.HasValue)
-                                    {
-                                        totalCostPrice += inventory.CostPrice;
-                                    }
-                                }
-                            });
-                var newAvgUnitPrice = totalUnitPrice / data.Detail.Count();
-                var newAvgCostPrice = totalCostPrice / data.Detail.Count();
-                data.AvgCostPrice = newAvgCostPrice;
-                data.AvgUnitPrice = newAvgUnitPrice;
+                                });
+                    var newAvgUnitPrice = totalUnitPrice / data.Detail.Count();
+                    var newAvgCostPrice = totalCostPrice / data.Detail.Count();
+                    data.AvgCostPrice = newAvgCostPrice;
+                    data.AvgUnitPrice = newAvgUnitPrice;
+                }
+                else
+                {
+                    data.AvgCostPrice = data.UnitPrice;
+                    data.AvgUnitPrice = data.CostPrice;
+                }
+            }
+            else
+            {
+                data.AvgCostPrice = data.UnitPrice;
+                data.AvgUnitPrice = data.CostPrice;
             }
 
+        }
+        /// <summary>
+        /// Sau khi lưu
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async override Task<int> AfterSave(InventoryRequestDto data)
+        {
+            int result = 0;
+            if (data.Detail != null)
+            {
+                result += await CUDListService(data.Detail);
+            }
+            return result;
         }
         /// <summary>
         /// Validate trước khi sửa list
@@ -129,9 +160,16 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         public async override Task ValidateListUpdate(List<InventoryRequestDto> data)
         {
             //Hàm validate sửa
-            var listCodes = data.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCode);
+            data.ForEach(data =>
+            {
+                if (string.IsNullOrEmpty(data.BarCode.Replace(" ", "")))
+                {
+                    data.BarCode = null;
+                }
+            });
+            var listCodes = data.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCodeCustom);
             var listBarcodes = data.Where(inventory => inventory.EditMode != EditMode.Update && inventory.IsUpdateBarcode).Select((inventory) => inventory.BarCode);
-            await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes));
+            //await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes));
             await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodes));
         }
         /// <summary>
@@ -142,7 +180,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         public async override Task ValidateListCreate(List<InventoryRequestDto> data)
         {
             //Hàm validate thêm
-            var listCodesCreate = data.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCode);
+            data.ForEach(data =>
+            {
+                if (string.IsNullOrEmpty(data.BarCode.Replace(" ", "")))
+                {
+                    data.BarCode = null;
+                }
+            });
+            var listCodesCreate = data.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCodeCustom);
             var listBarcodesCreate = data.Where(inventory => inventory.EditMode != EditMode.Create).Select((inventory) => inventory.BarCode);
             await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
             await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));

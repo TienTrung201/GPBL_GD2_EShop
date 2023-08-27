@@ -205,9 +205,15 @@ const handleOpenEditColumn = (item, index) => {
         editIndex.value = index;
     }
 };
-const setDataEditMode = (data) => {
+const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
     if (data.EditMode !== Enum.EditMode.Add) {
         data.EditMode = Enum.EditMode.Update;
+        if (isCode) {
+            data.IsUpdateCode = oldValue !== value;
+        }
+        if (isBarcode) {
+            data.IsUpdateBarcode = oldValue !== value;
+        }
     }
 };
 /**
@@ -318,7 +324,10 @@ watch(
                                 </div>
                                 <MISAInput
                                     @blur="editIndex = ''"
-                                    @input-validation="setDataEditMode(rowData)"
+                                    @input-validation="
+                                        (value, oldValue) =>
+                                            setDataEditMode(value, oldValue, rowData, item.isCode, item.isBarcode)
+                                    "
                                     :money="item.type === Enum.TypeDataTable.Money"
                                     autoFocusMount
                                     v-if="editIndex === index + '' + indexCol"

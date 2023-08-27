@@ -80,6 +80,7 @@ const columnTable = ref([
         width: '170',
         isShow: true,
         isEdit: true,
+        isCode: true,
         // type: 'gender',
     },
     {
@@ -248,10 +249,13 @@ const autoDataTable = () => {
         }
     });
     //Kiểm tra xem data có bị xóa hết không nếu xóa hết thì add vào mảng data xóa
+    //Nếu xóa tag mà data cũ bị xóa hết
     if (isDeleteAllData) {
         //Chỉ return ra data cũ có ID thì sẽ không dính vào data mới
         const findDataDelete = dataTable.value.filter((data) => {
             data.EditMode = Enum.EditMode.Delete;
+            data.UnitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
+            data.CostPrice = Number(data.CostPrice?.replace(/\./g, ''));
             return data.InventoryId;
         });
         dataDelete.value.push(...findDataDelete);
@@ -270,6 +274,8 @@ const handleRemoveTag = (index, type, tagCode) => {
     dataDelete.value.push(...findDataDelete);
     findDataDelete.forEach((dataDelete) => {
         dataDelete.EditMode = Enum.EditMode.Delete;
+        dataDelete.CostPrice = Number(dataDelete.CostPrice?.replace(/\./g, ''));
+        dataDelete.UnitPrice = Number(dataDelete.UnitPrice?.replace(/\./g, ''));
         dataTable.value = dataTable.value.filter((data) => data.SKUCode !== dataDelete.SKUCode);
     });
     properties.value[type].splice(index, 1);
@@ -322,9 +328,12 @@ const onBlurInputFormUpdateData = (value, nameForm) => {
  */
 const deleteDetail = (index) => {
     try {
-        if (dataTable.value[index].InventoryId) {
-            dataTable.value[index].EditMode = Enum.EditMode.Delete;
-            dataDelete.value.push(dataTable.value[index]);
+        const data = dataTable.value[index];
+        if (data.InventoryId) {
+            data.EditMode = Enum.EditMode.Delete;
+            data.UnitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
+            data.CostPrice = Number(data.CostPrice?.replace(/\./g, ''));
+            dataDelete.value.push(data);
         }
 
         dataTable.value.splice(index, 1);
@@ -459,7 +468,8 @@ const saveData = async (data) => {
     const res = await baseApi.request('SaveData');
     // const res = await employeeApi.create(data);
     console.log(res);
-    toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Add);
+    toast.success(MISAResource[resource.langCode]?.Toast?.Success?.SaveSuccess);
+    inventory.closeForm();
 };
 /**
  * Author: Tiến Trung (26/08/2023)
@@ -472,9 +482,13 @@ const submitForm = async () => {
         const dataCreateUpdate = dataTable.value.map((data) => {
             const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
             const unitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
+            const isUpdateCode = data.newCode && data.newCode !== data.SKUCodeCustom;
+            const isUpdateBarcode = data.newCode && data.newBarcode !== data.Barcode;
             console.log(unitPrice);
             return {
                 ...data,
+                isUpdateCode,
+                isUpdateBarcode,
                 CostPrice: costPrice,
                 UnitPrice: unitPrice,
                 UnitId: formData.value.unitId,
