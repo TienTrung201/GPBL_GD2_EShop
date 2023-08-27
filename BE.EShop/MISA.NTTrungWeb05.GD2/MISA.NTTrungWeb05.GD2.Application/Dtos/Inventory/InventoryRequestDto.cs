@@ -11,7 +11,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
     /// Dữ liệu yêu cầu
     /// </summary>
     /// CreatedBy NTTrung (21/08/2023)
-    public class InventoryRequestDto
+    public class InventoryRequestDto : BaseDto
     {
         /// <summary>
         /// Định danh hàng hóa
@@ -94,10 +94,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>  
         public Guid UnitId { get; set; }
         /// <summary>
-        /// Sự thay đổi
-        /// </summary>  
-        public EditMode EditMode { get; set; } = EditMode.None;
-        /// <summary>
         /// Code thay đổi
         /// </summary>  
         public bool IsUpdateCode { get; set; } = false;
@@ -109,5 +105,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Danh sách detail
         /// </summary>  
         public List<InventoryRequestDto>? Detail { get; set; }
+
+        public override Guid GetKey()
+        {
+            return InventoryId;
+        }
     }
 }

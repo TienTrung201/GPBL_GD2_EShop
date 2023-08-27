@@ -19,20 +19,6 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Repository
         /// CreatedBy: NTTrung (14/07/2023)
         Task<Inventory?> GetByBarcodeAsync(string barcode);
         /// <summary>
-        /// Thêm nhiều
-        /// </summary>
-        /// <paran name="entity">Danh sách bản ghi thêm</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> InsertMultipleAsync(List<Inventory> listInventories);
-        /// <summary>
-        /// Sửa nhiều
-        /// </summary>
-        /// <paran name="entity">Danh sách bản ghi sửa</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> UpdateMultipleAsync(List<Inventory> listInventories);
-        /// <summary>
         /// lấy mã lỗi không hợp lệ
         /// </summary>
         /// <paran name="entity">Chuỗi mã lỗi</paran>

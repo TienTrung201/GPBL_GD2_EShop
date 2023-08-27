@@ -125,7 +125,7 @@ const setColumnTable = () => {
         {
             title: MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode,
             dataIndex: 'code',
-            key: 'SKUCodeCustom',
+            key: 'SKUCode',
             width: '170',
             isShow: true,
             filter: true,

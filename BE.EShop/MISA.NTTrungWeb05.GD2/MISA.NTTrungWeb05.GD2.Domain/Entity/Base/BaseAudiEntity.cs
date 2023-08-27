@@ -43,5 +43,14 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// <returns>Tên Id</returns>
         /// CreatedBy: NTTrung (14/07/2023)
         public abstract Guid GetKey();
+        /// <summary>
+        /// hàm set giá trị cho property
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="value"></param>
+        public void SetValue(string propertyName, object value)
+        {
+            this.GetType().GetProperty(propertyName)?.SetValue(this, value);
+        }
     }
 }

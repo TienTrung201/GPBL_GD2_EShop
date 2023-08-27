@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Unit
 {
-    public class UnitRequestDto
+    public class UnitRequestDto : BaseDto
     {
         /// <summary>
         /// Tên đơn vị
@@ -20,5 +20,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Unit
         /// Mô tả
         /// </summary>
         public string? Description { get; set; } = string.Empty;
+
+        public override Guid GetKey()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

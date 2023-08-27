@@ -10,7 +10,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory
     /// Dữ liệu yêu cầu
     /// </summary>
     /// CreatedBy NTTrung (21/08/2023)
-    public class ItemCategoryRequestDto
+    public class ItemCategoryRequestDto : BaseDto
     {
         /// <summary>
         /// Tên nhóm hàng hóa
@@ -24,5 +24,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory
         /// Mô tả
         /// </summary>
         public string? Description { get; set; } = string.Empty;
+
+        public override Guid GetKey()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

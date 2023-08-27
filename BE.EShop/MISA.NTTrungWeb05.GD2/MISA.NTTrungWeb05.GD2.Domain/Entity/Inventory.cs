@@ -43,11 +43,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// <summary>
         /// Giá trung bình bán
         /// </summary>
-        public decimal? AvgUnitPrice { get; set; }
+        public decimal? AvgUnitPrice { get; set; } = decimal.Zero;
         /// <summary>
         /// Giá trung bình mua
         /// </summary>
-        public decimal? AvgCostPrice { get; set; }
+        public decimal? AvgCostPrice { get; set; } = decimal.Zero;
         /// <summary>
         /// Màu sắc
         /// </summary>

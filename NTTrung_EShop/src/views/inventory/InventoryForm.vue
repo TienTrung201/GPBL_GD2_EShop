@@ -470,8 +470,9 @@ const submitForm = async () => {
         //vadidate nhập
         const copyObj = deepCopy(formData.value);
         const dataCreateUpdate = dataTable.value.map((data) => {
-            const costPrice = Number(data.CostPrice?.replace('.', ''));
-            const unitPrice = Number(data.CostPrice?.replace('.', ''));
+            const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
+            const unitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
+            console.log(unitPrice);
             return {
                 ...data,
                 CostPrice: costPrice,
@@ -482,8 +483,8 @@ const submitForm = async () => {
         });
         copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
         copyObj.isActive = copyObj.isActive ? true : false;
-        copyObj.costPrice = Number(copyObj.costPrice?.replace('.', ''));
-        copyObj.unitPrice = Number(copyObj.unitPrice?.replace('.', ''));
+        copyObj.costPrice = Number(copyObj.costPrice?.replace(/\./g, ''));
+        copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));
         await saveData(copyObj);
     } catch (error) {
         console.log(error);

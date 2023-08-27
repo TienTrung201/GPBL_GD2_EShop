@@ -12,7 +12,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
     /// Dữ liệu trả về
     /// </summary>
     /// CreatedBy NTTrung (21/08/2023)
-    public class InventoryResponseDto
+    public class InventoryResponseDto : BaseDto
     {
         /// <summary>
         /// Định danh
@@ -106,9 +106,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Danh sách detail
         /// </summary>  
         public List<InventoryResponseDto>? Detail { get; set; }
-        /// <summary>
-        /// Chế độ
-        /// </summary>  
-        public EditMode EditMode { get; set; } = EditMode.None;
+
+        public override Guid GetKey()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

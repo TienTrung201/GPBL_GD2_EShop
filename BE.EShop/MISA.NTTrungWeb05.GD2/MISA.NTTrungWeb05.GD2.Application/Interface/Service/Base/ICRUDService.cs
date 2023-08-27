@@ -36,5 +36,19 @@ namespace MISA.NTTrungWeb05.GD2.Application.Interface.Base
         /// <returns>số bản ghi thay đổi</returns>
         /// CreatedBy: NTTrung (17/07/2023)
         Task<int> DeleteManyAsync(string ids);
+        /// <summary>
+        /// Lưu data
+        /// </summary>
+        /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
+        /// <returns>Bản ghi thay đổi</returns>
+        /// CreatedBy: NTTrung (23/08/2023)
+        Task<int> SaveData(TEntityRequestDto data);
+        /// <summary>
+        /// Hàm Thêm sửa xóa
+        /// </summary>
+        /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
+        /// <returns>Bản ghi thay đổi</returns>
+        /// CreatedBy: NTTrung (23/08/2023)
+        Task<int> CUDListService(List<TEntityRequestDto> data);
     }
 }

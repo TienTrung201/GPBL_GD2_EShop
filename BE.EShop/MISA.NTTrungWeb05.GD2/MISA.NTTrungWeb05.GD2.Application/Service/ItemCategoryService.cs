@@ -83,11 +83,11 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // kiểm tra xem có phát sinh không nếu phát sinh lỗi luôn
             //await _inventoryRepository.GetEmployeeByItemCategoryId(id);
 
-            var model = await _baseRepository.GetByIdAsync(id);
+            var model = await _crudRepository.GetByIdAsync(id);
 
             var entity = _mapper.Map<ItemCategory>(model);
 
-            var result = await _baseRepository.DeleteAsync(entity);
+            var result = await _crudRepository.DeleteAsync(entity);
             return result;
 
         }
