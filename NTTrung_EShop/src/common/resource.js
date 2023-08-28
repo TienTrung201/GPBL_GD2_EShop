@@ -194,6 +194,11 @@ const MISAResource = {
                 DeleteContent: 'Bạn có thực sự muốn xóa vị trí <PositionCode>?',
                 DeleteListContent: 'bạn có thực sự muốn xóa danh sách vị trí đã chọn?',
             },
+            DeleteInventory: {
+                Title: 'Xoa hàng hóa?',
+                DeleteContent: 'Bạn có thực sự muốn xóa hàng hóa <SKUCode>?',
+                DeleteListContent: 'bạn có thực sự muốn xóa danh sách hàng hóa?',
+            },
             Warning: {
                 Title: 'Có lỗi!',
 
@@ -543,6 +548,11 @@ const MISAResource = {
                 Title: 'Delete position?',
                 DeleteContent: 'Do you want to delete position <PositionCode>?',
                 DeleteListContent: 'Do you want to delete the selected position?',
+            },
+            DeleteInventory: {
+                Title: 'Delete inventory?',
+                DeleteContent: 'Do you want to delete inventory <SKUCode>?',
+                DeleteListContent: 'Do you want to delete the selected inventory?',
             },
             Warning: {
                 Title: 'Error!',

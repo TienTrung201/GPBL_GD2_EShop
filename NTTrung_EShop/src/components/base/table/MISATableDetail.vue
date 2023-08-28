@@ -205,6 +205,10 @@ const handleOpenEditColumn = (item, index) => {
         editIndex.value = index;
     }
 };
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: Hàm update data
+ */
 const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
     if (data.EditMode !== Enum.EditMode.Add) {
         data.EditMode = Enum.EditMode.Update;

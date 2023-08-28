@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MISA.NTTrungWeb05.GD2.Application.Dtos;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Entity;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using System;
@@ -13,7 +14,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
     public abstract class CodeService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>
     : CRUDService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>,
-        ICodeService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto :BaseDto
+        ICodeService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto :BaseDto where TEntity : BaseAudiEntity
 
     {
         #region Fields

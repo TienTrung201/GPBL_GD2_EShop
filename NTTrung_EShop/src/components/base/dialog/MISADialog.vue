@@ -37,11 +37,11 @@ const submitDialog = () => {
         method.value === Enum.EditMode.Copy
     ) {
         dialog.setLoading(true);
-        dialog.submitForm(false);
+        dialog.saveData(false);
     }
     if (method.value === Enum.EditMode.Delete) {
         dialog.setLoading(true);
-        emit('delete-data');
+        dialog.saveData();
     }
 };
 /**

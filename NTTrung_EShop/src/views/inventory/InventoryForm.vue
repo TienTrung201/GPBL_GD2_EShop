@@ -440,7 +440,7 @@ const updateForm = async () => {
         inventoryName: data.InventoryName,
         itemCategoryId: data.ItemCategoryId,
         SKUCode: data.SKUCode,
-        SKUCodeCustom: data.SKUCodeCustom,
+        // SKUCodeCustom: data.SKUCodeCustom?data.SKUCodeCustom:,
         costPrice: data.CostPrice ? convertCurrency(data.CostPrice) : '0',
         unitPrice: data.UnitPrice ? convertCurrency(data.UnitPrice) : '0',
         unitId: data.UnitId,

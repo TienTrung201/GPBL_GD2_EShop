@@ -255,8 +255,12 @@ const handleShowEditInfo = (data) => {
     // modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Inventory?.Update);
     // modalForm.setMethod(Enum.EditMode.Update);
     // modalForm.setObjectForm(data);
+    let dataEdit = data;
+    if (!dialog.objectData.InventoryId) {
+        dataEdit = dataSelected.value[0];
+    }
     dialog.setMethod(Enum.EditMode.Update);
-    inventory.openForm(data.InventoryId, Enum.EditMode.Update);
+    inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Update);
 };
 /**
  * Author: Tiến Trung (09/07/2023)
@@ -314,24 +318,45 @@ const handleUnCheckedAll = () => {
  * Description: Hàm hiển thị dialog xóa các nhân viên được chọn
  */
 const openDialogDeleteSelected = () => {
-    dialog.open({
-        title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
-        content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteListContent,
-        action: MISAResource[resource.langCode]?.Button?.Delete,
-        buttonSec: MISAResource[resource.langCode]?.Button?.No,
-        type: Enum.ButtonType.Pri,
-        icon: 'warning',
-        loading: false,
-    });
-    dialog.setMethod(Enum.EditMode.Delete);
-    modalForm.setMethod(Enum.EditMode.Delete);
+    if (dataSelected.value.length > 1) {
+        dialog.setMethod(Enum.EditMode.Delete);
+        dialog.setFunction(deleteDataSelected);
+        modalForm.setMethod(Enum.EditMode.Delete);
+        dialog.open({
+            title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
+            content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteListContent,
+            action: MISAResource[resource.langCode]?.Button?.Delete,
+            buttonSec: MISAResource[resource.langCode]?.Button?.No,
+            type: Enum.ButtonType.Pri,
+            icon: 'warning',
+            loading: false,
+        });
+    } else {
+        dialog.setObjectData(dataSelected.value[0]);
+        dialog.setMethod(Enum.EditMode.Delete);
+        modalForm.setMethod(Enum.EditMode.Delete);
+        dialog.setFunction(deleteData);
+        dialog.open({
+            title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
+            content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteContent.replace(
+                'SKUCode',
+                dialog.objectData.SKUCode,
+            ),
+            action: MISAResource[resource.langCode]?.Button?.Delete,
+            buttonSec: MISAResource[resource.langCode]?.Button?.No,
+            type: Enum.ButtonType.Pri,
+            icon: 'warning',
+            loading: false,
+        });
+    }
 };
 /**
  * Author: Tiến Trung (28/06/2023)
  * Description: Hàm xóa nhân viên
  */
 const deleteData = async () => {
-    baseApi.path = Enum.Router.Inventory.Path;
+    baseApi.path = Enum.Router.Inventory.Api;
+    baseApi.method = Enum.ApiMethod.DELETE;
     await baseApi.request(`${objectData.value.InventoryId}`);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Delete);
     //Nếu đang xóa trang cuối còn 1 bản ghi thì quay vể trang cuối -1
@@ -351,7 +376,7 @@ const deleteData = async () => {
  * Description: Hàm xóa nhân viên
  */
 const deleteDataSelected = async () => {
-    const listIds = dataSelected.value.map((data) => data.Inventory).join(',');
+    const listIds = dataSelected.value.map((data) => data.InventoryId).join(',');
     baseApi.path = Enum.Router.Inventory.Api;
     baseApi.method = Enum.ApiMethod.DELETE;
     baseApi.data = listIds;
@@ -672,6 +697,7 @@ onUnmounted(() => {
                         </template>
                     </MISAButton>
                     <MISAButton
+                        disable
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Replication"
                     >
@@ -679,12 +705,21 @@ onUnmounted(() => {
                             <MISAIcon width="25" height="15" icon="replication" />
                         </template>
                     </MISAButton>
-                    <MISAButton :type="Enum.ButtonType.IconPri" :action="MISAResource[resource.langCode]?.Button?.Edit">
+                    <MISAButton
+                        @click="handleShowEditInfo(dialog.objectData)"
+                        :disable="
+                            !(dataSelected.length > 0 && dataSelected.length < 2) && !dialog.objectData.InventoryId
+                        "
+                        :type="Enum.ButtonType.IconPri"
+                        :action="MISAResource[resource.langCode]?.Button?.Edit"
+                    >
                         <template #icon>
                             <MISAIcon width="22" height="12" icon="edit" />
                         </template>
                     </MISAButton>
                     <MISAButton
+                        :disable="!dialog.objectData.InventoryId && dataSelected.length < 1"
+                        @click="openDialogDeleteSelected"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Delete"
                     >

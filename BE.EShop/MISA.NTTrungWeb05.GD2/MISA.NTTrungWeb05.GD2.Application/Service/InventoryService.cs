@@ -50,9 +50,13 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(createDto.SKUCode, null);
             // Kiểm tra trùng mã vạch
-            if (!string.IsNullOrEmpty(createDto.BarCode))
+            if (!string.IsNullOrEmpty(createDto.BarCode.Replace(" ", "")))
             {
                 await _inventoryManager.CheckDublicateBarcode(createDto.BarCode, null);
+            }
+            else
+            {
+                createDto.BarCode = null;
             }
             //// Kiểm tra UnitId và ItemCategory có hợp lệ không
             await _itemCategoryManager.CheckExistAsync(createDto.ItemCategoryId);
@@ -60,6 +64,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
 
             var entity = _mapper.Map<Inventory>(createDto);
             entity.InventoryId = Guid.NewGuid();
+            entity.SKUCodeCustom = entity.SKUCode;
             entity.CreatedDate = DateTime.Now;
             entity.ModifiedDate = DateTime.Now;
             return entity;
@@ -78,17 +83,21 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(updateDto.SKUCode, entity.SKUCode);
             // Kiểm tra trùng mã vạch
-            if (!string.IsNullOrEmpty(updateDto.BarCode))
+            if (!string.IsNullOrEmpty(updateDto.BarCode.Replace(" ", "")))
             {
                 await _inventoryManager.CheckDublicateBarcode(updateDto.BarCode, entity.BarCode);
             }
-            // Kiểm tra PositionId và DepartmentId có hợp lệ không
+            else
+            {
+                updateDto.BarCode = null;
+            }
+            // Kiểm tra unit và itemcategory có hợp lệ không
             await _itemCategoryManager.CheckExistAsync(updateDto.ItemCategoryId);
             await _unitManager.CheckExistAsync(updateDto.UnitId);
-
             var updateEntity = _mapper.Map<Inventory>(updateDto);
             updateEntity.InventoryId = entity.InventoryId;
             updateEntity.ModifiedDate = DateTime.Now;
+            updateEntity.SKUCodeCustom = updateEntity.SKUCode;
             return updateEntity;
         }
         /// <summary>
@@ -99,43 +108,39 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         public override void PreSave(InventoryRequestDto data)
         {
             //Cập nhật giá trung bình
+            var hasDetail = false;
             if (data.Detail?.Any() == true)//data.Detail?.Any() sẽ trả về giá trị true nếu danh sách có ít nhất một phần tử
             {
-                var dataUpdateCreate = data.Detail.Where((data) => data.EditMode == EditMode.Create || data.EditMode == EditMode.Update);
+                var dataUpdateCreate = data.Detail.Where((data) => data.EditMode == EditMode.Create || data.EditMode == EditMode.Update).ToList();
                 if (dataUpdateCreate.Count() > 0)
                 {
                     decimal? totalUnitPrice = 0;
                     decimal? totalCostPrice = 0;
-                    data.Detail.ForEach(inventory =>
+                    dataUpdateCreate.ForEach(inventory =>
                                 {
-                                    if (inventory.EditMode == EditMode.Create || inventory.EditMode == EditMode.Update)
+                                    hasDetail = true;
+                                    if (inventory.UnitPrice.HasValue)
                                     {
-                                        if (inventory.UnitPrice.HasValue)
-                                        {
-                                            totalUnitPrice += inventory.UnitPrice;
-                                        }
-                                        if (inventory.CostPrice.HasValue)
-                                        {
-                                            totalCostPrice += inventory.CostPrice;
-                                        }
+                                        totalUnitPrice += inventory.UnitPrice;
                                     }
+                                    if (inventory.CostPrice.HasValue)
+                                    {
+                                        totalCostPrice += inventory.CostPrice;
+                                    }
+
                                 });
-                    var newAvgUnitPrice = totalUnitPrice / data.Detail.Count();
-                    var newAvgCostPrice = totalCostPrice / data.Detail.Count();
+                    var newAvgUnitPrice = totalUnitPrice / dataUpdateCreate.Count();
+                    var newAvgCostPrice = totalCostPrice / dataUpdateCreate.Count();
                     data.AvgCostPrice = newAvgCostPrice;
                     data.AvgUnitPrice = newAvgUnitPrice;
                 }
-                else
-                {
-                    data.AvgCostPrice = data.UnitPrice;
-                    data.AvgUnitPrice = data.CostPrice;
-                }
             }
-            else
+            if (!hasDetail)
             {
                 data.AvgCostPrice = data.UnitPrice;
                 data.AvgUnitPrice = data.CostPrice;
             }
+          
 
         }
         /// <summary>
@@ -146,8 +151,12 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         public async override Task<int> AfterSave(InventoryRequestDto data)
         {
             int result = 0;
-            if (data.Detail != null)
+            if (data.Detail?.Any() == true)
             {
+                data.Detail.ForEach(dataDetail =>
+                {
+                    dataDetail.ParentId = data.InventoryId;
+                });
                 result += await CUDListService(data.Detail);
             }
             return result;

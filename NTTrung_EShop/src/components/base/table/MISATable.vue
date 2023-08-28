@@ -492,6 +492,7 @@ defineExpose({ closeMenu });
                     }"
                     v-for="rowData in dataTable"
                     :key="rowData[propertiesIdName]"
+                    @click="dialog.setObjectData(rowData)"
                 >
                     <td :class="[{ 'table-row--checked': rowData.isChecked }, 'checkbox']" scope="row">
                         <MISACheckbox @change-checkbox="handleSelectRow(rowData)" :valueCheckbox="rowData.isChecked" />

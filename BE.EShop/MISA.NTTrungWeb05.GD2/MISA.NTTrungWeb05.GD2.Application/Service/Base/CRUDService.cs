@@ -17,7 +17,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
     public abstract class CRUDService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>
         : ReadOnlyService<TEntity, TModel, TEntityResponseDto>,
-        ICRUDService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto : BaseDto
+        ICRUDService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto : BaseDto where TEntity : BaseAudiEntity
     {
         #region Fields
         protected readonly ICRUDRepository<TEntity, TModel> _crudRepository;
@@ -133,6 +133,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
                 {
                     case EditMode.Create:
                         var dataInsert = await MapCreateDtoToEntityValidateAsync(data);
+                        data.SetValue($"{typeof(TEntity).Name}Id", dataInsert.GetKey());
                         result += await _crudRepository.InsertAsync(dataInsert);
                         break;
                     case EditMode.Update:
