@@ -150,6 +150,16 @@ const MISAResource = {
             PositionNameMaxLength: 'Tên vị trí không quá @number ký tự.',
             DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
         },
+        InventoryInvalidError: {
+            InventoryCodeEmpty: 'Mã không được để trống.',
+            InventoryCodeMaxLength: 'Mã không quá @number ký tự.',
+            InventoryCodeFormat: 'Mã không đúng định dạng.',
+            InventoryNameEmpty: 'Tên hàng hóa không được để trống.',
+            InventoryNameMaxLength: 'Tên hàng hóa không quá @number ký tự.',
+            InventoryCostPriceMaxLength: 'Giá mua không quá @number ký tự',
+            InventoryUnitPriceMaxLength: 'Giá bán không quá @number ký tự',
+            DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
+        },
         Toast: {
             Title: {
                 Info: 'Thông tin!',
@@ -506,6 +516,16 @@ const MISAResource = {
             PositionCodeFormat: 'Position Code Invalid.',
             PositionNameEmpty: 'Position Name Not Empty.',
             PositionNameMaxLength: 'Position Name limit: @number characters.',
+            DescriptionMaxLength: 'Description limit: @number characters.',
+        },
+        InventoryInvalidError: {
+            InventoryCodeEmpty: 'SKUCode Not Empty.',
+            InventoryCodeMaxLength: 'SKUCode limit @number characters.',
+            InventoryCodeFormat: 'SKUCode Invalid.',
+            InventoryNameEmpty: 'Inventory Name Not Empty.',
+            InventoryNameMaxLength: 'Inventory Name limit: @number characters.',
+            InventoryCostPriceMaxLength: 'CostPrice limit: @number characters',
+            InventoryUnitPriceMaxLength: 'UnitPrice limit: @number characters',
             DescriptionMaxLength: 'Description limit: @number characters.',
         },
         Toast: {

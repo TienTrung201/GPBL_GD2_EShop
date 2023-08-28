@@ -43,7 +43,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         public async Task CheckDublicateBarcode(string newCode, string? oldCode)
         {
             var entity = await _inventoryRepository.GetByBarcodeAsync(newCode);
-            if (entity != null && entity.BarCode != oldCode)
+            if (entity != null && entity.Barcode != oldCode)
             {
                 throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, newCode), (int)ErrorCode.DuplicateCode);
             }

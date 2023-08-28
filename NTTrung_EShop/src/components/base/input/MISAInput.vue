@@ -1,10 +1,10 @@
 <template lang="">
     <label class="label-input" :class="{ 'label-input-row': props.row }"
         ><p>{{ props.label }}<span v-if="require" :style="{ color: '#E60000', marginLeft: '4px' }">*</span></p>
-        <div class="wrapper-input">
+        <div class="wrapper-input error">
             <input
                 :autocomplete="false"
-                @focus="input.select()"
+                @focus="input.select(), (showMessage = true)"
                 ref="input"
                 :class="[
                     'input-text-base',
@@ -12,6 +12,7 @@
                     { readonly: props.readonly },
                     { validate: props.validate },
                     { 'ntt-error': errorMessage },
+                    { 'text-align--right': right },
                 ]"
                 :type="type"
                 :name="''"
@@ -23,6 +24,12 @@
                 @keydown.enter="onEnter"
                 :title="tooltip"
             />
+            <div v-if="errorMessage" class="error-wrapper">
+                <div class="error-wrapper__icon center">
+                    <img src="../../../assets/icons/error-icon-circle.webp" alt="" />
+                </div>
+                <span :class="{ 'show-message': showMessage }" class="error-message">{{ errorMessage }}</span>
+            </div>
             <span v-if="props.isSuccess">
                 <img class="success-icon" src="../../../assets/icons/check-circle.svg" alt="" />
             </span>
@@ -32,7 +39,6 @@
                 </svg>
             </div>
         </div>
-        <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
     </label>
 </template>
 <script setup>
@@ -42,6 +48,7 @@ import { convertCurrency } from '../../../common/convert-data';
 const emit = defineEmits(['update:value', 'input-validation', 'blur', 'enter']);
 const props = defineProps({
     name: { String, default: () => 'name' }, //name input
+    right: { type: Boolean, default: false }, // text ở bên phải
     isSuccess: { Boolean, default: () => null },
     label: { String, default: () => '' }, //label input
     validate: { Boolean, default: () => false }, //có validate thì input nhập vào có màu
@@ -64,6 +71,7 @@ const props = defineProps({
 });
 const input = ref(null);
 const oldValue = ref(props.value);
+const showMessage = ref(false);
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm sự kiện blur
@@ -75,6 +83,7 @@ const onBlur = (e) => {
             const wordsUpperCase = convertToTitleCase(e.target.value);
             emit('update:value', wordsUpperCase);
         }
+        showMessage.value = false;
     } catch (error) {
         console.log(error);
     }

@@ -20,7 +20,7 @@ const { actionDialog, buttonThird, title, content, type, buttonSec, icon, method
 const handleClose = () => {
     // dialog.setMethod(modal.method);
     dialog.close();
-    modal.close();
+    dialog.navigationLink();
 };
 
 /**

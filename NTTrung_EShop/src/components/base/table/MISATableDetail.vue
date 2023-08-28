@@ -211,7 +211,7 @@ const handleOpenEditColumn = (item, index) => {
  */
 const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
     if (data.EditMode !== Enum.EditMode.Add) {
-        data.EditMode = Enum.EditMode.Update;
+        data.EditMode = oldValue === value ? Enum.EditMode.None : Enum.EditMode.Update;
         if (isCode) {
             data.IsUpdateCode = oldValue !== value;
         }
@@ -327,6 +327,7 @@ watch(
                                     </slot>
                                 </div>
                                 <MISAInput
+                                    :right="item.type === Enum.TypeDataTable.Money"
                                     @blur="editIndex = ''"
                                     @input-validation="
                                         (value, oldValue) =>

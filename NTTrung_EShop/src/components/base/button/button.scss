@@ -35,7 +35,7 @@
         background-color: var(--primary-color);
     }
     &:focus {
-        outline: var(--primary-color) 3px solid;
+        outline: var(--button-hover-color) 3px solid;
     }
     .tooltip {
         max-height: 30px;

@@ -49,13 +49,13 @@ Validator.isEmail = (message) => {
 /**
  * @param {String} message
  * Author: Tiến Trung (29/06/2023)
- * Description: validate định dạng email
+ * Description: validate định dạng mã
  */
 Validator.isCode = (message) => {
     return {
         test: (value) => {
             if (value === '' || value === null || value === undefined) return '';
-            var regex = /^[A-Za-z]{1,2}-\d{4,}$/;
+            var regex = /^[A-Za-z]+[0-9]*$/;
             return regex.test(value) ? undefined : message || 'Mã không hợp lệ';
         },
     };

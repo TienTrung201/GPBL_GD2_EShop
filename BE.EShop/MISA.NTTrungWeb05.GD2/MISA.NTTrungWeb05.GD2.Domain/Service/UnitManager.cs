@@ -40,9 +40,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         /// </summary>
         /// <paran name="id">Định danh</paran>
         /// CreatedBy: NTTrung (16/07/2023)
-        public async Task CheckExistAsync(Guid id)
+        public async Task CheckExistAsync(Guid? id)
         {
-            await _unitRepository.GetByIdAsync(id);
+            if (id.HasValue)
+            {
+                await _unitRepository.GetByIdAsync(id.Value);
+            }
         }
     }
 }

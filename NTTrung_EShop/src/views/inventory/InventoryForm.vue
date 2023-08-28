@@ -11,7 +11,9 @@ import baseApi from '../../api/base-api';
 import { convertCurrency, convertDataTable, convertToTitleCase, deepCopy } from '../../common/convert-data';
 import { useRoute } from 'vue-router';
 import { useToast } from '../../stores/toast';
+import { Validator } from '../../common/validatior';
 const dialog = useDialog();
+const toast = useToast();
 const route = useRoute();
 const inventory = useInventory();
 const inventoryId = ref(route.params.id); //Biến chứa Id trên param
@@ -25,25 +27,29 @@ const isEditForm = ref(Enum.EditMode.None); // Biến này nhận biết form c�
 const formEditMode = ref(inventoryId.value ? Enum.EditMode.Update : Enum.EditMode.Add);
 const dataDelete = ref([]); //Data Detail bị delete
 const inputType = ref({ SKUCode: 1, Name: 2 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
-
-// const validateForm = ref({
-//     inventoryName: '',
-//     skuCode: '',
-//     barcode: '',
-//     costPrice: '',
-//     unitPrice: '',
-//     description: '',
-// });
-//Input-------------------
+const file = ref(null);
+const imgFile = ref(null);
+const validateForm = ref({
+    inventoryName: '',
+    SKUCode: '',
+    barcode: '',
+    costPrice: '',
+    unitPrice: '',
+    description: '',
+});
+const listErrorMessage = ref([]);
+//Input------------------- ref
 const iInventoryName = ref(null);
 const iSKUCode = ref(null);
 const iCostPrice = ref(null);
 const iUnitPrice = ref(null);
 const iDescription = ref(null);
 const iIsShowMenu = ref(null);
-const file = ref(null);
-const imgFile = ref(null);
-// const buttonCancel = ref(null);
+
+//Button------------------- ref
+const buttonSave = ref(null);
+const buttonCancel = ref(null);
+const buttonSaveAdd = ref(null);
 // const firstFocus = ref(null);
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
@@ -89,6 +95,7 @@ const columnTable = ref([
         width: '170',
         isShow: true,
         isEdit: true,
+        isBarcode: true,
     },
     {
         title: 'Giá mua',
@@ -156,6 +163,11 @@ const updateProperties = () => {
         }
     });
 };
+/*
+ **
+ * Author: Tiến Trung (19/08/2023)
+ * Description: lấy thông tin thuộc tính cho data
+ */
 const getPropertiesDetail = (color, size) => {
     const sizeDetail = size ? size.size : '';
     const colorDetail = color ? color.color : '';
@@ -360,8 +372,11 @@ const handleChangeImg = (image) => {
  */
 function closeForm() {
     if (isEditForm.value === Enum.EditMode.Update) {
-        dialog.setObjectData(formData.value);
-        // dialog.setMethod(modalForm.method);
+        dialog.setFunction(submitForm);
+        dialog.setMethod(inventory.editMode);
+        dialog.setNavigationLink(() => {
+            inventory.closeForm();
+        });
         dialog.open({
             title: MISAResource[resource.langCode]?.Dialog?.Warning?.ChangeForm?.Title,
             content: MISAResource[resource.langCode]?.Dialog?.Warning?.ChangeForm?.Content,
@@ -382,35 +397,40 @@ function closeForm() {
  * Author: Tiến Trung (27/06/2023)
  * Description: bắt lỗi focus vào ô đầu tiên
  */
-// const autoFocusForm = () => {
-//     try {
-//         //Nếu là lỗi trùng mã chủ động cho input bị lỗi để báo
-//         if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
-//             dialog.setErrorCode(0);
-//             validateForm.value.skuCode = MISAResource[resource.langCode].EmployeeInvalidError.EmployeeDuplicateCode;
-//             iSKUCode.value.autoFocus();
-//             return;
-//         }
-//         if (validateForm.value.inventoryName) {
-//             iInventoryName.value.autoFocus();
-//             return;
-//         }
-//         if (validateForm.value.skuCode) {
-//             iSKUCode.value.autoFocus();
-//             return;
-//         }
-//         if (validateForm.value.costPrice) {
-//             iCostPrice.value.autoFocus();
-//             return;
-//         }
-//         if (validateForm.value.unitPrice) {
-//             iUnitPrice.value.autoFocus();
-//             return;
-//         }
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
+const autoFocusForm = () => {
+    try {
+        //Nếu là lỗi trùng mã chủ động cho input bị lỗi để báo
+        if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
+            dialog.setErrorCode(0);
+            validateForm.value.SKUCode = MISAResource[resource.langCode].EmployeeInvalidError.EmployeeDuplicateCode;
+            iSKUCode.value.autoFocus();
+            return;
+        }
+        if (validateForm.value.inventoryName) {
+            iInventoryName.value.autoFocus();
+            return;
+        }
+        if (validateForm.value.SKUCode) {
+            iSKUCode.value.autoFocus();
+            return;
+        }
+        if (validateForm.value.costPrice) {
+            iCostPrice.value.autoFocus();
+            return;
+        }
+        if (validateForm.value.unitPrice) {
+            iUnitPrice.value.autoFocus();
+            return;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+/*
+ **
+ * Author: Tiến Trung (29/08/2023)
+ * Description: lấy thông tin của detail
+ */
 const getDetail = async () => {
     if (formEditMode.value === Enum.EditMode.Update) {
         baseApi.path = Enum.Router.Inventory.Api;
@@ -438,12 +458,12 @@ const updateForm = async () => {
     couterChangeForm.value = 0;
     formData.value = {
         inventoryName: data.InventoryName,
-        itemCategoryId: data.ItemCategoryId,
+        itemCategoryId: data.ItemCategoryId, //? data.ItemCategoryId : itemCategories.value[0].value,
+        unitId: data.UnitId, //? data.UnitId : units.value[0].value,
         SKUCode: data.SKUCode,
         // SKUCodeCustom: data.SKUCodeCustom?data.SKUCodeCustom:,
         costPrice: data.CostPrice ? convertCurrency(data.CostPrice) : '0',
         unitPrice: data.UnitPrice ? convertCurrency(data.UnitPrice) : '0',
-        unitId: data.UnitId,
         unitName: data.UnitName,
         description: data.Description,
         image: data.Image,
@@ -457,10 +477,18 @@ const updateForm = async () => {
     iInventoryName.value.autoFocus();
 };
 /**
+ * Author: Tiến Trung (03/07/2023)
+ * Description: hàm để lấy ra danh sách lỗi khi có lỗi thì add list lỗi vào mảng
+ */
+const getListErrorMessage = () => {
+    const listError = Object.keys(validateForm.value).map((key) => validateForm.value[key]);
+    listErrorMessage.value = listError;
+    return listError;
+};
+/**
  * Author: Tiến Trung (26/08/2023)
  * Description: Hàm save data gọi api
  */
-const toast = useToast();
 const saveData = async (data) => {
     baseApi.path = Enum.Router.Inventory.Api;
     baseApi.data = data;
@@ -478,28 +506,49 @@ const saveData = async (data) => {
 const submitForm = async () => {
     try {
         //vadidate nhập
-        const copyObj = deepCopy(formData.value);
-        const dataCreateUpdate = dataTable.value.map((data) => {
-            const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
-            const unitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
-            const isUpdateCode = data.newCode && data.newCode !== data.SKUCodeCustom;
-            const isUpdateBarcode = data.newCode && data.newBarcode !== data.Barcode;
-            console.log(unitPrice);
-            return {
-                ...data,
-                isUpdateCode,
-                isUpdateBarcode,
-                CostPrice: costPrice,
-                UnitPrice: unitPrice,
-                UnitId: formData.value.unitId,
-                ItemCategoryId: formData.value.itemCategoryId,
-            };
-        });
-        copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
-        copyObj.isActive = copyObj.isActive ? true : false;
-        copyObj.costPrice = Number(copyObj.costPrice?.replace(/\./g, ''));
-        copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));
-        await saveData(copyObj);
+        validateName(formData.value.inventoryName);
+        validateCode(formData.value.SKUCode);
+        validateCostPrice(formData.value.costPrice);
+        validateUnitPrice(formData.value.unitPrice);
+        const listError = getListErrorMessage();
+        //Lấy ra lỗi đầu tiên cho vào dialog
+        const error = listError.find((error) => error !== '');
+        if (error) {
+            dialog.setErrorMessage(error);
+            dialog.setMethod(Enum.EditMode.None);
+            dialog.open({
+                title: MISAResource[resource.langCode]?.Dialog?.Warning?.Validate?.Title,
+                action: MISAResource[resource.langCode]?.Button?.Close,
+                type: Enum.ButtonType.Pri,
+                icon: 'danger',
+                loading: false,
+            });
+        } else {
+            const copyObj = deepCopy(formData.value);
+            const dataCreateUpdate = dataTable.value.map((data) => {
+                const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
+                const unitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
+                const isUpdateCode = data.newCode && data.newCode !== data.SKUCodeCustom;
+                const isUpdateBarcode = data.newCode && data.newBarcode !== data.Barcode;
+                console.log(unitPrice);
+                return {
+                    ...data,
+                    isUpdateCode,
+                    isUpdateBarcode,
+                    CostPrice: costPrice,
+                    UnitPrice: unitPrice,
+                    UnitId: formData.value.unitId ? formData.value.unitId : null,
+                    ItemCategoryId: formData.value.itemCategoryId ? formData.value.itemCategoryId : null,
+                };
+            });
+            copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
+            copyObj.isActive = copyObj.isActive ? true : false;
+            copyObj.costPrice = Number(copyObj.costPrice?.replace(/\./g, ''));
+            copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));
+            copyObj.itemCategoryId = copyObj.itemCategoryId ? copyObj.itemCategoryId : null;
+            copyObj.unitId = copyObj.unitId ? copyObj.unitId : null;
+            await saveData(copyObj);
+        }
     } catch (error) {
         console.log(error);
     }
@@ -520,6 +569,80 @@ const getItemCategory = async () => {
         };
     });
 };
+///Validator-------------------------------------------------------
+/**
+ * Author: Tiến Trung (29/08/2023)
+ * Description: Hàm validate form
+ */
+//Hàm validate mã
+function validateCode(value) {
+    try {
+        const errorMessage = Validator(value, [
+            Validator.isRequired(MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCodeEmpty),
+            Validator.isCode(MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCodeFormat),
+            Validator.maxLength(20, MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCodeMaxLength),
+        ]);
+        validateForm.value.SKUCode = errorMessage;
+        return errorMessage;
+    } catch (error) {
+        console.log(error);
+    }
+}
+//Hàm validate name
+function validateName(value) {
+    try {
+        const errorMessage = Validator(value, [
+            Validator.isRequired(MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryNameEmpty),
+            Validator.maxLength(18, MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryNameMaxLength),
+        ]);
+        validateForm.value.inventoryName = errorMessage;
+        return errorMessage;
+    } catch (error) {
+        console.log(error);
+    }
+}
+//Hàm validate giá
+function validateCostPrice(value) {
+    try {
+        const errorMessage = Validator(value, [
+            Validator.maxLength(
+                18,
+                MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCostPriceMaxLength,
+            ),
+        ]);
+        validateForm.value.costPrice = errorMessage;
+        return errorMessage;
+    } catch (error) {
+        console.log(error);
+    }
+}
+//Hàm validate giá
+function validateUnitPrice(value) {
+    try {
+        const errorMessage = Validator(value, [
+            Validator.maxLength(
+                18,
+                MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryUnitPriceMaxLength,
+            ),
+        ]);
+        validateForm.value.unitPrice = errorMessage;
+        return errorMessage;
+    } catch (error) {
+        console.log(error);
+    }
+}
+//Hàm validate giá
+function validateDescription(value) {
+    try {
+        const errorMessage = Validator(value, [
+            Validator.maxLength(255, MISAResource[resource.langCode]?.InventoryInvalidError?.DescriptionMaxLength),
+        ]);
+        validateForm.value.description = errorMessage;
+        return errorMessage;
+    } catch (error) {
+        console.log(error);
+    }
+}
 /**
  * Author: Tiến Trung (26/08/2023)
  * Description: hàm lấy đơn vị tính
@@ -545,7 +668,7 @@ onMounted(async () => {
     try {
         await getItemCategory();
         await getUnit();
-        updateForm();
+        await updateForm();
         title.setTitle(
             MISAResource[resource.langCode]?.SideBar?.Inventory,
             title.editMode === Enum.EditMode.Add
@@ -589,6 +712,19 @@ watch(
     },
     { deep: true },
 );
+/**
+ * Author: Tiến Trung (03/07/2023)
+ * Description: watch kiểm tra dialog được đóng
+ * gọi autofocus nếu có lỗi form
+ */
+watch(
+    () => dialog.isShow,
+    () => {
+        if (dialog.isShow === false) {
+            autoFocusForm();
+        }
+    },
+);
 </script>
 <template>
     <div class="ntt-form">
@@ -625,6 +761,8 @@ watch(
                                 row
                                 require
                                 @blur="(value) => onBlurInputFormUpdateData(value, inputType.Name)"
+                                @input-validation="validateName"
+                                :errorMessage="validateForm.inventoryName"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -647,6 +785,8 @@ watch(
                                 validate="true"
                                 row
                                 @blur="(value) => onBlurInputFormUpdateData(value, inputType.SKUCode)"
+                                @input-validation="validateCode"
+                                :errorMessage="validateForm.SKUCode"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -658,6 +798,9 @@ watch(
                                 validate="true"
                                 row
                                 money
+                                right
+                                @input-validation="validateCostPrice"
+                                :errorMessage="validateForm.costPrice"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -669,6 +812,9 @@ watch(
                                 validate="true"
                                 row
                                 money
+                                right
+                                @input-validation="validateUnitPrice"
+                                :errorMessage="validateForm.unitPrice"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -685,6 +831,7 @@ watch(
                         <MISARow></MISARow>
                         <MISARow>
                             <MISACheckbox
+                                ref="iIsShowMenu"
                                 custom
                                 :valueCheckbox="formData.isShowMenu"
                                 v-model:value="formData.isShowMenu"
@@ -733,6 +880,9 @@ watch(
                                 validate="true"
                                 row
                                 class="custom-label"
+                                :maxLength="255"
+                                @input-validation="validateDescription"
+                                :errorMessage="validateForm.description"
                             >
                             </MISATextArea>
                         </MISARow>

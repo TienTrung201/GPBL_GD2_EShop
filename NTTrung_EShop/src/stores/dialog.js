@@ -18,6 +18,7 @@ export const useDialog = defineStore('dialog', {
         errorResponse: false, //Nếu có error từ response thì không đóng dialog
         errorCode: 0,
         saveData: () => {}, //đây là hàm được gán vào dialog
+        navigationLink: () => {},
     }),
 
     actions: {
@@ -34,6 +35,13 @@ export const useDialog = defineStore('dialog', {
          */
         setFunction(fn) {
             this.saveData = fn;
+        },
+        /**
+         * Author: Tiến Trung 24/06/2023)
+         * Description: gán hàm chuyển hướng vào dialog
+         */
+        setNavigationLink(fn) {
+            this.navigationLink = fn;
         },
         /**
          * Author: Tiến Trung 24/06/2023)

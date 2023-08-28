@@ -132,6 +132,8 @@ const updateValue = (data) => {
 const firstFocusDropdown = () => {
     if (firstFocus.value) {
         isShowDropdown.value = true;
+    } else {
+        optionsSearchCombobox.value = props.options;
     }
 };
 /**
@@ -172,6 +174,8 @@ const closeDropdown = () => {
 const clickButton = () => {
     if (!props.combobox) {
         toggleDropdown();
+    } else {
+        optionsSearchCombobox.value = props.options;
     }
     inputElement.value.focus();
 };
@@ -185,8 +189,11 @@ const updateComboboxInput = (e) => {
     try {
         inputSearchCombobox.value = e.target.value;
         if (e.target.value === '') {
-            emit('update:value', '');
-            emit('blur', '');
+            if (props.combobox) {
+                // emit('update:value', '');
+                // emit('blur', '');
+            }
+
             optionsSearchCombobox.value = props.options;
         } else {
             filterOption();

@@ -32,7 +32,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Mã vạch
         /// </summary>
-        public string BarCode { get; set; } = string.Empty;
+        public string Barcode { get; set; } = string.Empty;
         /// <summary>
         /// Giá mua
         /// </summary>
@@ -88,11 +88,11 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Nhóm hàng hóa
         /// </summary>  
-        public Guid ItemCategoryId { get; set; }
+        public Guid? ItemCategoryId { get; set; }
         /// <summary>
         /// Tên đơn vị tính
         /// </summary>  
-        public Guid UnitId { get; set; }
+        public Guid? UnitId { get; set; }
         /// <summary>
         /// Code thay đổi
         /// </summary>  
