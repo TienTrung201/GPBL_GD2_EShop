@@ -75,7 +75,14 @@ baseAxios.interceptors.response.use(
     function (error) {
         const dialog = useDialog();
         //Nếu có bất kì lỗi nào từ BE trả về thì nhảy hết vào đây
-        dialog.setMethod(Enum.EditMode.None);
+        switch (error.response.data.ErrorCode) {
+            case Enum.ErorCode.NotFoundCode:
+                dialog.setMethod(Enum.EditMode.Add);
+                break;
+            default:
+                dialog.setMethod(Enum.EditMode.None);
+                break;
+        }
         dialog.open({
             title: MISAResource[langCode]?.Dialog?.Warning?.Title,
             content: error.response.data.UserMessage || MISAResource[langCode].ErrorMisaAlert,

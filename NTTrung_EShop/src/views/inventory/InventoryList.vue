@@ -239,11 +239,6 @@ const dataSelected = computed(() => {
 //  * Description: hàm click vào button thêm
 //  */
 const showModalAddData = () => {
-    // modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Employee?.Add);
-    // modalForm.setObjectForm({});
-    // modalForm.setMethod(Enum.EditMode.Add);
-    // // dialog.setMethod(Enum.EditMode.Add);
-    // modalForm.open();
     inventory.openForm(null, Enum.EditMode.Add);
 };
 /**
@@ -251,16 +246,16 @@ const showModalAddData = () => {
  * Description: Hàm nhận emit khi click sửa thông tin
  */
 const handleShowEditInfo = (data) => {
-    // modalForm.open();
-    // modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Inventory?.Update);
-    // modalForm.setMethod(Enum.EditMode.Update);
-    // modalForm.setObjectForm(data);
-    let dataEdit = data;
-    if (!dialog.objectData.InventoryId) {
-        dataEdit = dataSelected.value[0];
+    try {
+        let dataEdit = data;
+        if (!dialog.objectData?.InventoryId) {
+            dataEdit = dataSelected.value[0];
+        }
+        dialog.setMethod(Enum.EditMode.Update);
+        inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Update);
+    } catch (error) {
+        console.log(error);
     }
-    dialog.setMethod(Enum.EditMode.Update);
-    inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Update);
 };
 /**
  * Author: Tiến Trung (09/07/2023)
@@ -318,36 +313,44 @@ const handleUnCheckedAll = () => {
  * Description: Hàm hiển thị dialog xóa các nhân viên được chọn
  */
 const openDialogDeleteSelected = () => {
-    if (dataSelected.value.length > 1) {
-        dialog.setMethod(Enum.EditMode.Delete);
-        dialog.setFunction(deleteDataSelected);
-        modalForm.setMethod(Enum.EditMode.Delete);
-        dialog.open({
-            title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
-            content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteListContent,
-            action: MISAResource[resource.langCode]?.Button?.Delete,
-            buttonSec: MISAResource[resource.langCode]?.Button?.No,
-            type: Enum.ButtonType.Pri,
-            icon: 'warning',
-            loading: false,
-        });
-    } else {
-        dialog.setObjectData(dataSelected.value[0]);
-        dialog.setMethod(Enum.EditMode.Delete);
-        modalForm.setMethod(Enum.EditMode.Delete);
-        dialog.setFunction(deleteData);
-        dialog.open({
-            title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
-            content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteContent.replace(
-                'SKUCode',
-                dialog.objectData.SKUCode,
-            ),
-            action: MISAResource[resource.langCode]?.Button?.Delete,
-            buttonSec: MISAResource[resource.langCode]?.Button?.No,
-            type: Enum.ButtonType.Pri,
-            icon: 'warning',
-            loading: false,
-        });
+    try {
+        if (dataSelected.value.length > 1) {
+            dialog.setMethod(Enum.EditMode.Delete);
+            dialog.setFunction(deleteDataSelected);
+            modalForm.setMethod(Enum.EditMode.Delete);
+            dialog.open({
+                title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
+                content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteListContent,
+                action: MISAResource[resource.langCode]?.Button?.Delete,
+                buttonSec: MISAResource[resource.langCode]?.Button?.No,
+                type: Enum.ButtonType.Danger,
+                icon: 'question-dialog',
+                loading: false,
+            });
+        } else {
+            let dataDelete = dialog.objectData;
+            if (!dialog.objectData?.InventoryId) {
+                dataDelete = dataSelected.value[0];
+            }
+            dialog.setObjectData(dataDelete);
+            dialog.setMethod(Enum.EditMode.Delete);
+            modalForm.setMethod(Enum.EditMode.Delete);
+            dialog.setFunction(deleteData);
+            dialog.open({
+                title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
+                content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteContent.replace(
+                    'SKUCode',
+                    dialog.objectData.SKUCode,
+                ),
+                action: MISAResource[resource.langCode]?.Button?.Delete,
+                buttonSec: MISAResource[resource.langCode]?.Button?.No,
+                type: Enum.ButtonType.Danger,
+                icon: 'question-dialog',
+                loading: false,
+            });
+        }
+    } catch (error) {
+        console.log(error);
     }
 };
 /**
@@ -396,26 +399,6 @@ const deleteDataSelected = async () => {
     }
 };
 /**
- * Author: Tiến Trung (29/06/2023)
- * Description: Hàm xóa nhân viên
- */
-const deleteEntity = async () => {
-    try {
-        //khi không xóa từng đối tượng thì không
-        //có đối tượng nào được chọn và object rỗng
-        //sẽ chạy vào xóa tất cả
-        baseApi.path = Enum.Router.Inventory.Api;
-        baseApi.method = Enum.ApiMethod.DELETE;
-        if (Object.keys(objectData.value).length === 0) {
-            await deleteDataSelected();
-        } else {
-            await deleteData();
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-/**
  * Author: Tiến Trung (28/06/2023)
  * Description: Hàm bật dialog xóa
  */
@@ -451,65 +434,6 @@ const setLoadingButton = (status, isAddNewForm) => {
         loadingButton.value.save = status;
     }
 };
-/**
- * Author: Tiến Trung (29/06/2023)
- * Description: Hàm Thêm mới
- */
-const addNewData = async (data) => {
-    baseApi.path = Enum.Router.Inventory.Api;
-    baseApi.data = data;
-    baseApi.method = Enum.ApiMethod.POST;
-    const res = await baseApi.request();
-    // const res = await employeeApi.create(data);
-    console.log(res);
-    toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Add);
-    await getData(filter.value);
-};
-/**
- * Author: Tiến Trung (29/06/2023)
- * Description: Hàm Update
- */
-const updateData = async (data) => {
-    baseApi.path = Enum.Router.Inventory.Api;
-    baseApi.data = data;
-    baseApi.method = Enum.ApiMethod.PUT;
-    const res = await baseApi.request(`${object.value.InventoryId}`);
-    console.log(res);
-    toast.success(MISAResource[resource.langCode]?.Toast?.Success?.Update);
-    await getData(filter.value);
-};
-
-/**
- * Author: Tiến Trung (29/06/2023)
- * Description: Hàm Gửi form
- */
-const submitFormData = async (data, isAddNewForm) => {
-    try {
-        //Copy đối tượng để thay đổi định dạng date gửi đến BE
-        const copyObj = deepCopy(data);
-        setLoadingButton(true, isAddNewForm);
-        copyObj.dateOfBirth = data.dateOfBirth ? convertDateForBE(data.dateOfBirth) : null;
-        copyObj.identityDate = data.identityDate ? convertDateForBE(data.identityDate) : null;
-        if (method.value === Enum.EditMode.Update) {
-            await updateData(copyObj).then(() => {
-                setLoadingButton(false, isAddNewForm);
-            });
-        }
-        if (method.value === Enum.EditMode.Add || method.value === Enum.EditMode.Copy) {
-            await addNewData(copyObj).then(() => {
-                setLoadingButton(false, isAddNewForm);
-            });
-        }
-        if (isAddNewForm) {
-            showModalAddData();
-        } else {
-            modalForm.close();
-        }
-    } catch (error) {
-        setLoadingButton(false, isAddNewForm);
-        console.log(error);
-    }
-};
 
 /**
  * Author: Tiến Trung (10/07/2023)
@@ -522,7 +446,7 @@ async function reset() {
     dialog.setObjectData({});
     dataTable.value = [];
     // filter.value={}
-    await getData();
+    await getData(filter.value);
 }
 /**
  * Author: Tiến Trung (10/07/2023)
@@ -632,7 +556,7 @@ const onKeyDownInsertNew = (e) => {
  * Description: Hàm sự kiện phím ctrl + D để xóa danh sách được chọn
  */
 const onKeyDownDelete = (e) => {
-    if (dataSelected.value.length > 0) {
+    if (dataSelected.value.length > 0 || dialog.objectData.InventoryId) {
         if (e.ctrlKey && e.keyCode === Enum.Keyboard.D) {
             e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
             openDialogDeleteSelected();
@@ -644,7 +568,7 @@ const onKeyDownDelete = (e) => {
  * Description: khi được update thì thêm sự kiện delete bằng phím
  */
 onUpdated(() => {
-    if (dataSelected.value.length > 0) {
+    if (dataSelected.value.length > 0 || dialog.objectData.InventoryId) {
         window.addEventListener('keydown', onKeyDownDelete);
     } else {
         window.removeEventListener('keydown', onKeyDownDelete);

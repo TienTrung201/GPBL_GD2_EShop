@@ -50,7 +50,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(createDto.SKUCode, null);
             // Kiểm tra trùng mã vạch
-            if (!string.IsNullOrEmpty(createDto.Barcode.Replace(" ", "")))
+            if (!string.IsNullOrEmpty(createDto.Barcode?.Replace(" ", "")))
             {
                 await _inventoryManager.CheckDublicateBarcode(createDto.Barcode, null);
             }
@@ -89,7 +89,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(updateDto.SKUCode, entity.SKUCode);
             // Kiểm tra trùng mã vạch
-            if (!string.IsNullOrEmpty(updateDto.Barcode.Replace(" ", "")))
+            if (!string.IsNullOrEmpty(updateDto.Barcode?.Replace(" ", "")))
             {
                 await _inventoryManager.CheckDublicateBarcode(updateDto.Barcode, entity.Barcode);
             }

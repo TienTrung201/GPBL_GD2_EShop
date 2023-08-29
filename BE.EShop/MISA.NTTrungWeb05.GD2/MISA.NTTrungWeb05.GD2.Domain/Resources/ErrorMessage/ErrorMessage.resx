@@ -122,7 +122,7 @@
     <comment>Lỗi database</comment>
   </data>
   <data name="DuplicateError" xml:space="preserve">
-    <value>Mã {0} đã tồn tại trong hệ thống, vui lòng kiểm tra lại.</value>
+    <value>Mã &lt;b&gt;{0}&lt;/b&gt; đã tồn tại trong hệ thống, vui lòng kiểm tra lại.</value>
     <comment>Lỗi trùng dữ liệu</comment>
   </data>
   <data name="Error" xml:space="preserve">
@@ -142,13 +142,13 @@
     <comment>Lỗi không thể xóa</comment>
   </data>
   <data name="ExistedConstrain" xml:space="preserve">
-    <value>Mã {0} có xung đột vui lòng xóa các phát sinh liên quan.</value>
+    <value>Mã &lt;b&gt;{0}&lt;/b&gt; có xung đột vui lòng xóa các phát sinh liên quan.</value>
   </data>
   <data name="NoAffectedRows" xml:space="preserve">
     <value>Không bản ghi nào bị thay đổi trong database.</value>
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>Không tìm thấy {0}.</value>
+    <value>Không tìm thấy &lt;b&gt;{0}&lt;/b&gt;.</value>
     <comment>Không tìm thấy</comment>
   </data>
   <data name="SystemError" xml:space="preserve">

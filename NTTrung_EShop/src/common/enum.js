@@ -101,6 +101,7 @@ const Enum = {
     },
     RegExp: {
         Code: /[A-Za-z]{1,2}-\d{4,}/g,
+        Guid: /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
     },
     ButtonType: {
         Pri: 'pri',

@@ -19,7 +19,9 @@
                 </li>
                 <li
                     @click="handleNavigateToPage(Enum.Router.Inventory.Name)"
-                    :class="{ active: pathName === Enum.Router.Inventory.Name }"
+                    :class="{
+                        active: pathName === Enum.Router.Inventory.Name || pathName === Enum.Router.InventoryForm.Name,
+                    }"
                     class="menuBar__item"
                 >
                     <a class="menuBar__item-link" :to="Enum.Router.Inventory.Path">
@@ -102,7 +104,7 @@ const title = useTitleHeader();
 const resource = useResource();
 const pathName = ref(window.location.pathname.split('/')[1]);
 const sideBarElement = ref(null);
-const pageNameOld = ref(Enum.Router.Home.Name)
+const pageNameOld = ref(Enum.Router.Home.Name);
 /**
  * @param {string} tab
  * Author: Tiến Trung (21/06/2023)
@@ -118,16 +120,16 @@ const handleChangeTab = (tab) => {
  */
 const handleNavigateToPage = (pageName) => {
     if (pageNameOld.value !== pageName) {
-        pageNameOld.value = pageName
+        pageNameOld.value = pageName;
         router.push({ name: pageName });
         handleChangeTab(pageName);
         title.setTitle(MISAResource[resource.langCode]?.SideBar[convertToTitleCase(pageName)]);
-        return
+        return;
     }
 };
 onMounted(() => {
-    pageNameOld.value = pathName.value.replace('/', '')
-})
+    pageNameOld.value = pathName.value.replace('/', '');
+});
 /**
  * Author: Tiến Trung (21/06/2023)
  * Description: Hàm đóng mở sideBar

@@ -379,7 +379,7 @@ function closeForm() {
     if (isEditForm.value === Enum.EditMode.Update) {
         dialog.setFunction(submitForm);
         dialog.setMethod(inventory.editMode);
-        dialog.setNavigationLink(() => {
+        dialog.setCloseNavigationLink(() => {
             inventory.closeForm();
         });
         dialog.open({
@@ -437,20 +437,30 @@ const autoFocusForm = () => {
  * Description: lấy thông tin của detail
  */
 const getDetail = async () => {
-    try {
-        if (formEditMode.value === Enum.EditMode.Update) {
+    if (formEditMode.value === Enum.EditMode.Update) {
+        if (Enum.RegExp.Guid.test(inventoryId.value)) {
+            dialog.setFunction(reloadPage);
             baseApi.path = Enum.Router.Inventory.Api;
             baseApi.method = Enum.ApiMethod.GET;
             const response = await baseApi.request(inventoryId.value);
             console.log(response);
             return response.data;
         } else {
-            return {};
+            reloadPage();
         }
-    } catch (error) {
-        inventory.openForm(null, Enum.EditMode.Add);
-        // location.reload();
+    } else {
+        return {};
     }
+};
+/**
+ * Author: Tiến Trung (29/08/2023)
+ * Description: Hàm reload page khi có lỗi
+ */
+const reloadPage = () => {
+    inventory.openForm(null, Enum.EditMode.Add);
+    setTimeout(() => {
+        location.reload();
+    }, 10);
 };
 /**
  * Author: Tiến Trung (05/07/2023)
@@ -588,6 +598,7 @@ const submitForm = async (typeButtonSave) => {
             }
         }
     } catch (error) {
+        setLoadingButton(typeButtonSave, false);
         console.log(error);
     }
 };

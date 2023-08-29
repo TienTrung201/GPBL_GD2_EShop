@@ -35,7 +35,7 @@
         background-color: var(--primary-color);
     }
     &:focus {
-        outline: var(--button-hover-color) 3px solid;
+        outline: var(--button-hover-color) 1px solid;
     }
     .tooltip {
         max-height: 30px;
@@ -57,7 +57,7 @@
         background-color: var(--red-color4);
     }
     &:focus {
-        outline: var(--red-color3) 3px solid;
+        outline: var(--red-color3) 1px solid;
         background-color: var(--red-color5);
     }
     &:active {
@@ -79,7 +79,7 @@
         background-color: var(--button-hover-color) !important;
     }
     &:focus {
-        outline: var(--button-hover-color) 3px solid;
+        outline: var(--button-hover-color) 2px solid;
     }
     &:active {
         background-color: var(--primary-color) !important;
@@ -102,11 +102,12 @@
     // font-weight: bold;
     &:focus {
         text-decoration: underline;
-        outline: var(--button-hover-color) 3px solid;
+        outline: var(--button-hover-color) 2px solid;
         text-decoration: none;
     }
     &:active {
         list-style: none;
+        background-color: transparent !important;
     }
 }
 .btn-sec-icon {
@@ -119,7 +120,7 @@
         color: var(--blue-color3);
     }
     &:focus {
-        outline: var(--button-hover-color) 3px solid;
+        outline: var(--button-hover-color) 2px solid;
     }
     &:active {
         background-color: #fff !important;
@@ -150,12 +151,14 @@
     // font-weight: bold;
     &:focus {
         text-decoration: underline;
-        background-color: transparent;
+        background-color: transparent !important;
         outline: none;
         text-decoration: none;
     }
+
     &:active {
         color: var(--blue-color6);
+        background-color: transparent !important;
         list-style: none;
     }
 }

@@ -1,6 +1,9 @@
 ﻿using MISA.NTTrungWeb05.GD2.Domain.Enum;
+using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
+using MISA.NTTrungWeb05.GD2.Domain.Resources.ValidateInput;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +23,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Tên hàng hóa
         /// </summary>
+        [Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
+        [StringLength(100, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public string InventoryName { get; set; } = string.Empty;
         /// <summary>
         /// Mã hàng hóa
@@ -28,46 +33,59 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Mã hàng hóa
         /// </summary>
+        [Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
+        [StringLength(20, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        [RegularExpression("[A-Za-z]{1,2}-\\d{4,}", ErrorMessage = "{0} {1}")]
         public string SKUCodeCustom { get; set; } = string.Empty;
         /// <summary>
         /// Mã vạch
         /// </summary>
-        public string Barcode { get; set; } = string.Empty;
+        [StringLength(255, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        public string? Barcode { get; set; } = string.Empty;
         /// <summary>
         /// Giá mua
         /// </summary>
+        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? CostPrice { get; set; }
         /// <summary>
         /// Giá bán
         /// </summary>
+        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>
+        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? AvgUnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình mua
         /// </summary>
+        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? AvgCostPrice { get; set; }
         /// <summary>
         /// Màu sắc
         /// </summary>
+        [StringLength(50, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public string? Color { get; set; } = string.Empty;
         /// <summary>
         /// Mã màu
         /// </summary>
+        [StringLength(50, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public string? ColorCode { get; set; } = string.Empty;
         /// <summary>
         /// Size
         /// </summary>
+        [StringLength(50, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public string? Size { get; set; } = string.Empty;
         /// <summary>
         /// Mã size
         /// </summary>
+        [StringLength(50, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public string? SizeCode { get; set; } = string.Empty;
         /// <summary>
         /// Mô tả
         /// </summary>
+        [StringLength(255, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public string? Description { get; set; } = string.Empty;
         /// <summary>
         /// Ảnh

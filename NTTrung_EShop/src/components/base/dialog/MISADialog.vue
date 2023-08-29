@@ -20,7 +20,7 @@ const { actionDialog, buttonThird, title, content, type, buttonSec, icon, method
 const handleClose = () => {
     // dialog.setMethod(modal.method);
     dialog.close();
-    dialog.navigationLink();
+    dialog.closeNavigationLink();
 };
 
 /**
@@ -28,20 +28,18 @@ const handleClose = () => {
  * Description: Hàm click submit dialog
  */
 const submitDialog = () => {
-    if (method.value === Enum.EditMode.None) {
-        dialog.close();
-    }
-    if (
-        method.value === Enum.EditMode.Add ||
-        method.value === Enum.EditMode.Update ||
-        method.value === Enum.EditMode.Copy
-    ) {
-        dialog.setLoading(true);
-        dialog.saveData(false);
-    }
-    if (method.value === Enum.EditMode.Delete) {
-        dialog.setLoading(true);
-        dialog.saveData();
+    try {
+        switch (method.value) {
+            case Enum.EditMode.None:
+                dialog.close();
+                break;
+            default:
+                dialog.setLoading(true);
+                dialog.saveData(false);
+                break;
+        }
+    } catch (error) {
+        console.log(error);
     }
 };
 /**
@@ -59,10 +57,10 @@ onUpdated(() => {
  * Description: hàm tự động focus vào button
  */
 const autoFocusButton = () => {
-    if (iSecBtn.value) {
-        iSecBtn.value.autoFocus();
-    } else {
+    if (iPriBtn.value) {
         iPriBtn.value.autoFocus();
+    } else {
+        iSecBtn.value.autoFocus();
     }
 };
 /**
@@ -96,7 +94,7 @@ onUnmounted(() => {
         <div @keydown.esc="dialog.close()" @click.stop="" class="modal-dialog savett">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 ntt class="modal-title">{{ title }}</h3>
+                    <h3 ntt class="modal-title">{{ 'MISA eShop' }}</h3>
                     <button
                         v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
                         ref="iclose"
@@ -108,14 +106,14 @@ onUnmounted(() => {
                 </div>
                 <div class="modal-body">
                     <p v-if="icon" class="modal-icon center">
-                        <MISAIcon width="24" height="24" :icon="icon"></MISAIcon>
+                        <MISAIcon width="36" height="36" :icon="icon"></MISAIcon>
                     </p>
                     <template v-if="errorMessage.length > 0">
                         <MISACol
                             ><p>{{ errorMessage }}</p>
                         </MISACol>
                     </template>
-                    <p>{{ content }}</p>
+                    <p v-html="content"></p>
                 </div>
                 <div class="modal-footer">
                     <!-- <button @click="handleClose" v-if="buttonSec.length > 0" class="btn-sec btn-base btn-close-dialog">
@@ -127,20 +125,19 @@ onUnmounted(() => {
                     </div>
                     <div>
                         <MISAButton
-                            ref="iSecBtn"
-                            :type="Enum.ButtonType.Sec"
-                            @click="handleClose"
-                            v-if="buttonSec !== undefined"
-                            :action="buttonSec"
-                        ></MISAButton>
-
-                        <MISAButton
-                            @keydown.tab="iclose.focus()"
                             ref="iPriBtn"
                             :loading="loadingBtn"
                             @click="submitDialog"
                             :type="type"
                             :action="actionDialog"
+                        ></MISAButton>
+                        <MISAButton
+                            @keydown.tab="iclose.focus()"
+                            ref="iSecBtn"
+                            :type="Enum.ButtonType.Sec"
+                            @click="handleClose"
+                            v-if="buttonSec !== undefined"
+                            :action="buttonSec"
                         ></MISAButton>
                     </div>
                 </div>

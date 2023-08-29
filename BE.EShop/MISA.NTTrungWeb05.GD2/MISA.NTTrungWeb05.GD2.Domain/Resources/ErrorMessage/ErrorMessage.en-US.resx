@@ -122,7 +122,7 @@
     <comment>Lỗi database</comment>
   </data>
   <data name="DuplicateError" xml:space="preserve">
-    <value>Code {0} already exists in the system, please check again.</value>
+    <value>Code &lt;b&gt;{0}&lt;/b&gt; already exists in the system, please check again.</value>
     <comment>Lỗi trùng dữ liệu</comment>
   </data>
   <data name="Error" xml:space="preserve">
@@ -142,13 +142,13 @@
     <comment>Lỗi không thể xóa</comment>
   </data>
   <data name="ExistedConstrain" xml:space="preserve">
-    <value>Code {0} has a conflict, please delete related issues.</value>
+    <value>Code &lt;b&gt;{0}&lt;/b&gt; has a conflict, please delete related issues.</value>
   </data>
   <data name="NoAffectedRows" xml:space="preserve">
     <value>No records have been changed in the database.</value>
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>{0} not found.</value>
+    <value>&lt;b&gt;{0}&lt;/b&gt; not found.</value>
     <comment>Không tìm thấy</comment>
   </data>
   <data name="SystemError" xml:space="preserve">

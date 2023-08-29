@@ -14,7 +14,7 @@
     mask-repeat: no-repeat;
 }
 
-.ms-icon-pin {
+.ms .ms-icon-pin {
     -webkit-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
     -moz-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
     -ms-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
@@ -676,8 +676,12 @@
     -o-mask-position: -536px -144px;
     mask-position: -536px -144px; */
 }
+.ms-icon-question-dialog {
+    background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -832px -462px;
+    //36 36
+}
 .ms-icon-warning {
-    background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -815px -143px;
+    background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -598px -463px;
 }
 .ms-icon-error-circle {
     background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -538px -146px;
