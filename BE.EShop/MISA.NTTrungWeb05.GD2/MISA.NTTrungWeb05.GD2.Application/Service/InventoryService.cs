@@ -123,7 +123,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             var hasDetail = false;
             if (data.Detail?.Any() == true)//data.Detail?.Any() sẽ trả về giá trị true nếu danh sách có ít nhất một phần tử
             {
-                var dataUpdateCreate = data.Detail.Where((data) => data.EditMode == EditMode.Create || data.EditMode == EditMode.Update).ToList();
+                var dataUpdateCreate = data.Detail.Where((data) => data.EditMode != EditMode.Delete).ToList();
                 if (dataUpdateCreate.Count() > 0)
                 {
                     decimal? totalUnitPrice = 0;
@@ -211,7 +211,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 }
             });
             var listCodesCreate = data.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCodeCustom);
-            var listBarcodesCreate = data.Where(inventory => inventory.EditMode != EditMode.Create).Select((inventory) => inventory.Barcode);
+            var listBarcodesCreate = data.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.Barcode);
             await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
             await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));
         }

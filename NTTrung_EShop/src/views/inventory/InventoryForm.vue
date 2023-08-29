@@ -26,7 +26,7 @@ const couterChangeForm = ref(0); //Biến kiểm tra số lần form thay đổi
 const isEditForm = ref(Enum.EditMode.None); // Biến này nhận biết form có bị thay đổi không
 const formEditMode = ref(inventoryId.value ? Enum.EditMode.Update : Enum.EditMode.Add);
 const dataDelete = ref([]); //Data Detail bị delete
-const inputType = ref({ SKUCode: 1, Name: 2 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
+const inputType = ref({ SKUCode: 1, Name: 2, Unit: 3, ItemCategory: 4 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
 const file = ref(null);
 const imgFile = ref(null);
 const validateForm = ref({
@@ -57,7 +57,7 @@ const props = defineProps({
 });
 const columnTable = ref([
     {
-        title: 'Tên hàng hóa',
+        title: MISAResource[resource.langCode]?.Manage?.Inventory?.InventoryName,
         key: 'InventoryName',
         width: '170',
         isShow: true,
@@ -65,23 +65,23 @@ const columnTable = ref([
         // pin: true,
     },
     {
-        title: 'Đơn vị tính',
+        title: MISAResource[resource.langCode]?.Manage?.Inventory?.Unit,
         key: 'UnitName',
         width: '170',
         isShow: true,
         isEdit: false,
         // pin: true,
     },
+    // {
+    //     title: MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode,
+    //     key: 'SKUCode',
+    //     width: '170',
+    //     isShow: true,
+    //     isEdit: false,
+    //     // type: 'gender',
+    // },
     {
-        title: 'SKUCode',
-        key: 'SKUCode',
-        width: '170',
-        isShow: true,
-        isEdit: false,
-        // type: 'gender',
-    },
-    {
-        title: 'SKUCodeCustom',
+        title: MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode,
         key: 'SKUCodeCustom',
         width: '170',
         isShow: true,
@@ -90,7 +90,7 @@ const columnTable = ref([
         // type: 'gender',
     },
     {
-        title: 'Mã vạch',
+        title: MISAResource[resource.langCode]?.Manage?.Inventory?.Barcode,
         key: 'Barcode',
         width: '170',
         isShow: true,
@@ -98,7 +98,7 @@ const columnTable = ref([
         isBarcode: true,
     },
     {
-        title: 'Giá mua',
+        title: MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice,
         key: 'CostPrice',
         width: '170',
         isShow: true,
@@ -107,7 +107,7 @@ const columnTable = ref([
         isEdit: true,
     },
     {
-        title: 'Giá bán',
+        title: MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice,
         key: 'UnitPrice',
         width: '170',
         isShow: true,
@@ -300,9 +300,6 @@ const handleRemoveTag = (index, type, tagCode) => {
  */
 const onBlurInputFormUpdateData = (value, nameForm) => {
     // autoDataTable();
-    if (isEditForm.value === Enum.EditMode.None) {
-        return;
-    }
     dataTable.value.forEach((data) => {
         const SKUCodeDetail = `${formData.value.SKUCode}${data.ColorCode ? '-' + data.ColorCode : ''}${
             data.SizeCode ? '-' + data.SizeCode : ''
@@ -317,6 +314,7 @@ const onBlurInputFormUpdateData = (value, nameForm) => {
         if (data.Size && data.Color === '') {
             nameDetail = `${nameDetail} (${data.Size})`;
         }
+        data.EditMode = Enum.EditMode.Update;
         switch (nameForm) {
             case inputType.value.Name:
                 data.InventoryName = nameDetail;
@@ -324,6 +322,13 @@ const onBlurInputFormUpdateData = (value, nameForm) => {
             case inputType.value.SKUCode:
                 data.SKUCode = SKUCodeDetail;
                 data.SKUCodeCustom = SKUCodeDetail;
+                break;
+            case inputType.value.Unit:
+                data.UnitId = formData.value.unitId;
+                data.UnitName = units.value.find((unit) => unit.value === value).option;
+                break;
+            case inputType.value.ItemCategory:
+                data.ItemCategoryId = value;
                 break;
             default:
                 break;
@@ -400,12 +405,12 @@ function closeForm() {
 const autoFocusForm = () => {
     try {
         //Nếu là lỗi trùng mã chủ động cho input bị lỗi để báo
-        if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
-            dialog.setErrorCode(0);
-            validateForm.value.SKUCode = MISAResource[resource.langCode].EmployeeInvalidError.EmployeeDuplicateCode;
-            iSKUCode.value.autoFocus();
-            return;
-        }
+        // if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
+        //     dialog.setErrorCode(0);
+        //     validateForm.value.SKUCode = MISAResource[resource.langCode].EmployeeInvalidError.EmployeeDuplicateCode;
+        //     iSKUCode.value.autoFocus();
+        //     return;
+        // }
         if (validateForm.value.inventoryName) {
             iInventoryName.value.autoFocus();
             return;
@@ -497,13 +502,12 @@ const saveData = async (data) => {
     // const res = await employeeApi.create(data);
     console.log(res);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.SaveSuccess);
-    inventory.closeForm();
 };
 /**
  * Author: Tiến Trung (26/08/2023)
  * Description: Hàm gửi form
  */
-const submitForm = async () => {
+const submitForm = async (isAddNewData, isReplication) => {
     try {
         //vadidate nhập
         validateName(formData.value.inventoryName);
@@ -524,13 +528,18 @@ const submitForm = async () => {
                 loading: false,
             });
         } else {
+            //tạo một bản sao
             const copyObj = deepCopy(formData.value);
             const dataCreateUpdate = dataTable.value.map((data) => {
                 const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
                 const unitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
                 const isUpdateCode = data.newCode && data.newCode !== data.SKUCodeCustom;
                 const isUpdateBarcode = data.newCode && data.newBarcode !== data.Barcode;
-                console.log(unitPrice);
+                let editMode = data.EditMode;
+                //Nếu là copy hoặc add thì cho edit mode là thêm mới
+                if (formEditMode.value === Enum.EditMode.Add || formEditMode.value === Enum.EditMode.Copy) {
+                    editMode = Enum.EditMode.Add;
+                }
                 return {
                     ...data,
                     isUpdateCode,
@@ -539,8 +548,10 @@ const submitForm = async () => {
                     UnitPrice: unitPrice,
                     UnitId: formData.value.unitId ? formData.value.unitId : null,
                     ItemCategoryId: formData.value.itemCategoryId ? formData.value.itemCategoryId : null,
+                    EditMode: editMode,
                 };
             });
+            //Cập nhật data phù hợp để gửi vào API
             copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
             copyObj.isActive = copyObj.isActive ? true : false;
             copyObj.costPrice = Number(copyObj.costPrice?.replace(/\./g, ''));
@@ -548,6 +559,23 @@ const submitForm = async () => {
             copyObj.itemCategoryId = copyObj.itemCategoryId ? copyObj.itemCategoryId : null;
             copyObj.unitId = copyObj.unitId ? copyObj.unitId : null;
             await saveData(copyObj);
+            //Trong nhiều trường hợp lưu
+            if (isAddNewData) {
+                formEditMode.value = Enum.EditMode.Add;
+                isEditForm.value = Enum.EditMode.None;
+                couterChangeForm.value = 0;
+                formData.value.editMode= Enum.EditMode.Add;
+                inventory.openForm(null, Enum.EditMode.Add);
+                updateForm();
+            } else if (isReplication) {
+                formEditMode.value = Enum.EditMode.Copy;
+                isEditForm.value = Enum.EditMode.None;
+                couterChangeForm.value = 0;
+                formData.value.editMode = Enum.EditMode.Copy;
+                inventory.openForm(null, Enum.EditMode.Copy);
+            } else {
+                inventory.closeForm();
+            }
         }
     } catch (error) {
         console.log(error);
@@ -593,7 +621,7 @@ function validateName(value) {
     try {
         const errorMessage = Validator(value, [
             Validator.isRequired(MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryNameEmpty),
-            Validator.maxLength(18, MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryNameMaxLength),
+            Validator.maxLength(100, MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryNameMaxLength),
         ]);
         validateForm.value.inventoryName = errorMessage;
         return errorMessage;
@@ -699,6 +727,7 @@ watch(
                     formData.value.editMode = Enum.EditMode.Update;
                     break;
                 case Enum.EditMode.Add:
+                case Enum.EditMode.Copy:
                     formData.value.editMode = Enum.EditMode.Add;
                     break;
                 default:
@@ -730,23 +759,23 @@ watch(
     <div class="ntt-form">
         <div class="ntt-form__body">
             <div class="ntt-form__header">
-                <h3 class="form__title">THÔNG TIN CƠ BẢN</h3>
+                <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.BasicInfomation }}</h3>
             </div>
             <div class="wrapper-form">
                 <MISARow justify="flex-start">
                     <MISACol display="flex" direction="column" rowGap="12">
                         <MISARow>
-                            <MISARadioGroup :label="'Trạng thái kinh doanh'" row>
+                            <MISARadioGroup :label="MISAResource[resource.langCode]?.Manage?.Inventory?.IsActive" row>
                                 <MISARadio
                                     v-model:value="formData.isActive"
                                     :valueRadio="1"
-                                    :optionName="'Đang kinh doanh'"
+                                    :optionName="MISAResource[resource.langCode]?.Manage?.Inventory?.Active"
                                     name="active"
                                 ></MISARadio>
                                 <MISARadio
                                     v-model:value="formData.isActive"
                                     :valueRadio="0"
-                                    :optionName="'Ngừng kinh doanh'"
+                                    :optionName="MISAResource[resource.langCode]?.Manage?.Inventory?.NoActive"
                                     name="active"
                                 ></MISARadio>
                             </MISARadioGroup>
@@ -755,7 +784,7 @@ watch(
                             <MISAInput
                                 v-model:value="formData.inventoryName"
                                 ref="iInventoryName"
-                                :label="'Tên hàng hóa'"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.InventoryName"
                                 type="text"
                                 validate="true"
                                 row
@@ -772,15 +801,16 @@ watch(
                                 :options="itemCategories"
                                 v-model:value="formData.itemCategoryId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
-                                :label="'Nhóm hàng hóa'"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.ItemCategory"
                                 row
+                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.ItemCategory)"
                             ></MISADropdown>
                         </MISARow>
                         <MISARow>
                             <MISAInput
                                 v-model:value="formData.SKUCode"
                                 ref="iSKUCode"
-                                :label="'Mã SKU'"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode"
                                 type="text"
                                 validate="true"
                                 row
@@ -793,7 +823,7 @@ watch(
                             <MISAInput
                                 v-model:value="formData.costPrice"
                                 ref="iCostPrice"
-                                :label="'Giá mua'"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice"
                                 type="text"
                                 validate="true"
                                 row
@@ -807,7 +837,6 @@ watch(
                             <MISAInput
                                 v-model:value="formData.unitPrice"
                                 ref="iUnitPrice"
-                                :label="'Giá Bán'"
                                 type="text"
                                 validate="true"
                                 row
@@ -815,16 +844,18 @@ watch(
                                 right
                                 @input-validation="validateUnitPrice"
                                 :errorMessage="validateForm.unitPrice"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
                             <MISADropdown
                                 @next-tab-enter="iIsShowMenu.autoFocus()"
+                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.Unit)"
                                 combobox
                                 :options="units"
                                 v-model:value="formData.unitId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
-                                :label="'Đơn vị tính'"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Unit"
                                 row
                             ></MISADropdown>
                         </MISARow>
@@ -835,7 +866,7 @@ watch(
                                 custom
                                 :valueCheckbox="formData.isShowMenu"
                                 v-model:value="formData.isShowMenu"
-                                :lable="'Hiển thị trên màn hình bán hàng'"
+                                :lable="MISAResource[resource.langCode]?.Manage?.Inventory?.IsShowMenu"
                             >
                             </MISACheckbox>
                         </MISARow>
@@ -843,7 +874,7 @@ watch(
                 </MISARow>
             </div>
             <div sty class="ntt-form__header" :style="{ marginTop: '30px' }">
-                <h3 class="form__title">THÔNG TIN THUỘC TÍNH</h3>
+                <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.AttributeInfomation }}</h3>
             </div>
             <div class="wrapper-form">
                 <MISAInputManyTag
@@ -851,14 +882,14 @@ watch(
                     @remove-tag="handleRemoveTag"
                     :properties="properties.color"
                     :type="Enum.TypeProperties.Color"
-                    label="Màu sắc"
+                    :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Color"
                 ></MISAInputManyTag>
                 <MISAInputManyTag
                     @update-tag="autoDataTable"
                     @remove-tag="handleRemoveTag"
                     :properties="properties.size"
                     :type="Enum.TypeProperties.Size"
-                    label="Size"
+                    :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Size"
                 ></MISAInputManyTag>
             </div>
             <div v-if="dataTable.length" class="form-table">
@@ -866,7 +897,7 @@ watch(
                 </MISATableDetail>
             </div>
             <div sty class="ntt-form__header" :style="{ marginTop: '10px' }">
-                <h3 class="form__title">THÔNG TIN BỔ SUNG</h3>
+                <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.AdditionalInfomation }}</h3>
             </div>
             <div class="wrapper-form">
                 <MISARow>
@@ -876,7 +907,7 @@ watch(
                                 ref="iDescription"
                                 isName
                                 v-model:value="formData.description"
-                                :label="'Mô tả'"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Description"
                                 validate="true"
                                 row
                                 class="custom-label"
@@ -889,7 +920,7 @@ watch(
                         <MISARow>
                             <div class="form-image">
                                 <div class="wrapper__label-image">
-                                    <p class="label">Ảnh hàng hóa</p>
+                                    <p class="label">{{ MISAResource[resource.langCode]?.Manage?.Inventory?.Image }}</p>
                                     <div class="wrapper-image">
                                         <input
                                             @change="handleChangeImg($event.target.files[0])"
@@ -916,9 +947,11 @@ watch(
                                     </div>
                                 </div>
                                 <div class="wrapper__content">
-                                    <p class="image__content">- Lựa chọn biểu tượng để thay thế nếu không có ảnh</p>
                                     <p class="image__content">
-                                        - Định dạng ảnh (.jpg, .jpeg, .png, .gif) và dung lượng {{ '>' }} 5MB
+                                        {{ MISAResource[resource.langCode]?.Manage?.Inventory?.ImageContent }}
+                                    </p>
+                                    <p class="image__content">
+                                        {{ MISAResource[resource.langCode]?.Manage?.Inventory?.ImageValidate }}
                                     </p>
                                 </div>
                             </div>
@@ -939,6 +972,7 @@ watch(
                 </template>
             </MISAButton>
             <MISAButton
+                @click="submitForm(false, true)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.SaveAndReplication"
                 sec
@@ -947,7 +981,12 @@ watch(
                     <MISAIcon width="25" height="15" icon="replication" />
                 </template>
             </MISAButton>
-            <MISAButton :type="Enum.ButtonType.IconPri" :action="MISAResource[resource.langCode]?.Button?.SaveAdd" sec>
+            <MISAButton
+                @click="submitForm(true)"
+                :type="Enum.ButtonType.IconPri"
+                :action="MISAResource[resource.langCode]?.Button?.SaveAdd"
+                sec
+            >
                 <template #icon>
                     <MISAIcon width="21" height="10" icon="plus" />
                 </template>

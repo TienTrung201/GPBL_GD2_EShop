@@ -211,7 +211,7 @@ const handleOpenEditColumn = (item, index) => {
  */
 const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
     if (data.EditMode !== Enum.EditMode.Add) {
-        data.EditMode = oldValue === value ? Enum.EditMode.None : Enum.EditMode.Update;
+        data.EditMode = Enum.EditMode.Update;
         if (isCode) {
             data.IsUpdateCode = oldValue !== value;
         }

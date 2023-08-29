@@ -132,6 +132,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
                 switch (data.EditMode)
                 {
                     case EditMode.Create:
+                    case EditMode.Copy:
                         var dataInsert = await MapCreateDtoToEntityValidateAsync(data);
                         data.SetValue($"{typeof(TEntity).Name}Id", dataInsert.GetKey());
                         result += await _crudRepository.InsertAsync(dataInsert);

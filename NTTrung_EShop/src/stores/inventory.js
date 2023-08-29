@@ -5,7 +5,7 @@ export const useInventory = defineStore('inventory', {
     state: () => ({
         dataSelect: {},
         uid: '',
-        editMode: Enum.EditMode.Add,
+        editMode: Enum.EditMode.None,
         submitForm: () => {}, //đây là hàm được gán vào dialog
     }),
 

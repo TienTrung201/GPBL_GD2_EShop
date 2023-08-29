@@ -166,7 +166,7 @@ const setColumnTable = () => {
             filter: true,
         },
         {
-            title: MISAResource[resource.langCode]?.Manage?.Inventory?.AvgCostPriceL,
+            title: MISAResource[resource.langCode]?.Manage?.Inventory?.AvgCostPrice,
             dataIndex: 'AvgCostPrice',
             key: 'AvgCostPrice',
             type: Enum.TypeDataTable.Money,
@@ -521,6 +521,7 @@ async function reset() {
     });
     dialog.setObjectData({});
     dataTable.value = [];
+    // filter.value={}
     await getData();
 }
 /**
@@ -631,7 +632,7 @@ const onKeyDownInsertNew = (e) => {
  * Description: Hàm sự kiện phím ctrl + D để xóa danh sách được chọn
  */
 const onKeyDownDelete = (e) => {
-    if (dataSelected.value.length > 1) {
+    if (dataSelected.value.length > 0) {
         if (e.ctrlKey && e.keyCode === Enum.Keyboard.D) {
             e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
             openDialogDeleteSelected();
