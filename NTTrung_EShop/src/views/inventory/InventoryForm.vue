@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, onUpdated, ref, watch } from 'vue';
 import Enum from '../../common/enum';
 import { useDialog } from '../../stores/dialog';
 import { useResource } from '../../stores/resource.js';
@@ -27,8 +27,10 @@ const isEditForm = ref(Enum.EditMode.None); // Biến này nhận biết form c�
 const formEditMode = ref(inventoryId.value ? Enum.EditMode.Update : Enum.EditMode.Add);
 const dataDelete = ref([]); //Data Detail bị delete
 const inputType = ref({ SKUCode: 1, Name: 2, Unit: 3, ItemCategory: 4 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
+const buttonTypeSave = ref({ save: 1, saveAdd: 2, saveCopy: 3 });
 const file = ref(null);
 const imgFile = ref(null);
+const loadingButton = ref({ save: false, saveAdd: false, saveCopy: false });
 const validateForm = ref({
     inventoryName: '',
     SKUCode: '',
@@ -52,9 +54,6 @@ const buttonCancel = ref(null);
 const buttonSaveAdd = ref(null);
 // const firstFocus = ref(null);
 // eslint-disable-next-line no-unused-vars
-const props = defineProps({
-    buttonLoad: { type: Object, default: () => ({ save: false, saveAdd: false }) },
-});
 const columnTable = ref([
     {
         title: MISAResource[resource.langCode]?.Manage?.Inventory?.InventoryName,
@@ -87,6 +86,7 @@ const columnTable = ref([
         isShow: true,
         isEdit: true,
         isCode: true,
+        type: Enum.TypeDataTable.Code,
         // type: 'gender',
     },
     {
@@ -437,14 +437,19 @@ const autoFocusForm = () => {
  * Description: lấy thông tin của detail
  */
 const getDetail = async () => {
-    if (formEditMode.value === Enum.EditMode.Update) {
-        baseApi.path = Enum.Router.Inventory.Api;
-        baseApi.method = Enum.ApiMethod.GET;
-        const response = await baseApi.request(inventoryId.value);
-        console.log(response);
-        return response.data;
-    } else {
-        return {};
+    try {
+        if (formEditMode.value === Enum.EditMode.Update) {
+            baseApi.path = Enum.Router.Inventory.Api;
+            baseApi.method = Enum.ApiMethod.GET;
+            const response = await baseApi.request(inventoryId.value);
+            console.log(response);
+            return response.data;
+        } else {
+            return {};
+        }
+    } catch (error) {
+        inventory.openForm(null, Enum.EditMode.Add);
+        // location.reload();
     }
 };
 /**
@@ -507,7 +512,7 @@ const saveData = async (data) => {
  * Author: Tiến Trung (26/08/2023)
  * Description: Hàm gửi form
  */
-const submitForm = async (isAddNewData, isReplication) => {
+const submitForm = async (typeButtonSave) => {
     try {
         //vadidate nhập
         validateName(formData.value.inventoryName);
@@ -558,30 +563,51 @@ const submitForm = async (isAddNewData, isReplication) => {
             copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));
             copyObj.itemCategoryId = copyObj.itemCategoryId ? copyObj.itemCategoryId : null;
             copyObj.unitId = copyObj.unitId ? copyObj.unitId : null;
+            setLoadingButton(typeButtonSave, true);
             await saveData(copyObj);
-            //Trong nhiều trường hợp lưu
-            if (isAddNewData) {
-                formEditMode.value = Enum.EditMode.Add;
-                isEditForm.value = Enum.EditMode.None;
-                couterChangeForm.value = 0;
-                formData.value.editMode= Enum.EditMode.Add;
-                inventory.openForm(null, Enum.EditMode.Add);
-                updateForm();
-            } else if (isReplication) {
-                formEditMode.value = Enum.EditMode.Copy;
-                isEditForm.value = Enum.EditMode.None;
-                couterChangeForm.value = 0;
-                formData.value.editMode = Enum.EditMode.Copy;
-                inventory.openForm(null, Enum.EditMode.Copy);
-            } else {
-                inventory.closeForm();
+            setLoadingButton(typeButtonSave, false);
+            switch (typeButtonSave) {
+                case buttonTypeSave.value.saveAdd:
+                    formEditMode.value = Enum.EditMode.Add;
+                    isEditForm.value = Enum.EditMode.None;
+                    couterChangeForm.value = 0;
+                    formData.value.editMode = Enum.EditMode.Add;
+                    inventory.openForm(null, Enum.EditMode.Add);
+                    updateForm();
+                    break;
+                case buttonTypeSave.value.saveCopy:
+                    formEditMode.value = Enum.EditMode.Copy;
+                    isEditForm.value = Enum.EditMode.None;
+                    couterChangeForm.value = 0;
+                    formData.value.editMode = Enum.EditMode.Copy;
+                    inventory.openForm(null, Enum.EditMode.Copy);
+                    break;
+                default:
+                    inventory.closeForm();
+                    break;
             }
         }
     } catch (error) {
         console.log(error);
     }
 };
-
+/**
+ * Author: Tiến Trung (29/08/2023)
+ * Description: Hàm set loading cho button
+ */
+const setLoadingButton = (typeButtonSave, value) => {
+    switch (typeButtonSave) {
+        case buttonTypeSave.value.saveAdd:
+            loadingButton.value.saveAdd = value;
+            break;
+        case buttonTypeSave.value.saveCopy:
+            loadingButton.value.saveCopy = value;
+            break;
+        default:
+            loadingButton.value.save = value;
+            break;
+    }
+};
 /**
  * Author: Tiến Trung (26/08/2023)
  * Description: hàm lấy nhóm hàng hóa
@@ -699,7 +725,7 @@ onMounted(async () => {
         await updateForm();
         title.setTitle(
             MISAResource[resource.langCode]?.SideBar?.Inventory,
-            title.editMode === Enum.EditMode.Add
+            formEditMode.value === Enum.EditMode.Add || formEditMode.value === Enum.EditMode.Copy
                 ? MISAResource[resource.langCode]?.FormTitle?.Inventory?.Add
                 : MISAResource[resource.langCode]?.FormTitle?.Inventory?.Update,
         );
@@ -709,10 +735,22 @@ onMounted(async () => {
 });
 /**
  * Author: Tiến Trung (26/08/2023)
- * Description: khi component hủy thì xóa sự kiện phím
+ * Description: khi component hủy thì settitle cho header
  */
 onUnmounted(() => {
     title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
+});
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: khi component update thì settitle
+ */
+onUpdated(() => {
+    title.setTitle(
+        MISAResource[resource.langCode]?.SideBar?.Inventory,
+        formEditMode.value === Enum.EditMode.Add || formEditMode.value === Enum.EditMode.Copy
+            ? MISAResource[resource.langCode]?.FormTitle?.Inventory?.Add
+            : MISAResource[resource.langCode]?.FormTitle?.Inventory?.Update,
+    );
 });
 /**
  * Author: Tiến Trung (26/08/2023)
@@ -831,6 +869,7 @@ watch(
                                 right
                                 @input-validation="validateCostPrice"
                                 :errorMessage="validateForm.costPrice"
+                                :maxLength="18"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -845,6 +884,7 @@ watch(
                                 @input-validation="validateUnitPrice"
                                 :errorMessage="validateForm.unitPrice"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice"
+                                :maxLength="18"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -963,7 +1003,8 @@ watch(
 
         <div class="ntt-form__footer">
             <MISAButton
-                @click="submitForm"
+                :loading="loadingButton.save"
+                @click="submitForm(buttonTypeSave.save)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.Save"
             >
@@ -972,7 +1013,8 @@ watch(
                 </template>
             </MISAButton>
             <MISAButton
-                @click="submitForm(false, true)"
+                :loading="loadingButton.saveCopy"
+                @click="submitForm(buttonTypeSave.saveCopy)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.SaveAndReplication"
                 sec
@@ -982,7 +1024,8 @@ watch(
                 </template>
             </MISAButton>
             <MISAButton
-                @click="submitForm(true)"
+                :loading="loadingButton.saveAdd"
+                @click="submitForm(buttonTypeSave.saveAdd)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.SaveAdd"
                 sec

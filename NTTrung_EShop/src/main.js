@@ -25,7 +25,7 @@ import MISADropdown from './components/base/dropdown/MISADropdown.vue';
 import MISASelectFilter from './components/base/dropdown/MISASelectFilter.vue';
 import MISARow from './components/base/grid/MISARow.vue';
 import MISACol from './components/base/grid/MISACol.vue';
-import MISAInputManyTag from './components/base/inputManyTag/MISAInputManyTag.vue';
+import MISAInputManyTag from './components/base/input-many-tag/MISAInputManyTag.vue';
 import MISALoading from './components/base/loading/MISALoading.vue';
 
 const app = createApp(App);

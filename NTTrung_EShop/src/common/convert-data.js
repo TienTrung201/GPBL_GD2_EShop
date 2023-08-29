@@ -1,7 +1,7 @@
 // import { useResource } from '../stores/resource';
 import Enum from './enum';
 import MISAResource from './resource';
-const langCode = localStorage.getItem('lang') || Enum.Language.VN;
+const langCode = localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN;
 /**
  * @param {string} str
  * Author: ntTrung (06/07/2023)

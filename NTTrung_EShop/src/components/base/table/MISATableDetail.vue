@@ -220,6 +220,21 @@ const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
         }
     }
 };
+const convertMaxLength = (type) => {
+    let length = 0;
+    switch (type) {
+        case Enum.TypeDataTable.Money:
+            length = Enum.MaxLength.Money;
+            break;
+        case Enum.TypeDataTable.Code:
+            length = Enum.MaxLength.Code;
+            break;
+        default:
+            length = Enum.MaxLength.Default;
+            break;
+    }
+    return length;
+};
 /**
  * Author: Tiến Trung (25/08/2023)
  * Description: khi component dc hiển thị thì gán dữ liệu  dataTableRefence
@@ -338,6 +353,7 @@ watch(
                                     v-if="editIndex === index + '' + indexCol"
                                     validate="true"
                                     v-model:value="rowData[item.key]"
+                                    :maxLength="convertMaxLength(item.type)"
                                 ></MISAInput>
                             </div>
                         </td>

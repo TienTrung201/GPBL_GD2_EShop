@@ -127,6 +127,11 @@
     .ms-icon {
         background-color: var(--primary-color);
     }
+    .wrapper-loading {
+        circle {
+            stroke: var(--primary-color) !important;
+        }
+    }
 }
 .btn-sec.disable {
     border: 1px var(--grey-color3) solid;

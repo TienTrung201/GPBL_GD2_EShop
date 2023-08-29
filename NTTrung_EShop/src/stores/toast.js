@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import Enum from '../common/enum';
 import MISAResource from '../common/resource';
 import { v4 as uuidv4 } from 'uuid';
-const langCode = localStorage.getItem('lang') || Enum.Language.VN;
+const langCode = localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN;
 export const useToast = defineStore('toast', {
     state: () => ({
         isShow: false,

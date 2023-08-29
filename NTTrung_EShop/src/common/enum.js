@@ -1,4 +1,7 @@
 const Enum = {
+    LocalStorage: {
+        LangCode: 'lang',
+    },
     ApiMethod: {
         GET: 1,
         POST: 2,
@@ -41,6 +44,7 @@ const Enum = {
         Default: 3,
         Show: 4,
         Business: 5,
+        Code: 6,
     },
     KeyboardShortcuts: {
         CtrlShiftS: 'Ctrl + Shift + S',
@@ -135,6 +139,12 @@ const Enum = {
     TypeProperties: {
         Color: 'color',
         Size: 'size',
+    },
+    MaxLength: {
+        Money: 18,
+        Code: 20,
+        Default: 100,
+        Max: 255,
     },
 };
 export default Enum;

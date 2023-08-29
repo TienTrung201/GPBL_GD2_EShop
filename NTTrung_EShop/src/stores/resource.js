@@ -3,7 +3,7 @@ import Enum from '../common/enum';
 
 export const useResource = defineStore('resource', {
     state: () => ({
-        langCode: localStorage.getItem('lang') || Enum.Language.VN,
+        langCode: localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN,
     }),
     /**
      * Author: Tiến Trung 24/06/2023)

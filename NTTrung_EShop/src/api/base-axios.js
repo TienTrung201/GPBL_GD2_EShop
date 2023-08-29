@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Enum from '../common/enum';
 import { useDialog } from '../stores/dialog';
-const langCode = localStorage.getItem('lang') || Enum.Language.VN;
+const langCode = localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN;
 import MISAResource from '../common/resource';
 
 /**
@@ -9,7 +9,7 @@ import MISAResource from '../common/resource';
  * Description: Lấy mã ngôn ngữ
  */
 const getLanguage = () => {
-    const language = localStorage.getItem('lang') || Enum.Language.VN;
+    const language = localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN;
     if (language === Enum.Language.VN) {
         return 'vi-VN';
     } else {
