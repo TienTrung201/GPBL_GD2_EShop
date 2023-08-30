@@ -367,11 +367,10 @@ const deleteDetail = (index) => {
  */
 const handleChangeImg = async (image) => {
     const formData = new FormData(); // Khởi tạo formData ở đây
-    imgFile.value = URL.createObjectURL(image);
     formData.append('image', image);
     baseApi.path = Enum.Router.Picture.Api;
     const response = await baseApi.uploadPirture(formData);
-    imgFile.value = response.data.fileName;
+    imgFile.value = response.data.PictureUrl;
     console.log(response);
 };
 /*

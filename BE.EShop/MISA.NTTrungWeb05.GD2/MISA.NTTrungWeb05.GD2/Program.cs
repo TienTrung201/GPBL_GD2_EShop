@@ -47,6 +47,7 @@ builder.Services.AddScoped<IUnitOfWork>(provider => new UnitOfWork(connectionstr
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
+builder.Services.AddScoped<IPictureRepository, PictureRepository>();
 //
 builder.Services.AddScoped<IInventoryManager, InventoryManager>();
 builder.Services.AddScoped<IItemCategoryManager, ItemCategoryManager>();
@@ -58,6 +59,7 @@ builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<IInventoryExcelService, InventoryExcelService>();
 builder.Services.AddScoped<IUnitExcelService, UnitExcelService>();
 builder.Services.AddScoped<IItemCategoryExcelService, ItemCategoryExcelService>();
+builder.Services.AddScoped<IPictureService, PictureService>();
 
 // Add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
