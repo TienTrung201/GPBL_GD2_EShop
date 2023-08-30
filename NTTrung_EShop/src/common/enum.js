@@ -92,6 +92,11 @@ const Enum = {
             Path: '/unit',
             Api: '/Units',
         },
+        Picture: {
+            Name: 'unit',
+            Path: '/unit',
+            Api: '/Pictures',
+        },
     },
     ErorCode: {
         ExistedConstrain: 1003, //Có phát snh dữ liệu liên quan

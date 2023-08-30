@@ -365,9 +365,14 @@ const deleteDetail = (index) => {
  * Author: Tiến Trung (19/08/2023)
  * Description: hàm lấy đường dẫn ảnh
  */
-const handleChangeImg = (image) => {
+const handleChangeImg = async (image) => {
+    const formData = new FormData(); // Khởi tạo formData ở đây
     imgFile.value = URL.createObjectURL(image);
-    formData.value.image = imgFile.value;
+    formData.append('image', image);
+    baseApi.path = Enum.Router.Picture.Api;
+    const response = await baseApi.uploadPirture(formData);
+    imgFile.value = response.data.fileName;
+    console.log(response);
 };
 /*
  **

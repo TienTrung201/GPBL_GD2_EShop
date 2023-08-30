@@ -33,9 +33,9 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Mã hàng hóa
         /// </summary>
-        [Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
-        [StringLength(20, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
-        [RegularExpression("[A-Za-z]{1,2}-\\d{4,}", ErrorMessage = "{0} {1}")]
+        //[Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
+        //[StringLength(20, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        //[RegularExpression("[A-Za-z]{1,2}-\\d{4,}", ErrorMessage = "{0} {1}")]
         public string SKUCodeCustom { get; set; } = string.Empty;
         /// <summary>
         /// Mã vạch
@@ -45,22 +45,22 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Giá mua
         /// </summary>
-        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? CostPrice { get; set; }
         /// <summary>
         /// Giá bán
         /// </summary>
-        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>
-        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? AvgUnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình mua
         /// </summary>
-        [Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? AvgCostPrice { get; set; }
         /// <summary>
         /// Màu sắc
@@ -91,6 +91,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Ảnh
         /// </summary>
         public Guid? PictureId { get; set; }
+        /// <summary>
+        /// base 64
+        /// </summary>
+        public string PictureContent { get; set; } = string.Empty;
+        /// <summary>
+        /// Có thay đổi ảnh mới hay không
+        /// </summary>
+        public bool IsChangePicture { get; set; }
         /// <summary>
         /// Trạng thái kinh doanh
         /// </summary>

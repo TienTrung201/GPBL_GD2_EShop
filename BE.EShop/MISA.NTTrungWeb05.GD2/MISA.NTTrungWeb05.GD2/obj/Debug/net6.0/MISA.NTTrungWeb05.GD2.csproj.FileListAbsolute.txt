@@ -51,3 +51,4 @@ D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrung
 D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.pdb
 D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.genruntimeconfig.cache
 D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2\obj\Debug\net6.0\ref\MISA.NTTrungWeb05.GD2.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.MvcApplicationPartsAssemblyInfo.cs
