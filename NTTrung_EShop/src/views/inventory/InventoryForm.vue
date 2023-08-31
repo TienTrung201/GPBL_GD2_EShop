@@ -29,7 +29,7 @@ const dataDelete = ref([]); //Data Detail bị delete
 const inputType = ref({ SKUCode: 1, Name: 2, Unit: 3, ItemCategory: 4 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
 const buttonTypeSave = ref({ save: 1, saveAdd: 2, saveCopy: 3 });
 const file = ref(null);
-const imgFile = ref(null);
+const imgUrl = ref(null);
 const loadingButton = ref({ save: false, saveAdd: false, saveCopy: false });
 const validateForm = ref({
     inventoryName: '',
@@ -366,12 +366,30 @@ const deleteDetail = (index) => {
  * Description: hàm lấy đường dẫn ảnh
  */
 const handleChangeImg = async (image) => {
-    const formData = new FormData(); // Khởi tạo formData ở đây
-    formData.append('image', image);
-    baseApi.path = Enum.Router.Picture.Api;
-    const response = await baseApi.uploadPirture(formData);
-    imgFile.value = response.data.PictureUrl;
-    console.log(response);
+    try {
+        // Kiểm tra định dạng ảnh
+        const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        const maxSizeBytes = 5 * 1024 * 1024; // 5MB
+        const extension = image.name.split('.').pop().toLowerCase();
+        if (!validExtensions.includes(extension)) {
+            toast.error(MISAResource[resource.langCode]?.Toast?.Error?.Picture?.ErrorExtension);
+            return;
+        }
+
+        if (image.size > maxSizeBytes) {
+            toast.error(MISAResource[resource.langCode]?.Toast?.Error?.Picture?.ErrorSize);
+            return;
+        }
+        const formData2 = new FormData(); // Khởi tạo formData ở đây
+        formData2.append('image', image);
+        baseApi.path = Enum.Router.Picture.Api;
+        const response = await baseApi.uploadPirture(formData2);
+        imgUrl.value = response.data.PictureUrl;
+        console.log(response);
+        formData.value.pictureId = response.data.Picture.PictureId;
+    } catch (error) {
+        // imgUrl.value = URL.createObjectURL(image);
+    }
 };
 /*
  **
@@ -490,12 +508,15 @@ const updateForm = async () => {
         unitPrice: data.UnitPrice ? convertCurrency(data.UnitPrice) : '0',
         unitName: data.UnitName,
         description: data.Description,
-        image: data.Image,
+        pictureId: data.PictureId,
         isActive: isActive,
         isShowMenu: data.IsShowMenu ? true : false,
         editMode: formEditMode.value,
         inventoryId: data.InventoryId,
     };
+    imgUrl.value = data.PictureId
+        ? import.meta.env.VITE_APP_BASEURL + Enum.Router.Picture.Api + '/' + formData.value.pictureId
+        : '';
     dataTable.value = convertDataTable(data.Detail ? data.Detail : [], columnTable.value, resource.langCode) || [];
     updateProperties();
     iInventoryName.value.autoFocus();
@@ -984,7 +1005,7 @@ watch(
                                             name="inventory"
                                             id=""
                                         />
-                                        <img class="image-file" v-if="imgFile" :src="imgFile" alt="" />
+                                        <img class="image-file" v-if="imgUrl" :src="imgUrl" alt="" />
 
                                         <img
                                             v-else

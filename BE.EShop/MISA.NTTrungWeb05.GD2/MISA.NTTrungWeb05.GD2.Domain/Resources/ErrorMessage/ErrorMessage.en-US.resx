@@ -144,6 +144,12 @@
   <data name="ExistedConstrain" xml:space="preserve">
     <value>Code &lt;b&gt;{0}&lt;/b&gt; has a conflict, please delete related issues.</value>
   </data>
+  <data name="ImgFileErrorExtension" xml:space="preserve">
+    <value>File extension must be (.jpg, .jpeg, .png, .gif)</value>
+  </data>
+  <data name="ImgFileErrorSize" xml:space="preserve">
+    <value>Image size must be smaller than 5MB</value>
+  </data>
   <data name="NoAffectedRows" xml:space="preserve">
     <value>No records have been changed in the database.</value>
   </data>

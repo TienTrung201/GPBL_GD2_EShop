@@ -16,13 +16,13 @@ namespace MISA.NTTrungWeb05.GD2.Application.Interface.Service
         /// <param name="filePath"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        Task<PictureResponseDto> UploadAndInsertAsync(string filePath, IFormFile file);
+        Task<PictureResponseDto> UploadAndInsertAsync(IFormFile file);
         /// <summary>
         /// Lấy tên file và ảnh bằng id
         /// </summary>
         /// <param name="uploadPath"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<byte[]> GetFileByIdAsync(string uploadPath, Guid id);
+        Task<byte[]> GetFileByIdAsync(Guid id);
     }
 }

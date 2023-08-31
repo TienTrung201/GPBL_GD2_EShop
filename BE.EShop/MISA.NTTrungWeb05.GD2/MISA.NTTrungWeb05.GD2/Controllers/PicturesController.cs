@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
+using MISA.NTTrungWeb05.GD2.Domain.Enum;
+using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
+using MISA.NTTrungWeb05.GD2.Domain;
 
 namespace MISA.NTTrungWeb05.GD2.Controllers
 {
@@ -20,13 +23,14 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFile()
         {
-            string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            var file = Request.Form.Files[0];
+            string uploadsPath = @"D:\Wep\learnCode\Misa\Uploads";
             if (!Directory.Exists(uploadsPath))
             {
                 Directory.CreateDirectory(uploadsPath);
             }
-            var file = Request.Form.Files[0];
-            var result = await _pictureService.UploadAndInsertAsync(uploadsPath, file); 
+         
+            var result = await _pictureService.UploadAndInsertAsync(file); 
 
             return Ok(result);
         }
@@ -34,8 +38,7 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetImage(Guid id)
         {
-            string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-            var result = await _pictureService.GetFileByIdAsync(uploadsPath, id);
+            var result = await _pictureService.GetFileByIdAsync(id);
             return File(result, "image/jpeg"); // Đổi kiểu file tùy theo định dạng ảnh
         }
     }

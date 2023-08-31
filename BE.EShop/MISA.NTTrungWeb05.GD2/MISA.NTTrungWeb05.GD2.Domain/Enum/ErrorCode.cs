@@ -13,6 +13,8 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
     /// CreatedBy: NTTrung (11/07/2023)
     public enum ErrorCode
     {
+        [Description("File không hợp lệ")]
+        FIleImageInvalid = 1004,
         [Description("Có phát sinh")]
         ExistedConstrain = 1003,
         [Description("Trùng mã")]

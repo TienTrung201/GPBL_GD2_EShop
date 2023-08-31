@@ -174,15 +174,23 @@ const MISAResource = {
             Title: {
                 Info: 'Thông tin!',
                 Success: 'Thành công!',
+                Error: 'Lỗi!',
             },
             Icon: {
                 success: 'success',
+                error: 'error',
             },
             Success: {
                 Add: 'Thêm mới thành công',
                 Update: 'Sửa thành công',
                 Delete: 'Xóa thành công',
                 SaveSuccess: 'Cập nhật thông tin thành công',
+            },
+            Error: {
+                Picture: {
+                    ErrorSize: 'Dung lượng ảnh phải nhỏ hơn 5MB',
+                    ErrorExtension: 'Định dạng file phải là (.jpg, .jpeg, .png, .gif)',
+                },
             },
             Undo: 'Hoàn tác',
         },
@@ -552,6 +560,7 @@ const MISAResource = {
             Title: {
                 Info: 'Information!',
                 Success: 'Success!',
+                Error: 'Error!',
             },
             Icon: {
                 success: 'success',
@@ -566,6 +575,10 @@ const MISAResource = {
                 Update: 'Update successfully',
                 Delete: 'Delete successfully',
                 SaveSuccess: 'Update successfully',
+            },
+            Picture: {
+                ErrorSize: 'Image size must be smaller than 5MB',
+                ErrorExtension: 'File extension must be (.jpg, .jpeg, .png, .gif)',
             },
             Undo: 'Undo',
         },

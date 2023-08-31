@@ -144,6 +144,12 @@
   <data name="ExistedConstrain" xml:space="preserve">
     <value>Mã &lt;b&gt;{0}&lt;/b&gt; có xung đột vui lòng xóa các phát sinh liên quan.</value>
   </data>
+  <data name="ImgFileErrorExtension" xml:space="preserve">
+    <value>Định dạng file phải là (.jpg, .jpeg, .png, .gif)</value>
+  </data>
+  <data name="ImgFileErrorSize" xml:space="preserve">
+    <value>Dung lượng ảnh phải nhỏ hơn 5MB</value>
+  </data>
   <data name="NoAffectedRows" xml:space="preserve">
     <value>Không bản ghi nào bị thay đổi trong database.</value>
   </data>

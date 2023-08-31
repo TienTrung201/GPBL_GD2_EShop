@@ -81,6 +81,17 @@ namespace MISA.NTTrungWeb05.GD2.Middleware
                         MoreInfo = exception.HelpLink
                     }.ToString() ?? "");
                     break;
+                case BadRequestException:
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync(text: new BaseException()
+                    {
+                        ErrorCode = ((BadRequestException)exception).ErrorCode,
+                        UserMessage = exception.Message,
+                        DevMessage = "Duplicate Code!",
+                        TraceId = context.TraceIdentifier,
+                        MoreInfo = exception.HelpLink
+                    }.ToString() ?? "");
+                    break;
                 default:
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     Console.WriteLine(exception.Message);

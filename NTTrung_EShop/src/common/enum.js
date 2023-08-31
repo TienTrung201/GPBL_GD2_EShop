@@ -116,6 +116,11 @@ const Enum = {
         Icon: 'icon',
         Danger: 'danger',
     },
+    Icon: {
+        Success: 'success',
+        Error: 'error',
+        Info: 'info',
+    },
     AlignColumn: {
         Center: 0,
         Right: 1,

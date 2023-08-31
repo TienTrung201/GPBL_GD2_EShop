@@ -124,6 +124,24 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Định dạng file phải là (.jpg, .jpeg, .png, .gif).
+        /// </summary>
+        public static string ImgFileErrorExtension {
+            get {
+                return ResourceManager.GetString("ImgFileErrorExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dung lượng ảnh phải nhỏ hơn 5MB.
+        /// </summary>
+        public static string ImgFileErrorSize {
+            get {
+                return ResourceManager.GetString("ImgFileErrorSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không bản ghi nào bị thay đổi trong database..
         /// </summary>
         public static string NoAffectedRows {

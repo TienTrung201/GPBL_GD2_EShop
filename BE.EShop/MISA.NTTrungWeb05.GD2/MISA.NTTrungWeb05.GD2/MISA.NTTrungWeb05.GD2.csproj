@@ -15,8 +15,4 @@
     <ProjectReference Include="..\MISA.NTTrungWeb05.GD2.Infastructurce\MISA.NTTrungWeb05.GD2.Infastructurce.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Uploads\" />
-  </ItemGroup>
-
 </Project>

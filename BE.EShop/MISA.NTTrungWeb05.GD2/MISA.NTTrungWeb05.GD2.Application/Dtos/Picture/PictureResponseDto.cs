@@ -16,10 +16,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos
         /// <summary>
         /// Thông tin ảnh
         /// </summary>
-        public Picture Picture { get; set; } 
+        public Picture Picture { get; set; }    
         /// <summary>
         /// Đường dẫn ảnh
         /// </summary>
-        public string PictureUrl { get; set; } = string.Empty;
+        public string? PictureUrl { get; set; } = string.Empty;
+        /// <summary>
+        /// Định dạng ảnh
+        /// </summary>
+        public string? Extension { get; set; }
     }
 }
