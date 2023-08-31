@@ -33,8 +33,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Mã hàng hóa
         /// </summary>
-        //[Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
-        //[StringLength(20, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        [Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
+        [StringLength(50, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
         //[RegularExpression("[A-Za-z]{1,2}-\\d{4,}", ErrorMessage = "{0} {1}")]
         public string SKUCodeCustom { get; set; } = string.Empty;
         /// <summary>
@@ -45,22 +45,22 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Giá mua
         /// </summary>
-        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        [RegularExpression(@"^\d{0,14}(\.\d{1,4})?$", ErrorMessageResourceName = nameof(ValidateInput.MaxPrice), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? CostPrice { get; set; }
         /// <summary>
         /// Giá bán
         /// </summary>
-        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        [RegularExpression(@"^\d{0,14}(\.\d{1,4})?$", ErrorMessageResourceName = nameof(ValidateInput.MaxPrice), ErrorMessageResourceType = typeof(ValidateInput))]
         public decimal? UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>
-        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+       
         public decimal? AvgUnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình mua
         /// </summary>
-        //[Range(0, 999999999999.9999, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
+        
         public decimal? AvgCostPrice { get; set; }
         /// <summary>
         /// Màu sắc

@@ -343,10 +343,15 @@ watch(
                                 </div>
                                 <MISAInput
                                     :right="item.type === Enum.TypeDataTable.Money"
-                                    @blur="editIndex = ''"
                                     @input-validation="
                                         (value, oldValue) =>
                                             setDataEditMode(value, oldValue, rowData, item.isCode, item.isBarcode)
+                                    "
+                                    @blur="
+                                        (value, oldValue) => {
+                                            editIndex = '';
+                                            setDataEditMode(value, oldValue, rowData, item.isCode, item.isBarcode);
+                                        }
                                     "
                                     :money="item.type === Enum.TypeDataTable.Money"
                                     autoFocusMount
@@ -354,6 +359,7 @@ watch(
                                     validate="true"
                                     v-model:value="rowData[item.key]"
                                     :maxLength="convertMaxLength(item.type)"
+                                    notDelete
                                 ></MISAInput>
                             </div>
                         </td>

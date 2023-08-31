@@ -11,7 +11,7 @@
                         <MISAIcon width="10" height="10" icon="close-eshop" />
                     </span>
                 </p>
-                <input @blur="addTag" ref="input" @keydown="handleAddTag" v-model="value" type="text" />
+                <input :maxLength="50" @blur="addTag" ref="input" @keydown="handleAddTag" v-model="value" type="text" />
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import Enum from '../../../common/enum';
-import { convertToTitleCase, removeVietnameseTones } from '../../../common/convert-data';
+import { removeVietnameseTones } from '../../../common/convert-data';
 const listTag = ref([]);
 const value = ref('');
 const input = ref(null);

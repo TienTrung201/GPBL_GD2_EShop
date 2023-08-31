@@ -70,7 +70,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
 
             var entity = _mapper.Map<Inventory>(createDto);
             entity.InventoryId = Guid.NewGuid();
-            entity.SKUCodeCustom = entity.SKUCode;
+            //entity.SKUCodeCustom = entity.SKUCode;
             entity.CreatedDate = DateTime.Now;
             entity.ModifiedDate = DateTime.Now;
             return entity;
@@ -109,7 +109,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             var updateEntity = _mapper.Map<Inventory>(updateDto);
             updateEntity.InventoryId = entity.InventoryId;
             updateEntity.ModifiedDate = DateTime.Now;
-            updateEntity.SKUCodeCustom = updateEntity.SKUCode;
+            //updateEntity.SKUCodeCustom = updateEntity.SKUCode;
             return updateEntity;
         }
         /// <summary>

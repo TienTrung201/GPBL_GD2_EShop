@@ -161,9 +161,9 @@ const MISAResource = {
             DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
         },
         InventoryInvalidError: {
-            InventoryCodeEmpty: 'Mã không được để trống.',
-            InventoryCodeMaxLength: 'Mã không quá @number ký tự.',
-            InventoryCodeFormat: 'Mã không đúng định dạng.',
+            InventoryCodeEmpty: 'SKUCode không được để trống.',
+            InventoryCodeMaxLength: 'SKUCode không quá @number ký tự.',
+            InventoryCodeFormat: 'SKUCode không đúng định dạng.',
             InventoryNameEmpty: 'Tên hàng hóa không được để trống.',
             InventoryNameMaxLength: 'Tên hàng hóa không quá @number ký tự.',
             InventoryCostPriceMaxLength: 'Giá mua không quá @number ký tự',

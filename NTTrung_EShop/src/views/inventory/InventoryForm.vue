@@ -388,7 +388,7 @@ const handleChangeImg = async (image) => {
         console.log(response);
         formData.value.pictureId = response.data.Picture.PictureId;
     } catch (error) {
-        // imgUrl.value = URL.createObjectURL(image);
+        imgUrl.value = '';
     }
 };
 /*
@@ -543,6 +543,7 @@ const saveData = async (data) => {
     console.log(res);
     toast.success(MISAResource[resource.langCode]?.Toast?.Success?.SaveSuccess);
 };
+
 /**
  * Author: Tiến Trung (26/08/2023)
  * Description: Hàm gửi form
@@ -564,11 +565,12 @@ const submitForm = async (typeButtonSave) => {
                 title: MISAResource[resource.langCode]?.Dialog?.Warning?.Validate?.Title,
                 action: MISAResource[resource.langCode]?.Button?.Close,
                 type: Enum.ButtonType.Pri,
-                icon: 'danger',
+                icon: 'error-big',
                 loading: false,
             });
         } else {
             //tạo một bản sao
+            //validate list
             const copyObj = deepCopy(formData.value);
             const dataCreateUpdate = dataTable.value.map((data) => {
                 const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
@@ -593,6 +595,7 @@ const submitForm = async (typeButtonSave) => {
             });
             //Cập nhật data phù hợp để gửi vào API
             copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
+            copyObj.SKUCodeCustom = copyObj.SKUCode;
             copyObj.isActive = copyObj.isActive ? true : false;
             copyObj.costPrice = Number(copyObj.costPrice?.replace(/\./g, ''));
             copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));

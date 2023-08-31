@@ -68,6 +68,7 @@ const props = defineProps({
     row: { type: Boolean, default: false },
     autoFocusMount: { type: Boolean, default: false }, //Khi mount thì input tự động focus
     money: { type: Boolean, default: false }, //Định dạng tiền tệ
+    notDelete: { type: Boolean, default: false }, //Định dạng tiền tệ
 });
 const input = ref(null);
 const oldValue = ref(props.value);
@@ -78,7 +79,13 @@ const showMessage = ref(false);
  */
 const onBlur = (e) => {
     try {
-        emit('blur', e.target.value);
+        if (e.target.value.trim('').length === 0 && props.notDelete) {
+            emit('update:value', oldValue.value);
+            emit('blur', oldValue.value, oldValue.value);
+        } else {
+            emit('blur', e.target.value, oldValue.value);
+        }
+
         if (props.isName) {
             const wordsUpperCase = convertToTitleCase(e.target.value);
             emit('update:value', wordsUpperCase);
@@ -96,7 +103,7 @@ const onEnter = (e) => {
  * Description: hàm để binding Input
  */
 const handleChangeInput = (e) => {
-    //Nếu có max length thì
+    //Nếu có max length thì không cho nhập nữa
     if (e.target.value.length > props.maxLength) {
         input.value.value = props.value;
         return;

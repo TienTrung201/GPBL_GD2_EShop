@@ -125,6 +125,9 @@
     <value>Max 255characters</value>
     <comment>Tối đa 255 kí tự</comment>
   </data>
+  <data name="MaxPrice" xml:space="preserve">
+    <value>Price must be less than 100 billion</value>
+  </data>
   <data name="Required" xml:space="preserve">
     <value>{0} is required</value>
     <comment>Không được phép để trống</comment>

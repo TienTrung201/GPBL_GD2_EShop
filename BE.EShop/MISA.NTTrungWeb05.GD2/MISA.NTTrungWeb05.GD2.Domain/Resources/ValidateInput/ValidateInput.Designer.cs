@@ -79,6 +79,15 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ValidateInput {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Giá phải nhỏ hơn 100 tỷ.
+        /// </summary>
+        public static string MaxPrice {
+            get {
+                return ResourceManager.GetString("MaxPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} không được để trống.
         /// </summary>
         public static string Required {
