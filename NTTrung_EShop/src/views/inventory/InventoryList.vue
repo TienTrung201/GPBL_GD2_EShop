@@ -257,14 +257,22 @@ const handleShowEditInfo = (data) => {
         console.log(error);
     }
 };
+
 /**
- * Author: Tiến Trung (09/07/2023)
- * Description: Hàm nhận emit khi click nhân bản
+ * Author: Tiến Trung (03/09/2023)
+ * Description: Hàm mở form nhân bản
  */
-const handleReplication = () => {
-    modalForm.open();
-    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Inventory?.Add);
-    modalForm.setMethod(Enum.EditMode.Copy);
+const handleReplication = (data) => {
+    try {
+        let dataEdit = data;
+        if (!dialog.objectData?.InventoryId) {
+            dataEdit = dataSelected.value[0];
+        }
+        dialog.setMethod(Enum.EditMode.Add);
+        inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Copy);
+    } catch (error) {
+        console.log(error);
+    }
     // dialog.setMethod(Enum.EditMode.Copy);
 };
 // /**
@@ -622,7 +630,10 @@ onUnmounted(() => {
                         </template>
                     </MISAButton>
                     <MISAButton
-                        disable
+                        @click="handleReplication(dialog.objectData)"
+                        :disable="
+                            !(dataSelected.length > 0 && dataSelected.length < 2) && !dialog.objectData.InventoryId
+                        "
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Replication"
                     >

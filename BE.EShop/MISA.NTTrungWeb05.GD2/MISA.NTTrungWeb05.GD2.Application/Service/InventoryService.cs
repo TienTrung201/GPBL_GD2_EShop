@@ -176,10 +176,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         }
         public async override Task AfterSaveSuccess(InventoryRequestDto data)
         {
-            string pattern = "^[A-Za-z]+";
-            string prefix = Regex.Match(data.SKUCode, pattern).Value;
+            if (data.EditMode == EditMode.Create)
+            {
+                string pattern = "^[A-Za-z]+";
+                string prefix = Regex.Match(data.SKUCode, pattern).Value;
 
-            await _inventoryRepository.UpdateCodeAsync(prefix);
+                await _inventoryRepository.UpdateCodeAsync(prefix);
+            }
+
         }
         /// <summary>
         /// Validate trước khi sửa list

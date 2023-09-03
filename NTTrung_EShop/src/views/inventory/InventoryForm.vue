@@ -312,13 +312,12 @@ const getNewCode = async () => {
         .map((part) => part[0])
         .join('')
         .toUpperCase(); //Viết tắt
-    if (formData.value.SKUCode.trim('').length === 0) {
-        baseApi.method = Enum.ApiMethod.GET;
-        baseApi.path = Enum.Router.Inventory.Api;
-        const result = await baseApi.request('NewCode/' + abbreviation);
-        formData.value.SKUCode = result.data;
-        validateForm.value.SKUCode = '';
-    }
+
+    baseApi.method = Enum.ApiMethod.GET;
+    baseApi.path = Enum.Router.Inventory.Api;
+    const result = await baseApi.request('NewCode/' + abbreviation);
+    formData.value.SKUCode = result.data;
+    validateForm.value.SKUCode = '';
 };
 /*
  **
@@ -369,7 +368,7 @@ const onBlurInputFormUpdateData = async (value, nameForm) => {
         if (inventoryOldName.value === formData.value.inventoryName && formData.value.SKUCode.trim('').length === 0) {
             formData.value.SKUCode = SKUCodeOld.value;
         } else {
-            await getNewCode();
+            if (formData.value.SKUCode.trim('').length === 0) await getNewCode();
         }
     }
     //Chỉ cần lặp qua tất cả data rồi update lại mã là xong
@@ -534,7 +533,6 @@ const updateForm = async () => {
     } else {
         isActive = data.IsActive ? 1 : 0;
     }
-    couterChangeForm.value = 0;
     formData.value = {
         inventoryName: data.InventoryName ? data.InventoryName : '',
         itemCategoryId: data.ItemCategoryId, //? data.ItemCategoryId : itemCategories.value[0].value,
@@ -551,14 +549,24 @@ const updateForm = async () => {
         editMode: formEditMode.value,
         inventoryId: data.InventoryId,
     };
-    inventoryOldName.value = formData.value.inventoryName;
-    SKUCodeOld.value = formData.value.SKUCode;
     imgUrl.value = data.PictureId
         ? import.meta.env.VITE_APP_BASEURL + Enum.Router.Picture.Api + '/' + formData.value.pictureId
         : '';
     dataTable.value = convertDataTable(data.Detail ? data.Detail : [], columnTable.value, resource.langCode) || [];
     updateProperties();
     iInventoryName.value.autoFocus();
+    //Nếu là Copy thì gọi mã mới
+    if (inventory.editMode === Enum.EditMode.Copy) {
+        await getNewCode();
+        formData.value.editMode = Enum.EditMode.Add;
+        // setTimeout(() => {
+        isEditForm.value = Enum.EditMode.None;
+        formEditMode.value = Enum.EditMode.Copy;
+        // }, 1000);
+    }
+    inventoryOldName.value = formData.value.inventoryName;
+    SKUCodeOld.value = formData.value.SKUCode;
+    couterChangeForm.value = 0;
 };
 /**
  * Author: Tiến Trung (03/07/2023)
@@ -611,6 +619,7 @@ const submitForm = async (typeButtonSave) => {
             //tạo một bản sao
             //validate list
             const copyObj = deepCopy(formData.value);
+            //Set các dữ liệu cần thiết cho detail
             const dataCreateUpdate = dataTable.value.map((data) => {
                 const costPrice = Number(data.CostPrice?.replace(/\./g, ''));
                 const unitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
@@ -640,23 +649,30 @@ const submitForm = async (typeButtonSave) => {
             copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));
             copyObj.itemCategoryId = copyObj.itemCategoryId ? copyObj.itemCategoryId : null;
             copyObj.unitId = copyObj.unitId ? copyObj.unitId : null;
+            //Button loading
             setLoadingButton(typeButtonSave, true);
             await saveData(copyObj);
             setLoadingButton(typeButtonSave, false);
+            //Bấm vào Button nào thì tương ứng chức năng đấy
             switch (typeButtonSave) {
+                //Button lưu và thêm mới
                 case buttonTypeSave.value.saveAdd:
                     formEditMode.value = Enum.EditMode.Add;
+                    //trả về form chưa thay đổi để biết là form mới không hiện dialog khi đóng
                     isEditForm.value = Enum.EditMode.None;
                     couterChangeForm.value = 0;
                     formData.value.editMode = Enum.EditMode.Add;
                     inventory.openForm(null, Enum.EditMode.Add);
                     updateForm();
                     break;
+                //Button lưu và nhân bản
                 case buttonTypeSave.value.saveCopy:
                     formEditMode.value = Enum.EditMode.Copy;
-                    isEditForm.value = Enum.EditMode.None;
                     couterChangeForm.value = 0;
                     formData.value.editMode = Enum.EditMode.Copy;
+                    await getNewCode();
+                    //trả về form chưa thay đổi để biết là form mới không hiện dialog khi đóng
+                    isEditForm.value = Enum.EditMode.None;
                     inventory.openForm(null, Enum.EditMode.Copy);
                     break;
                 default:
@@ -886,7 +902,8 @@ watch(
                                     :valueRadio="1"
                                     :optionName="MISAResource[resource.langCode]?.Manage?.Inventory?.Active"
                                     name="active"
-                                ></MISARadio>
+                                >
+                                </MISARadio>
                                 <MISARadio
                                     v-model:value="formData.isActive"
                                     :valueRadio="0"
@@ -962,7 +979,8 @@ watch(
                                 :errorMessage="validateForm.unitPrice"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice"
                                 :maxLength="18"
-                            ></MISAInput>
+                            >
+                            </MISAInput>
                         </MISARow>
                         <MISARow>
                             <MISADropdown
@@ -1000,14 +1018,16 @@ watch(
                     :properties="properties.color"
                     :type="Enum.TypeProperties.Color"
                     :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Color"
-                ></MISAInputManyTag>
+                >
+                </MISAInputManyTag>
                 <MISAInputManyTag
                     @update-tag="autoDataTable"
                     @remove-tag="handleRemoveTag"
                     :properties="properties.size"
                     :type="Enum.TypeProperties.Size"
                     :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Size"
-                ></MISAInputManyTag>
+                >
+                </MISAInputManyTag>
             </div>
             <div v-if="dataTable.length" class="form-table">
                 <MISATableDetail @delete-detail="deleteDetail" :columns="columnTable" :dataTable="dataTable">
