@@ -33,52 +33,6 @@
 
                     <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Inventory }}</p>
                 </li>
-                <li
-                    @click="handleNavigateToPage(Enum.Router.Department.Name)"
-                    :class="{ active: pathName === Enum.Router.Department.Name }"
-                    class="menuBar__item"
-                >
-                    <a class="menuBar__item-link" :to="Enum.Router.Department.Path">
-                        <p class="menuBar__icon center">
-                            <MISAIcon icon="product"></MISAIcon>
-                        </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Department }}</p>
-                    </a>
-
-                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Department }}</p>
-                </li>
-
-                <li
-                    @click="handleNavigateToPage(Enum.Router.Employee.Name)"
-                    :class="{ active: pathName === Enum.Router.Employee.Name }"
-                    class="menuBar__item"
-                >
-                    <a class="menuBar__item-link" :to="Enum.Router.Employee.Path">
-                        <p class="menuBar__icon center">
-                            <MISAIcon icon="profile"></MISAIcon>
-                        </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Employee }}</p>
-                    </a>
-                    <div class="titleItem center">
-                        <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Employee }}</p>
-                    </div>
-                </li>
-
-                <li
-                    @click="handleNavigateToPage(Enum.Router.Position.Name)"
-                    :class="{ active: pathName === Enum.Router.Position.Name }"
-                    class="menuBar__item"
-                >
-                    <a class="menuBar__item-link" :to="Enum.Router.Position.Path">
-                        <p class="menuBar__icon center">
-                            <MISAIcon icon="position"></MISAIcon>
-                        </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Position }}</p>
-                    </a>
-                    <div class="titleItem center">
-                        <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Position }}</p>
-                    </div>
-                </li>
             </ul>
         </nav>
         <!-- <div @click="handleClickZoomOutSidebar()" class="sideBar-close">

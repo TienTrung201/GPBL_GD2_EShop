@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import EmployeeList from '../Views/employee/EmployeeList.vue';
-import DepartmentList from '../views/department/DepartmentList.vue';
-import PositionList from '../views/position/PositionList.vue';
 import HomePage from '../views/home/HomePage.vue';
 import Inventory from '../views/inventory/InventoryList.vue';
 import InventoryForm from '../views/inventory/InventoryForm.vue';
@@ -13,21 +10,6 @@ const router = createRouter({
             path: Enum.Router.Home.Path,
             name: Enum.Router.Home.Name,
             component: HomePage,
-        },
-        {
-            path: Enum.Router.Employee.Path,
-            name: Enum.Router.Employee.Name,
-            component: EmployeeList,
-        },
-        {
-            path: Enum.Router.Department.Path,
-            name: Enum.Router.Department.Name,
-            component: DepartmentList,
-        },
-        {
-            path: Enum.Router.Position.Path,
-            name: Enum.Router.Position.Name,
-            component: PositionList,
         },
         {
             path: Enum.Router.Inventory.Path,

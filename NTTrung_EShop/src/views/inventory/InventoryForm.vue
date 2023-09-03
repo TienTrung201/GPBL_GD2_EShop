@@ -60,6 +60,7 @@ const iIsShowMenu = ref(null);
 const buttonSave = ref(null);
 const buttonCancel = ref(null);
 const buttonSaveAdd = ref(null);
+const buttonReplication = ref(null);
 // const firstFocus = ref(null);
 // eslint-disable-next-line no-unused-vars
 const columnTable = ref([
@@ -807,12 +808,40 @@ const getUnit = async () => {
     });
 };
 /**
+ * Author: Tiến Trung (11/07/2023)
+ * Description: hàm xử lý khi gõ phím gửi form
+ */
+const handleKeyDown = (e) => {
+    if (e.ctrlKey && e.shiftKey && e.keyCode === Enum.Keyboard.S) {
+        e.preventDefault();
+        //Báo cho button biết có sự kiện click thì gửi form
+        buttonSaveAdd.value.$emit('click');
+        iInventoryName.value.autoFocus();
+        return;
+    }
+    if (e.ctrlKey && e.shiftKey && e.keyCode === Enum.Keyboard.C) {
+        e.preventDefault();
+        //Báo cho button biết có sự kiện click thì gửi form
+        buttonReplication.value.$emit('click');
+        iInventoryName.value.autoFocus();
+        return;
+    }
+    if (e.ctrlKey && e.keyCode === Enum.Keyboard.S) {
+        e.preventDefault();
+        buttonSave.value.$emit('click');
+    }
+    if (e.keyCode === Enum.Keyboard.ESC) {
+        closeForm();
+    }
+};
+/**
  * Author: Tiến Trung (2/07/2023)
  * Description: khi component được tạo thì get data
  * mỗi lần cất và thêm thì lại tạo form mới
  */
 onMounted(async () => {
     try {
+        window.addEventListener('keydown', handleKeyDown);
         await getItemCategory();
         await getUnit();
         await updateForm();
@@ -826,11 +855,13 @@ onMounted(async () => {
         console.log(e);
     }
 });
+
 /**
  * Author: Tiến Trung (26/08/2023)
  * Description: khi component hủy thì settitle cho header
  */
 onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyDown);
     title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
 });
 /**
@@ -1100,20 +1131,24 @@ watch(
 
         <div class="ntt-form__footer">
             <MISAButton
+                ref="buttonSave"
                 :loading="loadingButton.save"
                 @click="submitForm(buttonTypeSave.save)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.Save"
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlS"
             >
                 <template #icon>
                     <MISAIcon width="21" height="11" icon="save" />
                 </template>
             </MISAButton>
             <MISAButton
+                ref="buttonReplication"
                 :loading="loadingButton.saveCopy"
                 @click="submitForm(buttonTypeSave.saveCopy)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.SaveAndReplication"
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftC"
                 sec
             >
                 <template #icon>
@@ -1121,21 +1156,25 @@ watch(
                 </template>
             </MISAButton>
             <MISAButton
+                ref="buttonSaveAdd"
                 :loading="loadingButton.saveAdd"
                 @click="submitForm(buttonTypeSave.saveAdd)"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.SaveAdd"
                 sec
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftS"
             >
                 <template #icon>
                     <MISAIcon width="21" height="10" icon="plus" />
                 </template>
             </MISAButton>
             <MISAButton
+                ref="buttonCancel"
                 @click="closeForm"
                 :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.Cancel"
                 link
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
             >
                 <template #icon>
                     <MISAIcon width="20" height="10" icon="close-eshop" />

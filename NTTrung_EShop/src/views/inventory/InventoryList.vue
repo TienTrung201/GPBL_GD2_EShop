@@ -573,6 +573,22 @@ const onKeyDownDelete = (e) => {
 };
 /**
  * Author: Tiến Trung (30/07/2023)
+ * Description: Hàm sự kiện phím sửa hoặc nhân bản
+ */
+const handleKeyDown = (e) => {
+    if (dataSelected.value.length === 1 || dialog.objectData.InventoryId) {
+        if (e.ctrlKey && e.keyCode === Enum.Keyboard.C) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
+            handleReplication(dialog.objectData);
+        }
+        if (e.ctrlKey && e.keyCode === Enum.Keyboard.E) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
+            handleShowEditInfo(dialog.objectData);
+        }
+    }
+};
+/**
+ * Author: Tiến Trung (30/07/2023)
  * Description: khi được update thì thêm sự kiện delete bằng phím
  */
 onUpdated(() => {
@@ -581,11 +597,24 @@ onUpdated(() => {
     } else {
         window.removeEventListener('keydown', onKeyDownDelete);
     }
+    // khi sửa hoặc nhân bản
+    if (dataSelected.value.length === 1 || dialog.objectData.InventoryId) {
+        window.addEventListener('keydown', handleKeyDown);
+    } else {
+        window.removeEventListener('keydown', handleKeyDown);
+    }
+    // Khi mở form thì xóa sự kiện cũ
     if (dialog.isShow || modalForm.isShow) {
         window.removeEventListener('keydown', onKeyDownDelete);
         window.removeEventListener('keydown', onKeyDownInsertNew);
     } else {
         window.addEventListener('keydown', onKeyDownInsertNew);
+    }
+    // Khi mở form thì xóa sự kiện cũ
+    if (inventory.editMode !== Enum.EditMode.None) {
+        window.removeEventListener('keydown', handleKeyDown);
+    } else {
+        window.addEventListener('keydown', handleKeyDown);
     }
 });
 /**
@@ -624,6 +653,7 @@ onUnmounted(() => {
                         @click="showModalAddData"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Add"
+                        v-tooltip-tippy="Enum.KeyboardShortcuts.Ctrl1"
                     >
                         <template #icon>
                             <MISAIcon width="21" height="10" icon="plus" />
@@ -636,6 +666,7 @@ onUnmounted(() => {
                         "
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Replication"
+                        v-tooltip-tippy="Enum.KeyboardShortcuts.CtrlC"
                     >
                         <template #icon>
                             <MISAIcon width="25" height="15" icon="replication" />
@@ -648,6 +679,7 @@ onUnmounted(() => {
                         "
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Edit"
+                        v-tooltip-tippy="Enum.KeyboardShortcuts.CtrlE"
                     >
                         <template #icon>
                             <MISAIcon width="22" height="12" icon="edit" />
@@ -658,6 +690,7 @@ onUnmounted(() => {
                         @click="openDialogDeleteSelected"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Delete"
+                        v-tooltip-tippy="Enum.KeyboardShortcuts.CtrlD"
                     >
                         <template #icon>
                             <MISAIcon width="20" height="12" icon="delete" />
