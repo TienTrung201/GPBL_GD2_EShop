@@ -145,6 +145,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
                         break;
                 }
                 result += await AfterSave(data);
+                await AfterSaveSuccess(data);
                 await _unitOfWork.CommitAsync();
                 return result;
             }
@@ -221,7 +222,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public virtual void AfterSaveSuccess(TEntityRequestDto data) { }
+        public virtual async Task AfterSaveSuccess(TEntityRequestDto data) { }
         /// <summary>
         /// Validate trước khi xóa list
         /// </summary>

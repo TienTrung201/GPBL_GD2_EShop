@@ -32,9 +32,9 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// </summary>
         /// <returns>Mã code mới</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<string> GetNewCodeAsync()
+        public async Task<string> GetNewCodeAsync(string prefix)
         {
-            var newCode = await _codeRepository.GetNewCodeAsync();
+            var newCode = await _codeRepository.GetNewCodeAsync(prefix);
             return newCode;
         }
         #endregion

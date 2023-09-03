@@ -24,11 +24,10 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
         /// </summary>
         /// <returns>Mã code mới nhất</returns>
         /// CreatedBy: NTTrung (13/07/2023)
-        [Route("NewCode")]
-        [HttpGet]
-        public async Task<IActionResult> GetNewCode()
+        [HttpGet("NewCode/{prefix}")]
+        public async Task<IActionResult> GetNewCode([FromRoute] string prefix)
         {
-            var result = await _codeService.GetNewCodeAsync();
+            var result = await _codeService.GetNewCodeAsync(prefix);
             return StatusCode(StatusCodes.Status200OK, result);
         }
         #endregion

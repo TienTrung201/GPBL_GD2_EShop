@@ -8,7 +8,13 @@ import { useInventory } from '../../stores/inventory';
 import { useTitleHeader } from '../../stores/title-header';
 import MISATableDetail from '../../components/base/table/MISATableDetail.vue';
 import baseApi from '../../api/base-api';
-import { convertCurrency, convertDataTable, convertToTitleCase, deepCopy } from '../../common/convert-data';
+import {
+    convertCurrency,
+    convertDataTable,
+    convertToTitleCase,
+    deepCopy,
+    removeVietnameseTones,
+} from '../../common/convert-data';
 import { useRoute } from 'vue-router';
 import { useToast } from '../../stores/toast';
 import { Validator } from '../../common/validatior';
@@ -31,6 +37,8 @@ const buttonTypeSave = ref({ save: 1, saveAdd: 2, saveCopy: 3 });
 const file = ref(null);
 const imgUrl = ref(null);
 const loadingButton = ref({ save: false, saveAdd: false, saveCopy: false });
+const inventoryOldName = ref('');
+const SKUCodeOld = ref('');
 const validateForm = ref({
     inventoryName: '',
     SKUCode: '',
@@ -295,10 +303,29 @@ const handleRemoveTag = (index, type, tagCode) => {
 };
 /*
  **
+ * Author: Tiến Trung (03/09/2023)
+ * Description: Hàm lấy mã mới
+ */
+const getNewCode = async () => {
+    const parts = removeVietnameseTones(formData.value.inventoryName).split(' '); //các bộ phận
+    const abbreviation = parts
+        .map((part) => part[0])
+        .join('')
+        .toUpperCase(); //Viết tắt
+    if (formData.value.SKUCode.trim('').length === 0) {
+        baseApi.method = Enum.ApiMethod.GET;
+        baseApi.path = Enum.Router.Inventory.Api;
+        const result = await baseApi.request('NewCode/' + abbreviation);
+        formData.value.SKUCode = result.data;
+        validateForm.value.SKUCode = '';
+    }
+};
+/*
+ **
  * Author: Tiến Trung (19/08/2023)
  * Description: hàm khi blur tag thì update
  */
-const onBlurInputFormUpdateData = (value, nameForm) => {
+const onBlurInputFormUpdateData = async (value, nameForm) => {
     // autoDataTable();
     dataTable.value.forEach((data) => {
         const SKUCodeDetail = `${formData.value.SKUCode}${data.ColorCode ? '-' + data.ColorCode : ''}${
@@ -334,6 +361,17 @@ const onBlurInputFormUpdateData = (value, nameForm) => {
                 break;
         }
     });
+    // Nếu là tên cũ thì không gọi mã mới nếu là tên mới thì gọi mã mới
+    if (
+        (nameForm === inputType.value.Name || nameForm === inputType.value.SKUCode) &&
+        formData.value.inventoryName.trim('').length > 0
+    ) {
+        if (inventoryOldName.value === formData.value.inventoryName && formData.value.SKUCode.trim('').length === 0) {
+            formData.value.SKUCode = SKUCodeOld.value;
+        } else {
+            await getNewCode();
+        }
+    }
     //Chỉ cần lặp qua tất cả data rồi update lại mã là xong
     //Cập nhật lại hết detail thành update
     //Nếu data mới gen check editmode create không dc update
@@ -489,7 +527,6 @@ const reloadPage = () => {
  * Description: Hàm update form nếu form mới thì call api lấy newCode
  */
 const updateForm = async () => {
-    const newCode = 'CODE'; // await getNewEmployeeCode();
     const data = await getDetail();
     let isActive = 1;
     if (data.IsActive === undefined) {
@@ -499,10 +536,10 @@ const updateForm = async () => {
     }
     couterChangeForm.value = 0;
     formData.value = {
-        inventoryName: data.InventoryName,
+        inventoryName: data.InventoryName ? data.InventoryName : '',
         itemCategoryId: data.ItemCategoryId, //? data.ItemCategoryId : itemCategories.value[0].value,
         unitId: data.UnitId, //? data.UnitId : units.value[0].value,
-        SKUCode: data.SKUCode,
+        SKUCode: data.SKUCode ? data.SKUCode : '',
         // SKUCodeCustom: data.SKUCodeCustom?data.SKUCodeCustom:,
         costPrice: data.CostPrice ? convertCurrency(data.CostPrice) : '0',
         unitPrice: data.UnitPrice ? convertCurrency(data.UnitPrice) : '0',
@@ -514,6 +551,8 @@ const updateForm = async () => {
         editMode: formEditMode.value,
         inventoryId: data.InventoryId,
     };
+    inventoryOldName.value = formData.value.inventoryName;
+    SKUCodeOld.value = formData.value.SKUCode;
     imgUrl.value = data.PictureId
         ? import.meta.env.VITE_APP_BASEURL + Enum.Router.Picture.Api + '/' + formData.value.pictureId
         : '';
@@ -671,7 +710,6 @@ const getItemCategory = async () => {
 function validateCode(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.isRequired(MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCodeEmpty),
             Validator.isCode(MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCodeFormat),
             Validator.maxLength(20, MISAResource[resource.langCode]?.InventoryInvalidError?.InventoryCodeMaxLength),
         ]);

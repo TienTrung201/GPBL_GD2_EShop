@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service
@@ -172,6 +173,13 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 result += await CUDListService(data.Detail);
             }
             return result;
+        }
+        public async override Task AfterSaveSuccess(InventoryRequestDto data)
+        {
+            string pattern = "^[A-Za-z]+";
+            string prefix = Regex.Match(data.SKUCode, pattern).Value;
+
+            await _inventoryRepository.UpdateCodeAsync(prefix);
         }
         /// <summary>
         /// Validate trước khi sửa list

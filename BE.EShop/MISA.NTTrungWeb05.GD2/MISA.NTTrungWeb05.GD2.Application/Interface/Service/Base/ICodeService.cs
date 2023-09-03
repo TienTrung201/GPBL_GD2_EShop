@@ -13,6 +13,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Interface.Base
         /// </summary>
         /// <returns>Mã mới</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        Task<string> GetNewCodeAsync();
+        Task<string> GetNewCodeAsync(string prefix);
     }
 }

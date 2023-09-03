@@ -35,7 +35,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>
         [Required(ErrorMessageResourceName = nameof(ValidateInput.Required), ErrorMessageResourceType = typeof(ValidateInput))]
         [StringLength(50, ErrorMessageResourceName = nameof(ValidateInput.MaxLength), ErrorMessageResourceType = typeof(ValidateInput))]
-        //[RegularExpression("[A-Za-z]{1,2}-\\d{4,}", ErrorMessage = "{0} {1}")]
         public string SKUCodeCustom { get; set; } = string.Empty;
         /// <summary>
         /// Mã vạch
