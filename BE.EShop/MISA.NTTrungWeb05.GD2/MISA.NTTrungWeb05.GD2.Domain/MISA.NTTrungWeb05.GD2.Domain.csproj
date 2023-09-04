@@ -19,6 +19,11 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>ValidateInput.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Resources\Value\ValueDefault.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ValueDefault.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Update="Resources\ErrorMessage\ErrorMessage.resx">
@@ -28,6 +33,10 @@
 	  <EmbeddedResource Update="Resources\ValidateInput\ValidateInput.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>
 	    <LastGenOutput>ValidateInput.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Value\ValueDefault.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>ValueDefault.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	</ItemGroup>
 

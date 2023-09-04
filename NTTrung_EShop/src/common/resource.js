@@ -359,6 +359,13 @@ const MISAResource = {
                 Sheet: 'Danh sách vị trí',
                 FileName: 'Danh_vi_tri_vien.xlsx',
             },
+            Inventory: {
+                Title: 'Danh sách hàng hóa',
+                Sheet: 'Danh sách hàng hóa',
+                FileName: 'Danh_hang_hoa.xlsx',
+                All: 'Tất cả hàng hóa',
+                Select: 'Hàng hóa được chọn',
+            },
         },
         KeyName: {
             EmployeeCode: 'Mã nhân viên',
@@ -745,6 +752,13 @@ const MISAResource = {
                 Title: 'The list of Position',
                 Sheet: 'Position_list',
                 FileName: 'Position_list.xlsx',
+            },
+            Inventory: {
+                Title: 'The list of Inventory',
+                Sheet: 'Inventory_list',
+                FileName: 'Inventory_list.xlsx',
+                All: 'All Inventory',
+                Select: 'Inventory selected',
             },
         },
         KeyName: {

@@ -20,6 +20,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         Date = 1,
         [Description("Tiền")]
         Money = 2,
+        [Description("Mặc định")]
+        Default = 3,
+        [Description("Hiển thị")]
+        Show = 4,
+        [Description("Trạng thái kinh doanh")]
+        Business = 5,
     }
     /// <summary>
     /// Enum căn trái phải giữa cột

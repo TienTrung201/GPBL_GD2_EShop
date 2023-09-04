@@ -1,7 +1,7 @@
 <script setup>
 import MISATable from '../../components/base/table/MISATable.vue';
 import MISASettingTable from '../../components/base/table/MISASettingTable.vue';
-import { convertDataTable, deepCopy } from '@/common/convert-data.js';
+import { convertDataTable } from '@/common/convert-data.js';
 import { computed, ref, watch, onMounted, onUnmounted, onUpdated } from 'vue';
 import { useModalForm } from '../../stores/modalform';
 import { storeToRefs } from 'pinia';
@@ -12,7 +12,6 @@ import { useResource } from '../../stores/resource.js';
 import MISAResource from '../../common/resource';
 import { useRoute } from 'vue-router';
 import router from '../../router';
-import { convertDateForBE } from '../../common/convert-data';
 import { useInventory } from '../../stores/inventory';
 import baseApi from '../../api/base-api';
 const route = useRoute();
@@ -532,7 +531,6 @@ const closeMenuExport = () => {
 const toggleMenuExport = () => {
     isExportExcel.value = !isExportExcel.value;
     table.value.closeMenu();
-    table.value.closeMenuFilter();
 };
 /**
  * Author: Tiến Trung (11/07/2023)
@@ -715,15 +713,31 @@ onUnmounted(() => {
                         </template>
                     </MISAButton>
 
-                    <MISAButton
-                        iconSec
-                        :type="Enum.ButtonType.IconPri"
-                        :action="MISAResource[resource.langCode]?.Button?.ExportExcel"
-                    >
-                        <template #icon>
-                            <MISAIcon width="26" height="10" icon="export2 " />
-                        </template>
-                    </MISAButton>
+                    <div class="relative">
+                        <MISAButton
+                            iconSec
+                            :type="Enum.ButtonType.IconPri"
+                            :action="MISAResource[resource.langCode]?.Button?.ExportExcel"
+                            @click="toggleMenuExport"
+                            @click.stop
+                            :loading="loadingExport"
+                        >
+                            <template #icon>
+                                <MISAIcon width="26" height="10" icon="export2 " />
+                            </template>
+                        </MISAButton>
+
+                        <MISAMenuContext v-if="isExportExcel" class="custom-menu" :visibility="true">
+                            <template #action>
+                                <li @click="exportExcel(null, null)">
+                                    {{ MISAResource[resource.langCode]?.Excel?.Inventory?.All }}
+                                </li>
+                                <li @click="exportExcelFromDataSelected">
+                                    {{ MISAResource[resource.langCode]?.Excel?.Inventory?.Select }}
+                                </li>
+                            </template>
+                        </MISAMenuContext>
+                    </div>
                 </ul>
             </div>
             <div class="tt-continer__table-body">

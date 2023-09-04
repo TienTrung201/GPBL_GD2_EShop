@@ -27,6 +27,7 @@ import MISARow from './components/base/grid/MISARow.vue';
 import MISACol from './components/base/grid/MISACol.vue';
 import MISAInputManyTag from './components/base/input-many-tag/MISAInputManyTag.vue';
 import MISALoading from './components/base/loading/MISALoading.vue';
+import MISAMenuContext from './components/base/table/MISAMenuContext.vue';
 
 const app = createApp(App);
 
@@ -52,6 +53,7 @@ app.component('MISASelectFilter', MISASelectFilter);
 app.component('MISADatePicker', MISADatePicker);
 app.component('MISALoading', MISALoading);
 app.component('MISAInputManyTag', MISAInputManyTag);
+app.component('MISAMenuContext', MISAMenuContext);
 
 app.use(VueTippy, {
     directive: 'tooltip-tippy',

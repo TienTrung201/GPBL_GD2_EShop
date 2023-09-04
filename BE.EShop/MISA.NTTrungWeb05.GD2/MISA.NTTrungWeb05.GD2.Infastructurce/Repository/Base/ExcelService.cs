@@ -13,6 +13,9 @@ using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Excel;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Excel;
+using AutoMapper.Execution;
+using System.Globalization;
+using MISA.NTTrungWeb05.GD2.Domain.Resources.Value;
 
 namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
 {
@@ -131,7 +134,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             worksheet.Column(1).Width = 10;//STT
             for (int i = 0; i < totalColumns; i++)
             {
-                int widthColumn = (int)(convertColumnToList[i].Width / 7.5);
+                int widthColumn = (int)(convertColumnToList[i].Width / 7.2);
                 worksheet.Column(i + 2).Width = widthColumn;
             };
 
@@ -176,20 +179,8 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             worksheet.Cells[startRow, 1].Value = "STT";
             for (int i = 0; i < convertColumnToList.Count(); i++)
             {
-                var horizontalAlign = ExcelHorizontalAlignment.Left;
-                switch (convertColumnToList[i].Align)
-                {
-                    case AlignColumn.Center:
-                        horizontalAlign = ExcelHorizontalAlignment.Center;
-                        break;
-                    case AlignColumn.Right:
-                        horizontalAlign = ExcelHorizontalAlignment.Right;
-                        break;
-                    default:
-                        break;
-                }
                 worksheet.Cells[startRow, i + 2].Style.WrapText = true;
-                worksheet.Cells[startRow, i + 2].Style.HorizontalAlignment = horizontalAlign;
+                worksheet.Cells[startRow, i + 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 worksheet.Cells[startRow, i + 2].Value = convertColumnToList[i].Title;
             };
 
@@ -285,6 +276,43 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                         }
                     }
                     worksheet.Cells[row, col].Value = nameGender;
+                    break;
+                case TypeColumn.Money:
+                    // Tạo một CultureInfo phù hợp với ngôn ngữ và vùng
+                    CultureInfo cultureInfo = new CultureInfo("vi-VN"); //Tiếng Việt
+
+                    // Định dạng số theo CultureInfo và chèn dấu ngăn cách.
+                    if (value is decimal)
+                    {
+                        var decimalValue = (decimal)value; // Chuyển đối tượng thành decimal
+                        worksheet.Cells[row, col].Value = decimalValue.ToString("#,##0", cultureInfo);
+                    }
+                    break;
+                case TypeColumn.Show:
+                    if(value is bool)
+                    {
+                        if ((bool)value == true)
+                        {
+                            worksheet.Cells[row, col].Value = ValueDefault.Yes;
+                        }
+                        else
+                        {
+                            worksheet.Cells[row, col].Value = ValueDefault.No;
+                        }
+                    }
+                    break;
+                case TypeColumn.Business:
+                    if (value is bool)
+                    {
+                        if ((bool)value == true)
+                        {
+                            worksheet.Cells[row, col].Value = ValueDefault.Active;
+                        }
+                        else
+                        {
+                            worksheet.Cells[row, col].Value = ValueDefault.NoActive;
+                        }
+                    }
                     break;
                 default:
                     worksheet.Cells[row, col].Value = value;
