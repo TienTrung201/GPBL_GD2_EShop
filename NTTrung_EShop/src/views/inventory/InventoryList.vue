@@ -128,6 +128,7 @@ const setColumnTable = () => {
             width: '170',
             isShow: true,
             filter: true,
+            type: Enum.TypeDataTable.Code,
             // pin: true,
         },
         {
@@ -506,17 +507,7 @@ const exportExcelFromDataSelected = async () => {
         console.log(error);
     }
 };
-/**
- * Author: Tiến Trung (10/07/2023)
- * Description:hàm xuất file excel theo dữ liệu được chọn
- */
-const exportExcelFromSearch = async () => {
-    try {
-        await exportExcel(null, searchData.value);
-    } catch (error) {
-        console.log(error);
-    }
-};
+
 /**
  * Author: Tiến Trung (10/07/2023)
  * Description:hàm đóng menuExprot

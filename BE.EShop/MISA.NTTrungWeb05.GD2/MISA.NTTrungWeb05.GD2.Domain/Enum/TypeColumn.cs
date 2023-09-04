@@ -26,6 +26,8 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         Show = 4,
         [Description("Trạng thái kinh doanh")]
         Business = 5,
+        [Description("Mã")]
+        Code = 6,
     }
     /// <summary>
     /// Enum căn trái phải giữa cột

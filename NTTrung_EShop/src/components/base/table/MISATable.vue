@@ -1,7 +1,6 @@
 <script setup>
 import MISAMenucontext from './MISAMenuContext.vue';
 import MISAFilter from './MISAFilter.vue';
-import MISAFilterSelected from './MISAFilterSelected.vue';
 import { computed, onMounted, ref, watch, onUnmounted } from 'vue';
 import { useDialog } from '../../../stores/dialog';
 import { useResource } from '../../../stores/resource.js';
@@ -87,7 +86,8 @@ const filterBy = ref(null);
 const filter = ref({
     propertySort: null,
     sortBy: null,
-    Filter: [],
+    typeColumn: Enum.TypeDataTable.Default,
+    filter: [],
 });
 /**
  * Author: Tiến Trung (06/07/2023)
@@ -96,15 +96,15 @@ const filter = ref({
 const emitFilterData = (filterObject) => {
     //Nếu đang có giá trị để filter thì thêm vào
     if (filterObject.isFilter) {
-        var currentFilter = filter.value.Filter.findIndex((filter) => filter.property === filterObject.property);
+        var currentFilter = filter.value.filter.findIndex((filter) => filter.property === filterObject.property);
         if (currentFilter != -1) {
-            filter.value.Filter[currentFilter] = filterObject;
+            filter.value.filter[currentFilter] = filterObject;
         } else {
-            filter.value.Filter.push(filterObject);
+            filter.value.filter.push(filterObject);
         }
         //Nếu không có thì xóa filter cũ đi
     } else {
-        filter.value.Filter = filter.value.Filter.filter((filter) => filter.property != filterObject.property);
+        filter.value.filter = filter.value.filter.filter((filter) => filter.property != filterObject.property);
     }
     emit('filter-data', filter.value);
 };
@@ -112,7 +112,7 @@ const emitFilterData = (filterObject) => {
  * Author: Tiến Trung (06/07/2023)
  * Description: Hàm sắp xếp
  */
-const setSort = (keyName, isFilter) => {
+const setSort = (keyName, isFilter, typeColumn) => {
     if (isFilter) {
         if (filter.value.propertySort === keyName) {
             switch (filter.value.sortBy) {
@@ -122,6 +122,7 @@ const setSort = (keyName, isFilter) => {
                 case Enum.Sort.Asc:
                     filter.value.sortBy = null;
                     filter.value.propertySort = '';
+                    filter.value.typeColumn = Enum.TypeDataTable.Default;
                     break;
                 default:
                     filter.value.sortBy = Enum.Sort.Desc;
@@ -130,6 +131,7 @@ const setSort = (keyName, isFilter) => {
         } else {
             filter.value.sortBy = Enum.Sort.Desc;
             filter.value.propertySort = keyName;
+            filter.value.typeColumn = typeColumn;
         }
         emit('filter-data', filter.value);
     }
@@ -439,7 +441,7 @@ defineExpose({ closeMenu });
                                         width: item.width + 'px',
                                         maxWidth: item.width + 'px',
                                     }"
-                                    @mousedown="setSort(item.key, item.filter)"
+                                    @mousedown="setSort(item.key, item.filter, item.type)"
                                     class="th__content"
                                 >
                                     {{ item.title }}
