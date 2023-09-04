@@ -60,7 +60,7 @@ namespace MISA.NTTrungWeb05.GD2.Middleware
                     }.ToString() ?? "");
                     break;
                 case ExistedConstrainException:
-                    context.Response.StatusCode = StatusCodes.Status200OK;
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
                     await context.Response.WriteAsync(text: new BaseException()
                     {
                         ErrorCode = ((ExistedConstrainException)exception).ErrorCode,
@@ -75,6 +75,17 @@ namespace MISA.NTTrungWeb05.GD2.Middleware
                     await context.Response.WriteAsync(text: new BaseException()
                     {
                         ErrorCode = ((DuplicateCodeException)exception).ErrorCode,
+                        UserMessage = exception.Message,
+                        DevMessage = "Duplicate Code!",
+                        TraceId = context.TraceIdentifier,
+                        MoreInfo = exception.HelpLink
+                    }.ToString() ?? "");
+                    break;
+                case DuplicateCodeDetailException:
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    await context.Response.WriteAsync(text: new BaseException()
+                    {
+                        ErrorCode = ((DuplicateCodeDetailException)exception).ErrorCode,
                         UserMessage = exception.Message,
                         DevMessage = "Duplicate Code!",
                         TraceId = context.TraceIdentifier,

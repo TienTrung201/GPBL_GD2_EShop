@@ -465,12 +465,12 @@ function closeForm() {
 const autoFocusForm = () => {
     try {
         //Nếu là lỗi trùng mã chủ động cho input bị lỗi để báo
-        // if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
-        //     dialog.setErrorCode(0);
-        //     validateForm.value.SKUCode = MISAResource[resource.langCode].EmployeeInvalidError.EmployeeDuplicateCode;
-        //     iSKUCode.value.autoFocus();
-        //     return;
-        // }
+        if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
+            dialog.setErrorCode(0);
+            validateForm.value.SKUCode = MISAResource[resource.langCode].InventoryInvalidError.InventoryDuplicateCode;
+            iSKUCode.value.autoFocus();
+            return;
+        }
         if (validateForm.value.inventoryName) {
             iInventoryName.value.autoFocus();
             return;
@@ -675,6 +675,8 @@ const submitForm = async (typeButtonSave) => {
                     //trả về form chưa thay đổi để biết là form mới không hiện dialog khi đóng
                     isEditForm.value = Enum.EditMode.None;
                     inventory.openForm(null, Enum.EditMode.Copy);
+                    //Load bảng mới
+                    autoDataTable();
                     break;
                 default:
                     inventory.closeForm();
@@ -963,7 +965,7 @@ watch(
                                 combobox
                                 :options="itemCategories"
                                 v-model:value="formData.itemCategoryId"
-                                :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
+                                :placeholder="MISAResource[resource.langCode]?.Manage?.Inventory?.SelectItem"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.ItemCategory"
                                 row
                                 @blur="(value) => onBlurInputFormUpdateData(value, inputType.ItemCategory)"
@@ -1020,7 +1022,7 @@ watch(
                                 combobox
                                 :options="units"
                                 v-model:value="formData.unitId"
-                                :placeholder="MISAResource[resource.langCode]?.Manage?.EmployeeInfo?.Department?.Empty"
+                                :placeholder="MISAResource[resource.langCode]?.Manage?.Inventory?.SelectUnit"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Unit"
                                 row
                             ></MISADropdown>

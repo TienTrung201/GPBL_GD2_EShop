@@ -67,7 +67,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
             var result = await _inventoryRepository.GetBarcodeInvalid(listCode);
             if (result != null)
             {
-                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCode);
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
             }
         }
         /// <summary>
@@ -80,7 +80,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
             var result = await _inventoryRepository.GetSKUCodeInvalid(listBarcode);
             if (result != null)
             {
-                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCode);
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
             }
         }
     }

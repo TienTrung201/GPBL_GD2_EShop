@@ -86,6 +86,8 @@ const MISAResource = {
                 ItemCategoryEmpty: 'Chọn nhóm hàng hóa',
                 ImageContent: '- Lựa chọn biểu tượng để thay thế nếu không có ảnh',
                 ImageValidate: '- Định dạng ảnh (.jpg, .jpeg, .png, .gif) và dung lượng > 5MB',
+                SelectItem: 'Chọn nhóm hàng hóa',
+                SelectUnit: 'Chọn đơn vị tính',
             },
             Unit: {
                 UnitCode: 'Mã đơn vị tính',
@@ -169,6 +171,7 @@ const MISAResource = {
             InventoryCostPriceMaxLength: 'Giá mua không quá @number ký tự',
             InventoryUnitPriceMaxLength: 'Giá bán không quá @number ký tự',
             DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
+            InventoryDuplicateCode: 'Mã hàng hóa bị trùng',
         },
         Toast: {
             Title: {
@@ -477,6 +480,8 @@ const MISAResource = {
                 ItemCategoryEmpty: 'Select Item Category',
                 ImageContent: '- Select icon to replace if there is no image',
                 ImageValidate: '- Image format (.jpg, .jpeg, .png, .gif) and size > 5MB',
+                SelectItem: 'Select ItemCategory',
+                SelectUnit: 'Select Unit',
             },
             Unit: {
                 UnitCode: 'Unit Code',
@@ -562,6 +567,7 @@ const MISAResource = {
             InventoryCostPriceMaxLength: 'CostPrice limit: @number characters',
             InventoryUnitPriceMaxLength: 'UnitPrice limit: @number characters',
             DescriptionMaxLength: 'Description limit: @number characters.',
+            InventoryDuplicateCode: 'Duplicate SKUCode Inventory',
         },
         Toast: {
             Title: {

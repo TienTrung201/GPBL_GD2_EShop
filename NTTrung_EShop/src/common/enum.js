@@ -106,6 +106,7 @@ const Enum = {
     ErorCode: {
         ExistedConstrain: 1003, //Có phát snh dữ liệu liên quan
         DuplicateCode: 1002, //Trùng mã
+        DuplicateCodeDetail: 1005, //Trùng mã detail
         NotFoundCode: 1001, //Không tìm thấy
         ErrorServerCode: 1000, //Lỗi Server
     },

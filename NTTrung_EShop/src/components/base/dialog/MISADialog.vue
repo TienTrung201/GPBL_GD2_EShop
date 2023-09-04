@@ -3,15 +3,12 @@ import { storeToRefs } from 'pinia';
 import { useDialog } from '../../../stores/dialog';
 import Enum from '../../../common/enum';
 import { onMounted, ref, onUpdated, onUnmounted } from 'vue';
-import { useModalForm } from '../../../stores/modalform';
 
-const emit = defineEmits(['delete-data', 'submit-form']);
 const dialog = useDialog();
-const modal = useModalForm();
 const iPriBtn = ref(null);
 const iSecBtn = ref(null);
 const iclose = ref(null);
-const { actionDialog, buttonThird, title, content, type, buttonSec, icon, method, errorMessage, loadingBtn } =
+const { actionDialog, buttonThird, content, type, buttonSec, icon, method, errorMessage, loadingBtn } =
     storeToRefs(dialog);
 /**
  * Author: Tiến Trung (30/06/2023)
@@ -21,6 +18,7 @@ const handleClose = () => {
     // dialog.setMethod(modal.method);
     dialog.close();
     dialog.closeNavigationLink();
+    dialog.setCloseNavigationLink(() => {});
 };
 
 /**
@@ -106,14 +104,14 @@ onUnmounted(() => {
                 </div>
                 <div class="modal-body">
                     <p v-if="icon" class="modal-icon center">
-                        <MISAIcon width="36" height="36" :icon="icon"></MISAIcon>
+                        <MISAIcon width="38" height="38" :icon="icon"></MISAIcon>
                     </p>
                     <template v-if="errorMessage.length > 0">
                         <MISACol
                             ><p>{{ errorMessage }}</p>
                         </MISACol>
                     </template>
-                    <p v-html="content"></p>
+                    <p class="dialog-content" v-html="content"></p>
                 </div>
                 <div class="modal-footer">
                     <!-- <button @click="handleClose" v-if="buttonSec.length > 0" class="btn-sec btn-base btn-close-dialog">

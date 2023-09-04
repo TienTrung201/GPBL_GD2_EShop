@@ -19,6 +19,8 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         ExistedConstrain = 1003,
         [Description("Trùng mã")]
         DuplicateCode = 1002,
+        [Description("Trùng mã detail")]
+        DuplicateCodeDetail = 1005,
         [Description("Không tìm thấy")]
         NotFoundCode = 1001,
         [Description("Lỗi server")]

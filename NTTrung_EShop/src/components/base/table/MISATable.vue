@@ -576,7 +576,7 @@ defineExpose({ closeMenu });
 
     <div class="tt-continer__footer">
         <div class="table-footer">
-            <div class="table-paging">
+            <div v-if="dataTable.length" class="table-paging">
                 <div class="table-page">
                     <ul class="pagination-list">
                         <li class="pagination-item">
