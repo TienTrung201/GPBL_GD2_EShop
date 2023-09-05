@@ -42,7 +42,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         /// <summary>
         /// Lấy bản ghi trong trang và lọc
         /// </summary>
-        /// <paran name="entity">List Filter</paran>
+        /// <paran name="filter">List Filter</paran>
         /// <returns>Danh sách bản ghi trong trang</returns>
         /// CreatedBy: NTTrung (14/07/2023)
         /// <summary>

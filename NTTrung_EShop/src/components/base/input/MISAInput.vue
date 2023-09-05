@@ -24,7 +24,7 @@
                 @keydown.enter="onEnter"
                 :title="tooltip"
             />
-            <div v-if="errorMessage" class="error-wrapper">
+            <div v-if="errorMessage && errorBottom === false" class="error-wrapper">
                 <div class="error-wrapper__icon center">
                     <img src="../../../assets/icons/error-icon-circle.webp" alt="" />
                 </div>
@@ -39,6 +39,7 @@
                 </svg>
             </div>
         </div>
+        <span v-if="errorMessage && errorBottom === true" class="error-message-bottom">{{ errorMessage }}</span>
     </label>
 </template>
 <script setup>
@@ -69,6 +70,7 @@ const props = defineProps({
     autoFocusMount: { type: Boolean, default: false }, //Khi mount thì input tự động focus
     money: { type: Boolean, default: false }, //Định dạng tiền tệ
     notDelete: { type: Boolean, default: false }, //Định dạng tiền tệ
+    errorBottom: { type: Boolean, default: false }, //Error message ở dưới
 });
 const input = ref(null);
 const oldValue = ref(props.value);

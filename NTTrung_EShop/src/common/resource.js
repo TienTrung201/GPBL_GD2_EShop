@@ -784,6 +784,20 @@ const MISAResource = {
                 All: 'All Inventory',
                 Select: 'Inventory selected',
             },
+            Unit: {
+                Title: 'The list of Unit',
+                Sheet: 'Unit_list',
+                FileName: 'Unit_list.xlsx',
+                All: 'All Unit',
+                Select: 'Unit selected',
+            },
+            ItemCategory: {
+                Title: 'The list of ItemCategory',
+                Sheet: 'ItemCategory_list',
+                FileName: 'ItemCategory_list.xlsx',
+                All: 'All ItemCategory',
+                Select: 'ItemCategory selected',
+            },
         },
         KeyName: {
             EmployeeCode: 'EmployeeCode',

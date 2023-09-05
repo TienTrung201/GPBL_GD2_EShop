@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Active" xml:space="preserve">
-    <value>Active</value>
+    <value>Business</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
   <data name="NoActive" xml:space="preserve">
-    <value>No Active</value>
+    <value>Stop Business</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>

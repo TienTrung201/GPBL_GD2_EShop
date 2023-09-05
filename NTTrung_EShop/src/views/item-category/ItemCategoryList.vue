@@ -3,6 +3,7 @@ import Enum from '../../common/enum';
 import MISAResource from '../../common/resource';
 import { ref } from 'vue';
 import { useResource } from '../../stores/resource.js';
+import ItemCategoryForm from './ItemCategoryForm.vue';
 const resource = useResource();
 const columns = ref([
     {
@@ -37,7 +38,9 @@ const columns = ref([
 ]);
 </script>
 <template lang="">
-    <BaseList :columns="columns" name="ItemCategory"></BaseList>
+    <BaseList :columns="columns" name="ItemCategory">
+        <ItemCategoryForm></ItemCategoryForm>
+    </BaseList>
 </template>
 
 <style lang="scss" scoped>

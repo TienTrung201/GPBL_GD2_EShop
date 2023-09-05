@@ -35,6 +35,7 @@ const props = defineProps({
         cursor: pointer;
         border-radius: 50%;
         margin-right: 8px;
+        transform: translateY(1px);
         &:after {
             content: '';
             position: absolute;

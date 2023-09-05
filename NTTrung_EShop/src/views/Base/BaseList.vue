@@ -156,7 +156,13 @@ const dataSelected = computed(() => {
 //  * Author: Tiến Trung (28/06/2023)
 //  * Description: hàm click vào button thêm
 //  */
-const showModalAddData = () => {};
+const showModalAddData = () => {
+    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Position?.Add);
+    modalForm.setObjectForm({});
+    modalForm.setMethod(Enum.EditMode.Add);
+    // dialog.setMethod(Enum.EditMode.Add);
+    modalForm.open();
+};
 /**
  * Author: Tiến Trung (09/07/2023)
  * Description: Hàm nhận emit khi click sửa thông tin
@@ -656,6 +662,7 @@ onUnmounted(() => {
                 </MISATable>
             </div>
         </div>
+        <slot v-if="modalForm.isShow"></slot>
     </div>
 </template>
 

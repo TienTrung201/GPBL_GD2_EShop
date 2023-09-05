@@ -4,7 +4,7 @@
             <div class="ntt-modal-form__header">
                 <MISARow justify="space-between">
                     <div class="ntt-modal--right">
-                        <h2 class="ntt-modal-form__title">{{ `${action} ${props.object}` }}</h2>
+                        <h3 class="ntt-modal-form__title">{{ `${action} ${props.object}` }}</h3>
                         <MISARow colGap="24px"><slot name="checkboxs"></slot></MISARow>
                     </div>
                     <button

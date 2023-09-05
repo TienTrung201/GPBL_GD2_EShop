@@ -17,7 +17,11 @@
         max-width: 240px;
         font-size: 13px;
     }
-
+    .label-input-row {
+        p {
+            min-width: 170px;
+        }
+    }
     .custom-combobox {
         height: 32px;
         max-width: 240px;

@@ -123,4 +123,13 @@ defineExpose({ autoFocus });
 .error-message {
     bottom: -20px;
 }
+.error-message {
+    position: absolute;
+    // margin-top: 8px;
+    color: var(--red-color5);
+    font-size: 12px;
+    // bottom: -8px;
+    bottom: -20px;
+    left: 0;
+}
 </style>
