@@ -8,6 +8,7 @@ import { Validator } from '../../common/validatior.js';
 import { useResource } from '../../stores/resource.js';
 import baseApi from '../../api/base-api';
 import MISAResource from '../../common/resource';
+import { useToast } from '../../stores/toast';
 
 const emit = defineEmits(['submit-form', 'loading-button']);
 const modalForm = useModalForm();
@@ -32,29 +33,13 @@ const buttonSaveAdd = ref(null);
 const buttonSave = ref(null);
 const buttonCancel = ref(null);
 const firstFocus = ref(null);
+const loadingButton = ref({ save: false, saveAdd: false, saveCopy: false });
+
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
     buttonLoad: { type: Object, default: () => ({ save: false, saveAdd: false }) },
 });
 
-/**
- * Author: Tiến Trung (28/06/2023)
- * Description: Hàm get new code
- */
-const getNewCode = async () => {
-    try {
-        baseApi.method = Enum.ApiMethod.GET;
-        baseApi.path = Enum.Router.ItemCategory.Api;
-        const res = await baseApi.request('NewCode');
-        if (modalForm.method === Enum.EditMode.Add) {
-            return res.data;
-        } else {
-            return modalForm.object.PositionCode;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
 /**
  * Author: Tiến Trung (12/07/2023)
  * Description: Hàm get employee theo id
@@ -63,8 +48,8 @@ const getDataId = async () => {
     try {
         baseApi.method = Enum.ApiMethod.GET;
         baseApi.path = Enum.Router.ItemCategory.Api;
-        if (modalForm.object.ItemCategoryId) {
-            const res = await baseApi.request(modalForm.object.ItemCategoryId);
+        if (dialog.objectData.ItemCategoryId) {
+            const res = await baseApi.request(dialog.objectData.ItemCategoryId);
             return res.data;
         }
         return {};
@@ -81,7 +66,11 @@ const getDataId = async () => {
  */
 function closeForm() {
     if (couterChangeForm.value > 1) {
-        dialog.setObjectData(formData.value);
+        dialog.setFunction(submitForm);
+        dialog.setCloseNavigationLink(() => {
+            dialog.close();
+            modalForm.close();
+        });
         dialog.setMethod(modalForm.method);
         dialog.open({
             title: MISAResource[resource.langCode]?.Dialog?.Warning?.ChangeForm?.Title,
@@ -120,11 +109,25 @@ const autoFocusForm = () => {
         console.log(error);
     }
 };
+const toast = useToast();
+/**
+ * Author: Tiến Trung (26/08/2023)
+ * Description: Hàm save data gọi api
+ */
+const saveData = async (data) => {
+    baseApi.path = Enum.Router.ItemCategory.Api;
+    baseApi.data = data;
+    baseApi.method = Enum.ApiMethod.POST;
+    const res = await baseApi.request('SaveData');
+    // const res = await employeeApi.create(data);
+    console.log(res);
+    toast.success(MISAResource[resource.langCode]?.Toast?.Success?.SaveSuccess);
+};
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm emit báo cho cha biết click gửi nếu bấm cất và thêm thì reset form
  */
-const handleSubmitForm = (isAddNewForm) => {
+const submitForm = async () => {
     try {
         //Nếu mà có lỗi thì lấy ra danh sách lỗi
         validateCode(formData.value.itemCategoryCode);
@@ -144,7 +147,8 @@ const handleSubmitForm = (isAddNewForm) => {
                 loading: false,
             });
         } else {
-            emit('submit-form', formData.value, isAddNewForm);
+            await saveData(formData.value);
+            modalForm.close();
         }
     } catch (error) {
         console.log(error);
@@ -202,15 +206,20 @@ function validateDescription(value) {
  * Description: Hàm update form nếu form mới thì call api lấy newCode
  */
 const updateForm = async () => {
-    const newCode = await getNewCode();
-    const dataId = await getDataId();
-    couterChangeForm.value = 0;
-    formData.value = {
-        positionCode: newCode,
-        positionName: dataId.PositionName,
-        description: dataId.Description,
-    };
-    iItemCategoryCode.value.autoFocus();
+    try {
+        const dataId = await getDataId();
+        couterChangeForm.value = 0;
+        formData.value = {
+            itemCategoryId: dataId.ItemCategoryId,
+            itemCategoryCode: dataId.ItemCategoryCode,
+            itemCategoryName: dataId.ItemCategoryName,
+            description: dataId.Description,
+            editmode: modalForm.method,
+        };
+        iItemCategoryCode.value.autoFocus();
+    } catch (error) {
+        console.log(error);
+    }
 };
 updateForm();
 /**
@@ -296,7 +305,7 @@ watch(
  */
 onMounted(() => {
     window.addEventListener('keydown', handleKeyDown);
-    dialog.setFunction(handleSubmitForm);
+    dialog.setFunction(submitForm);
 });
 /**
  * Author: Tiến Trung (2/07/2023)
@@ -320,7 +329,6 @@ onUnmounted(() => {
                             focus
                             v-model:value="formData.itemCategoryCode"
                             name="id"
-                            placeholder="NV-0000"
                             :label="'Mã nhóm hàng hóa'"
                             validate="true"
                             :errorMessage="validateForm.itemCategoryCode"
@@ -365,35 +373,34 @@ onUnmounted(() => {
 
         <template #action>
             <MISARow justify="space-between" colGap="8px">
-                <MISACol>
-                    <MISAButton
-                        ref="buttonCancel"
-                        @click="closeForm"
-                        @keydown.tab="firstFocus.focus()"
-                        :type="Enum.ButtonType.Sec"
-                        :action="MISAResource[resource.langCode]?.Button?.Cancel"
-                        v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
-                    ></MISAButton>
-                </MISACol>
+                <MISACol> </MISACol>
                 <MISACol>
                     <MISARow colGap="8px">
-                        <!-- @keydown.enter="handleSubmitForm(false)" -->
                         <MISAButton
                             ref="buttonSave"
-                            @click="handleSubmitForm(false)"
-                            :loading="buttonLoad.save"
-                            :type="Enum.ButtonType.Sec"
+                            :loading="loadingButton.save"
+                            @click="submitForm"
+                            :type="Enum.ButtonType.IconPri"
                             :action="MISAResource[resource.langCode]?.Button?.Save"
                             v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlS"
-                        ></MISAButton>
+                        >
+                            <template #icon>
+                                <MISAIcon width="21" height="11" icon="save" />
+                            </template>
+                        </MISAButton>
+
                         <MISAButton
-                            ref="buttonSaveAdd"
-                            @click="handleSubmitForm(true)"
-                            :loading="buttonLoad.saveAdd"
-                            :type="Enum.ButtonType.Pri"
-                            :action="MISAResource[resource.langCode]?.Button?.SaveAdd"
-                            v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftS"
-                        ></MISAButton>
+                            ref="buttonCancel"
+                            @click="closeForm"
+                            :type="Enum.ButtonType.IconPri"
+                            :action="MISAResource[resource.langCode]?.Button?.Cancel"
+                            link
+                            v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
+                        >
+                            <template #icon>
+                                <MISAIcon width="20" height="10" icon="close-eshop" />
+                            </template>
+                        </MISAButton>
                     </MISARow>
                 </MISACol>
             </MISARow>

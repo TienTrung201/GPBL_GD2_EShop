@@ -13,6 +13,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory
     public class ItemCategoryRequestDto : BaseDto
     {
         /// <summary>
+        /// Định danh
+        /// </summary>
+        public Guid ItemCategoryId { get; set; }
+        /// <summary>
         /// Tên nhóm hàng hóa
         /// </summary>
         public string ItemCategoryName { get; set; } = string.Empty;
@@ -27,7 +31,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory
 
         public override Guid GetKey()
         {
-            throw new NotImplementedException();
+            return ItemCategoryId;
         }
     }
 }

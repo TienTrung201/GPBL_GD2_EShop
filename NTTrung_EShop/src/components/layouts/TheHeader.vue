@@ -68,7 +68,7 @@ import { useTitleHeader } from '../../stores/title-header';
 import MISAResource from '../../common/resource.js';
 import Enum from '../../common/enum';
 import { onMounted, ref } from 'vue';
-import { convertToTitleCase } from '../../common/convert-data';
+
 const resource = useResource();
 const title = useTitleHeader();
 const accountOption = ref([
@@ -96,8 +96,8 @@ const handleChangeLangCode = (langCode) => {
  */
 onMounted(() => {
     document.title = MISAResource[resource.langCode]?.Title;
-    const path = convertToTitleCase(window.location.pathname.split('/')[1]);
-    title.setTitle(MISAResource[resource.langCode].SideBar[path]);
+    const path = window.location.pathname.split('/')[1];
+    title.setTitle(MISAResource[resource.langCode].SideBar[path ? path : 'Home']);
 });
 </script>
 <style lang="scss">

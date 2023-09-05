@@ -85,7 +85,6 @@ import { useResource } from '../../stores/resource.js';
 import MISAResource from '../../common/resource.js';
 import Enum from '../../common/enum';
 import { useTitleHeader } from '../../stores/title-header';
-import { convertToTitleCase } from '../../common/convert-data';
 const title = useTitleHeader();
 const resource = useResource();
 const pathName = ref(window.location.pathname.split('/')[1]);

@@ -157,10 +157,10 @@ const dataSelected = computed(() => {
 //  * Description: hàm click vào button thêm
 //  */
 const showModalAddData = () => {
-    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.Position?.Add);
+    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.[props.name]?.Add);
     modalForm.setObjectForm({});
+    dialog.setObjectData({});
     modalForm.setMethod(Enum.EditMode.Add);
-    // dialog.setMethod(Enum.EditMode.Add);
     modalForm.open();
 };
 /**
@@ -173,7 +173,11 @@ const handleShowEditInfo = (data) => {
         if (!dialog.objectData?.InventoryId) {
             dataEdit = dataSelected.value[0];
         }
-        dialog.setMethod(Enum.EditMode.Update);
+        modalForm.open();
+        modalForm.setAction(MISAResource[resource.langCode]?.FormTitle[props.name]?.Update);
+        modalForm.setObjectForm(dataEdit);
+        modalForm.setMethod(Enum.EditMode.Update);
+
         //inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Update);
     } catch (error) {
         console.log(error);

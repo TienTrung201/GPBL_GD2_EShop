@@ -119,6 +119,14 @@ const MISAResource = {
                 Add: 'Thêm mới',
                 Update: 'Sửa',
             },
+            ItemCategory: {
+                Add: 'Thêm mới nhóm hàng hóa',
+                Update: 'Sửa nhóm hàng hóa',
+            },
+            Unit: {
+                Add: 'Thêm mới đơn vị tính',
+                Update: 'Sửa đơn vị tính',
+            },
             BasicInfomation: 'Thông tin cơ bản',
             AttributeInfomation: 'Thông tin thuộc tính',
             AdditionalInfomation: 'Thông tin bổ sung',
@@ -530,6 +538,14 @@ const MISAResource = {
             Inventory: {
                 Add: 'Add',
                 Update: 'Edit',
+            },
+            ItemCategory: {
+                Add: 'Add ItemCategory',
+                Update: 'Edit ItemCategory',
+            },
+            Unit: {
+                Add: 'Add Unit',
+                Update: 'Edit Unit',
             },
             BasicInfomation: 'Basic Infomation',
             AttributeInfomation: 'Attribute Infomation',
