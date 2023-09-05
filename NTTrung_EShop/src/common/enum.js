@@ -60,25 +60,13 @@ const Enum = {
         Enter: 'Enter',
     },
     Router: {
-        Employee: {
-            Name: 'employee',
-            Path: '/employee',
-        },
-        Position: {
-            Name: 'position',
-            Path: '/position',
-        },
-        Department: {
-            Name: 'department',
-            Path: '/department',
-        },
         Home: {
-            Name: 'home',
+            Name: 'Home',
             Path: '/',
         },
         Inventory: {
-            Name: 'inventory',
-            Path: '/inventory',
+            Name: 'Inventory',
+            Path: '/Inventory',
             Api: '/inventories',
         },
         InventoryForm: {
@@ -88,18 +76,16 @@ const Enum = {
             PathDetail: ':id',
         },
         ItemCategory: {
-            Name: 'item-category',
-            Path: '/item-category',
+            Name: 'ItemCategory',
+            Path: '/ItemCategory',
             Api: '/ItemCategories',
         },
         Unit: {
-            Name: 'unit',
-            Path: '/unit',
+            Name: 'Unit',
+            Path: '/Unit',
             Api: '/Units',
         },
         Picture: {
-            Name: 'unit',
-            Path: '/unit',
             Api: '/Pictures',
         },
     },

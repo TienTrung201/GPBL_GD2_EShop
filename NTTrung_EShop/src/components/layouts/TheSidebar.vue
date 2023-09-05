@@ -33,6 +33,38 @@
 
                     <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Inventory }}</p>
                 </li>
+                <li
+                    @click="handleNavigateToPage(Enum.Router.ItemCategory.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.ItemCategory.Name,
+                    }"
+                    class="menuBar__item"
+                >
+                    <a class="menuBar__item-link" :to="Enum.Router.ItemCategory.Path">
+                        <p class="menuBar__icon center">
+                            <MISAIcon icon="product"></MISAIcon>
+                        </p>
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.ItemCategory }}</p>
+                    </a>
+
+                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.ItemCategory }}</p>
+                </li>
+                <li
+                    @click="handleNavigateToPage(Enum.Router.Unit.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.Unit.Name,
+                    }"
+                    class="menuBar__item"
+                >
+                    <a class="menuBar__item-link" :to="Enum.Router.Unit.Path">
+                        <p class="menuBar__icon center">
+                            <MISAIcon icon="product"></MISAIcon>
+                        </p>
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Unit }}</p>
+                    </a>
+
+                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Unit }}</p>
+                </li>
             </ul>
         </nav>
         <!-- <div @click="handleClickZoomOutSidebar()" class="sideBar-close">
@@ -77,7 +109,7 @@ const handleNavigateToPage = (pageName) => {
         pageNameOld.value = pageName;
         router.push({ name: pageName });
         handleChangeTab(pageName);
-        title.setTitle(MISAResource[resource.langCode]?.SideBar[convertToTitleCase(pageName)]);
+        title.setTitle(MISAResource[resource.langCode]?.SideBar[pageName]);
         return;
     }
 };

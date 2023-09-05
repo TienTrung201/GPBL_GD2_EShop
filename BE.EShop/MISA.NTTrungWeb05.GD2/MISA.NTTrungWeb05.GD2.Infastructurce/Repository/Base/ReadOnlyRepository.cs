@@ -100,7 +100,12 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                 switch (filter.TypeColumn)
                 {
                     case TypeColumn.Code:
-                        queryOrder.Append($"Order by `Prefix`, `ValueCode` ");
+                        string filterBy = "Desc";
+                        if(filter.SortBy== SortBy.Asc)
+                        {
+                            filterBy = "Asc";
+                        }
+                        queryOrder.Append($"Order by `Prefix` {filterBy}, `ValueCode` ");
                         queryCode.Append($", REGEXP_REPLACE( view.{filter.PropertySort},'[^a-zA-Z]' , '') AS `Prefix`, ");
                         queryCode.Append($"CAST( REGEXP_REPLACE( view.{filter.PropertySort},'[^0-9]' , '') AS UNSIGNED ) AS `ValueCode` ");
                         break;

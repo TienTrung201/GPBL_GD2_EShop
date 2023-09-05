@@ -311,25 +311,33 @@ function startResize(e, columnKey) {
     }
     //Khi di chuyển chuột
     function mouseMove(e) {
-        // Thêm class để sửa cursor chuột
-        table.value.classList.add('resize-mouse');
-        //Lấy vị trí bắt đầu element
-        const leftPositionElement = element.left;
-        //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
-        const newWidth = e.clientX - leftPositionElement;
-        const columnResize = columnsTable.value.find((col) => col.key === columnKey);
-        if (columnResize) {
-            if (newWidth >= 170) {
-                columnResize.width = newWidth;
+        try {
+            // Thêm class để sửa cursor chuột
+            table.value.classList.add('resize-mouse');
+            //Lấy vị trí bắt đầu element
+            const leftPositionElement = element.left;
+            //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
+            const newWidth = e.clientX - leftPositionElement;
+            const columnResize = columnsTable.value.find((col) => col.key === columnKey);
+            if (columnResize) {
+                if (newWidth >= 170) {
+                    columnResize.width = newWidth;
+                }
             }
+            window.addEventListener('mouseup', clearMouseMove);
+        } catch (e) {
+            console.log(e);
         }
-        window.addEventListener('mouseup', clearMouseMove);
     }
     // Khi bỏ giữ chuột
     function clearMouseMove() {
-        // Bỏ class để sửa cursor chuột
-        table.value.classList.remove('resize-mouse');
-        window.removeEventListener('mousemove', mouseMove);
+        try {
+            // Bỏ class để sửa cursor chuột
+            table.value.classList.remove('resize-mouse');
+            window.removeEventListener('mousemove', mouseMove);
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 /**
@@ -420,6 +428,8 @@ defineExpose({ closeMenu });
                             v-if="item.isShow"
                             :style="{
                                 left: item.pin ? item.stickyLeft + 'px' : '',
+                                width: item.width + 'px',
+                                maxWidth: item.width + 'px',
                             }"
                             v-tooltip-tippy="{
                                 content: item.tooltip || item.title,
@@ -435,15 +445,12 @@ defineExpose({ closeMenu });
                             ]"
                         >
                             <div class="th__wrapper">
-                                <p
-                                    :style="{
+                                <!-- :style="{
                                         textAlign: 'center',
                                         width: item.width + 'px',
                                         maxWidth: item.width + 'px',
-                                    }"
-                                    @mousedown="setSort(item.key, item.filter, item.type)"
-                                    class="th__content"
-                                >
+                                    }" -->
+                                <p @mousedown="setSort(item.key, item.filter, item.type)" class="th__content">
                                     {{ item.title }}
                                     <span v-if="item.filter && filter.propertySort === item.key" class="icon-sort">
                                         <MISAIcon

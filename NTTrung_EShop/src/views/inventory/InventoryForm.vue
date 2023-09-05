@@ -441,6 +441,7 @@ function closeForm() {
         dialog.setMethod(inventory.editMode);
         dialog.setCloseNavigationLink(() => {
             inventory.closeForm();
+            title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
         });
         dialog.open({
             title: MISAResource[resource.langCode]?.Dialog?.Warning?.ChangeForm?.Title,
@@ -455,6 +456,7 @@ function closeForm() {
     } else {
         // modalForm.close();
         inventory.closeForm();
+        title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
     }
 }
 /*
@@ -864,7 +866,6 @@ onMounted(async () => {
  */
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyDown);
-    title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
 });
 /**
  * Author: Tiến Trung (26/08/2023)

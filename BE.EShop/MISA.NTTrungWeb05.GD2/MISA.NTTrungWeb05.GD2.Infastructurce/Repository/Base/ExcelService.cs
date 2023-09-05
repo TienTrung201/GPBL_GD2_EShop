@@ -64,27 +64,12 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             {
                 SetSheet(excelResquest.Sheet);
             }
-            //if (!string.IsNullOrEmpty(excelResquest.Search))
-            //{
-            //    return await ExportBySearchDataAsync(excelResquest.Search, excelResquest.Columns); ;
-            //}
             if (excelResquest.Ids != null)
             {
                 return await ExportByIdsAsync(excelResquest.Ids, excelResquest.Columns); ;
             }
             return await ExportAllAsync(excelResquest.Columns);
         }
-        /// <summary>
-        /// xuất theo danh sách đươc chọn
-        /// </summary>
-        /// <returns>Byte</returns>
-        /// CreatedBy: NTTrung (17/07/2023)
-        //public async Task<byte[]> ExportBySearchDataAsync(string search, IEnumerable<ColumnExcel> columns)
-        //{
-        //    var listData = await _readOnlyRepository.FilterSearchAsync(search);
-        //    var result = GenerateExcelAsync(listData, columns);
-        //    return result;
-        //}
         /// <summary>
         /// xuất theo danh sách đươc chọn
         /// </summary>

@@ -14,6 +14,8 @@ const MISAResource = {
             Department: 'Đơn vị',
             Position: 'Vị trí',
             Inventory: 'Hàng hóa',
+            ItemCategory: 'Nhóm hàng hóa',
+            Unit: 'Đơn vị tính',
         },
         Manage: {
             EmployeeInfo: {
@@ -369,6 +371,20 @@ const MISAResource = {
                 All: 'Tất cả hàng hóa',
                 Select: 'Hàng hóa được chọn',
             },
+            Unit: {
+                Title: 'Danh sách đơn vị tính',
+                Sheet: 'Danh sách đơn vị tính',
+                FileName: 'Danh_don_vi_tinh.xlsx',
+                All: 'Tất cả đơn vị tính',
+                Select: 'Đơn vị tính được chọn',
+            },
+            ItemCategory: {
+                Title: 'Danh sách nhóm hàng hóa',
+                Sheet: 'Danh sách nhóm hàng hóa',
+                FileName: 'Danh_nhom_hang_hoa.xlsx',
+                All: 'Tất cả nhóm hàng hóa',
+                Select: 'Nhóm hàng hóa được chọn',
+            },
         },
         KeyName: {
             EmployeeCode: 'Mã nhân viên',
@@ -408,6 +424,8 @@ const MISAResource = {
             Department: 'Department',
             Position: 'Position',
             Inventory: 'Inventory',
+            ItemCategory: 'ItemCategory',
+            Unit: 'Unit',
         },
         Manage: {
             EmployeeInfo: {

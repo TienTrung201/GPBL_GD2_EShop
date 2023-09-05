@@ -28,12 +28,13 @@ import MISACol from './components/base/grid/MISACol.vue';
 import MISAInputManyTag from './components/base/input-many-tag/MISAInputManyTag.vue';
 import MISALoading from './components/base/loading/MISALoading.vue';
 import MISAMenuContext from './components/base/table/MISAMenuContext.vue';
-
+import BaseList from './views/Base/BaseList.vue';
 const app = createApp(App);
 
 app.directive('tooltip', tooltipDerective);
 
 app.use(createPinia());
+app.component('BaseList', BaseList);
 app.component('MISAModalForm', MISAModalForm);
 app.component('MISAToast', MISAToast);
 app.component('MISADialog', MISADialog);
