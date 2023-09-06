@@ -10,7 +10,6 @@ import baseApi from '../../api/base-api';
 import MISAResource from '../../common/resource';
 import { useToast } from '../../stores/toast';
 
-const emit = defineEmits(['submit-form', 'loading-button']);
 const modalForm = useModalForm();
 const dialog = useDialog();
 const resource = useResource();
@@ -149,6 +148,7 @@ const submitForm = async () => {
         } else {
             await saveData(formData.value);
             modalForm.close();
+            await modalForm.affterSubmitSuccess();
         }
     } catch (error) {
         console.log(error);

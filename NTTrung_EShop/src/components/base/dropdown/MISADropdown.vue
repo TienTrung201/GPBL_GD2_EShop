@@ -37,6 +37,11 @@
                     <img class="i-img" src="../../../assets/icons/arrow-down.svg" alt="" />
                 </template>
             </MISAButton>
+            <div @click="props.function" @click.stop="" v-if="props.buttonAdd" class="button-add-quick center">
+                <span class="center">
+                    <MISAIcon width="11" height="10" icon="plus" />
+                </span>
+            </div>
             <div v-show="!props.combobox ? isShowDropdown : true" class="wrapper-select">
                 <ul>
                     <li
@@ -106,6 +111,8 @@ const props = defineProps({
     selectEmpty: { type: Boolean, default: false }, //Nếu có selectEmpty thì không được chọn rỗng
     require: { type: Boolean, default: false }, //Có thể dùng phím để không chọn trường nòa
     row: { type: Boolean, default: false },
+    buttonAdd: { type: Boolean, default: false }, // nếu có thêm nhanh thì hiện thêm button add
+    function: { type: Function, default: () => {} },
 });
 const itemDropdown = ref(null);
 const emptyItem = ref(null);

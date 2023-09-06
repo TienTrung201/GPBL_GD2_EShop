@@ -236,9 +236,20 @@ const MISAResource = {
                 DeleteListContent: 'bạn có thực sự muốn xóa danh sách vị trí đã chọn?',
             },
             DeleteInventory: {
-                Title: 'Xoa hàng hóa?',
+                Title: 'Xóa hàng hóa?',
                 DeleteContent: 'Bạn có chắc chắn muốn xóa hàng hóa <b class="content-delete">SKUCode</b> không?',
                 DeleteListContent: 'Bạn có chắc chắn muốn xóa các hàng hóa đã chọn không??',
+            },
+            DeleteItemCategory: {
+                Title: 'Xóa nhóm hàng hóa?',
+                DeleteContent:
+                    'Bạn có chắc chắn muốn xóa nhóm hàng hóa <b class="content-delete">ItemCategoryCode</b> không?',
+                DeleteListContent: 'Bạn có chắc chắn muốn xóa các nhóm hàng hóa đã chọn không??',
+            },
+            DeleteUnit: {
+                Title: 'Xóa đơn vị tính?',
+                DeleteContent: 'Bạn có chắc chắn muốn xóa đơn vị tính <b class="content-delete">UnitCode</b> không?',
+                DeleteListContent: 'Bạn có chắc chắn muốn xóa các đơn vị tính đã chọn không??',
             },
             Warning: {
                 Title: 'Có lỗi!',
@@ -653,6 +664,16 @@ const MISAResource = {
                 Title: 'Delete inventory?',
                 DeleteContent: 'Do you want to delete inventory <b class="content-delete">SKUCode</b>?',
                 DeleteListContent: 'Do you want to delete the selected inventory?',
+            },
+            DeleteItemCategory: {
+                Title: 'Delete item category?',
+                DeleteContent: 'Do you want to delete item category <b class="content-delete">ItemCategoryCode</b>?',
+                DeleteListContent: 'Do you want to delete the selected item category?',
+            },
+            DeleteUnit: {
+                Title: 'Delete unit?',
+                DeleteContent: 'Do you want to delete unit <b class="content-delete">UnitCode</b>?',
+                DeleteListContent: 'Do you want to delete the selected unit?',
             },
             Warning: {
                 Title: 'Error!',

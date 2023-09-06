@@ -1,5 +1,6 @@
 <script setup>
 import Enum from '../../common/enum';
+import UnitForm from './UnitForm.vue';
 import MISAResource from '../../common/resource';
 import { ref } from 'vue';
 import { useResource } from '../../stores/resource.js';
@@ -38,7 +39,7 @@ const columns = ref([
 ]);
 </script>
 <template lang="">
-    <BaseList :columns="columns" name="Unit"></BaseList>
+    <BaseList :columns="columns" name="Unit"><UnitForm></UnitForm></BaseList>
 </template>
 
 <style lang="scss" scoped>

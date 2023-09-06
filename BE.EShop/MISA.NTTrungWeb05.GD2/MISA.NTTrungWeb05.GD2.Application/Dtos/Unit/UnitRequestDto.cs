@@ -8,6 +8,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Unit
 {
     public class UnitRequestDto : BaseDto
     {
+        public Guid UnitId { get; set; }
         /// <summary>
         /// Tên đơn vị
         /// </summary>
@@ -23,7 +24,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Unit
 
         public override Guid GetKey()
         {
-            throw new NotImplementedException();
+            return UnitId;
         }
     }
 }

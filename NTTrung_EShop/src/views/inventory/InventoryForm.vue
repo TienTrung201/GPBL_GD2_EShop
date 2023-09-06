@@ -18,6 +18,9 @@ import {
 import { useRoute } from 'vue-router';
 import { useToast } from '../../stores/toast';
 import { Validator } from '../../common/validatior';
+import ItemCategoryForm from '../item-category/ItemCategoryForm.vue';
+import UnitForm from '../unit/UnitForm.vue';
+import { useModalForm } from '../../stores/modalform';
 const dialog = useDialog();
 const toast = useToast();
 const route = useRoute();
@@ -34,6 +37,8 @@ const formEditMode = ref(inventoryId.value ? Enum.EditMode.Update : Enum.EditMod
 const dataDelete = ref([]); //Data Detail bị delete
 const inputType = ref({ SKUCode: 1, Name: 2, Unit: 3, ItemCategory: 4 }); //Biến chứa loại input để biết khi blur thì thay đổi giá trị nào
 const buttonTypeSave = ref({ save: 1, saveAdd: 2, saveCopy: 3 });
+const typeForm = ref({ unit: 1, itemCategory: 2 });
+const openForm = ref(0);
 const file = ref(null);
 const imgUrl = ref(null);
 const loadingButton = ref({ save: false, saveAdd: false, saveCopy: false });
@@ -838,6 +843,21 @@ const handleKeyDown = (e) => {
         closeForm();
     }
 };
+const modalForm = useModalForm();
+const handleOpenForm = (type) => {
+    openForm.value = type;
+    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.[type]?.Add);
+    modalForm.setObjectForm({});
+    dialog.setObjectData({});
+    modalForm.setMethod(Enum.EditMode.Add);
+    modalForm.open();
+
+    if (openForm.value === Enum.Router.ItemCategory.Name) {
+        modalForm.setAffterSuccess(getItemCategory);
+    } else {
+        modalForm.setAffterSuccess(getUnit);
+    }
+};
 /**
  * Author: Tiến Trung (2/07/2023)
  * Description: khi component được tạo thì get data
@@ -878,6 +898,11 @@ onUpdated(() => {
             ? MISAResource[resource.langCode]?.FormTitle?.Inventory?.Add
             : MISAResource[resource.langCode]?.FormTitle?.Inventory?.Update,
     );
+    if (modalForm.isShow) {
+        window.removeEventListener('keydown', handleKeyDown);
+    } else {
+        window.addEventListener('keydown', handleKeyDown);
+    }
 });
 /**
  * Author: Tiến Trung (26/08/2023)
@@ -969,7 +994,9 @@ watch(
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.Inventory?.SelectItem"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.ItemCategory"
                                 row
+                                buttonAdd
                                 @blur="(value) => onBlurInputFormUpdateData(value, inputType.ItemCategory)"
+                                :function="() => handleOpenForm(Enum.Router.ItemCategory.Name)"
                             ></MISADropdown>
                         </MISARow>
                         <MISARow>
@@ -1026,6 +1053,8 @@ watch(
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.Inventory?.SelectUnit"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Unit"
                                 row
+                                buttonAdd
+                                :function="() => handleOpenForm(Enum.Router.Unit.Name)"
                             ></MISADropdown>
                         </MISARow>
                         <MISARow></MISARow>
@@ -1184,6 +1213,8 @@ watch(
                 </template>
             </MISAButton>
         </div>
+        <UnitForm v-if="openForm === Enum.Router.Unit.Name && modalForm.isShow"></UnitForm>
+        <ItemCategoryForm v-if="openForm === Enum.Router.ItemCategory.Name && modalForm.isShow"></ItemCategoryForm>
     </div>
 </template>
 

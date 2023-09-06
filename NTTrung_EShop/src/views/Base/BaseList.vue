@@ -20,14 +20,12 @@ const searchData = ref('');
 const dataTable = ref([]);
 const table = ref(null);
 const skeleton = ref(false);
-const loadingButton = ref({ save: false, saveAdd: false });
 const modalForm = useModalForm();
 const dialog = useDialog();
 const toast = useToast();
 const inventory = useInventory();
 const resource = useResource();
 const { objectData } = storeToRefs(dialog);
-const { method, object } = storeToRefs(modalForm);
 const showSettingTable = ref(false);
 const columnsTable = ref();
 // const isImportExcel = ref(false);
@@ -170,12 +168,13 @@ const showModalAddData = () => {
 const handleShowEditInfo = (data) => {
     try {
         let dataEdit = data;
-        if (!dialog.objectData?.InventoryId) {
+        if (!dialog.objectData[props.name + 'Id']) {
             dataEdit = dataSelected.value[0];
         }
         modalForm.open();
         modalForm.setAction(MISAResource[resource.langCode]?.FormTitle[props.name]?.Update);
         modalForm.setObjectForm(dataEdit);
+        dialog.setObjectData(dataEdit);
         modalForm.setMethod(Enum.EditMode.Update);
 
         //inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Update);
@@ -188,19 +187,19 @@ const handleShowEditInfo = (data) => {
  * Author: Tiến Trung (03/09/2023)
  * Description: Hàm mở form nhân bản
  */
-const handleReplication = (data) => {
-    try {
-        let dataEdit = data;
-        if (!dialog.objectData?.InventoryId) {
-            dataEdit = dataSelected.value[0];
-        }
-        dialog.setMethod(Enum.EditMode.Add);
-        //inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Copy);
-    } catch (error) {
-        console.log(error);
-    }
-    // dialog.setMethod(Enum.EditMode.Copy);
-};
+// const handleReplication = (data) => {
+//     try {
+//         let dataEdit = data;
+//         if (!dialog.objectData?.InventoryId) {
+//             dataEdit = dataSelected.value[0];
+//         }
+//         dialog.setMethod(Enum.EditMode.Add);
+//         //inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Copy);
+//     } catch (error) {
+//         console.log(error);
+//     }
+//     // dialog.setMethod(Enum.EditMode.Copy);
+// };
 // /**
 //  * Author: Tiến Trung (01/07/2023)
 //  * Description: hàm nhận emit chọn hàng trên table
@@ -273,8 +272,8 @@ const openDialogDeleteSelected = () => {
             dialog.open({
                 title: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.Title,
                 content: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.DeleteContent.replace(
-                    'Code',
-                    dialog.objectData.SKUCode,
+                    props.name + 'Code',
+                    dialog.objectData[props.name + 'Code'],
                 ),
                 action: MISAResource[resource.langCode]?.Button?.Delete,
                 buttonSec: MISAResource[resource.langCode]?.Button?.No,
@@ -330,18 +329,6 @@ const deleteDataSelected = async () => {
     } else {
         dataTable.value = [];
         await getData(filter.value);
-    }
-};
-
-/**
- * Author: Tiến Trung (29/06/2023)
- * Description: set Loading cho button
- */
-const setLoadingButton = (status, isAddNewForm) => {
-    if (isAddNewForm) {
-        loadingButton.value.saveAdd = status;
-    } else {
-        loadingButton.value.save = status;
     }
 };
 
@@ -468,10 +455,10 @@ const onKeyDownDelete = (e) => {
  */
 const handleKeyDown = (e) => {
     if (dataSelected.value.length === 1 || dialog.objectData[props.name + 'Id']) {
-        if (e.ctrlKey && e.keyCode === Enum.Keyboard.C) {
-            e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
-            handleReplication(dialog.objectData);
-        }
+        // if (e.ctrlKey && e.keyCode === Enum.Keyboard.C) {
+        //     e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
+        //     handleReplication(dialog.objectData);
+        // }
         if (e.ctrlKey && e.keyCode === Enum.Keyboard.E) {
             e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
             handleShowEditInfo(dialog.objectData);
@@ -502,11 +489,11 @@ onUpdated(() => {
         window.addEventListener('keydown', onKeyDownInsertNew);
     }
     // Khi mở form thì xóa sự kiện cũ
-    if (inventory.editMode !== Enum.EditMode.None) {
-        window.removeEventListener('keydown', handleKeyDown);
-    } else {
-        window.addEventListener('keydown', handleKeyDown);
-    }
+    // if (inventory.editMode !== Enum.EditMode.None) {
+    //     window.removeEventListener('keydown', handleKeyDown);
+    // } else {
+    //     window.addEventListener('keydown', handleKeyDown);
+    // }
 });
 /**
  * Author: Tiến Trung (30/07/2023)
@@ -550,7 +537,7 @@ onUnmounted(() => {
                             <MISAIcon width="21" height="10" icon="plus" />
                         </template>
                     </MISAButton>
-                    <MISAButton
+                    <!-- <MISAButton
                         @click="handleReplication(dialog.objectData)"
                         :disable="
                             !(dataSelected.length > 0 && dataSelected.length < 2) &&
@@ -563,7 +550,7 @@ onUnmounted(() => {
                         <template #icon>
                             <MISAIcon width="25" height="15" icon="replication" />
                         </template>
-                    </MISAButton>
+                    </MISAButton> -->
                     <MISAButton
                         @click="handleShowEditInfo(dialog.objectData)"
                         :disable="
