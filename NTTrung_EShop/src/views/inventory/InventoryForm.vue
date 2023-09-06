@@ -556,6 +556,7 @@ const updateForm = async () => {
         isShowMenu: data.IsShowMenu ? true : false,
         editMode: formEditMode.value,
         inventoryId: data.InventoryId,
+        createdDate: data.CreatedDate,
     };
     imgUrl.value = data.PictureId
         ? import.meta.env.VITE_APP_BASEURL + Enum.Router.Picture.Api + '/' + formData.value.pictureId
@@ -650,16 +651,19 @@ const submitForm = async (typeButtonSave) => {
                 };
             });
             //Cập nhật data phù hợp để gửi vào API
-            copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
+            // copyObj.detail = [...dataCreateUpdate, ...dataDelete.value];
             copyObj.SKUCodeCustom = copyObj.SKUCode;
             copyObj.isActive = copyObj.isActive ? true : false;
             copyObj.costPrice = Number(copyObj.costPrice?.replace(/\./g, ''));
             copyObj.unitPrice = Number(copyObj.unitPrice?.replace(/\./g, ''));
             copyObj.itemCategoryId = copyObj.itemCategoryId ? copyObj.itemCategoryId : null;
             copyObj.unitId = copyObj.unitId ? copyObj.unitId : null;
+
+            //Ghép các data thành 1 mảng
+            const listData = [copyObj, ...dataCreateUpdate, ...dataDelete.value];
             //Button loading
             setLoadingButton(typeButtonSave, true);
-            await saveData(copyObj);
+            await saveData(listData);
             setLoadingButton(typeButtonSave, false);
             //Bấm vào Button nào thì tương ứng chức năng đấy
             switch (typeButtonSave) {

@@ -120,32 +120,52 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
         /// <returns>Bản ghi thay đổi</returns>
         /// CreatedBy: NTTrung (23/08/2023)
-        public async Task<int> SaveData(TEntityRequestDto data)
+        public async Task<int> SaveData(List<TEntityRequestDto> listData)
         {
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                PreSave(data);
+                PreSave(listData);
                 var result = 0;
-                //Cập nhật Master
 
-                switch (data.EditMode)
+                var listDelete = listData.Where(entity => entity.EditMode == EditMode.Delete).ToList();
+                var listUpdate = listData.Where(entity => entity.EditMode == EditMode.Update).ToList();
+                var listCreate = listData.Where(entity => entity.EditMode == EditMode.Create).ToList();
+
+                //--------------------------------------Xóa những hàng hóa bị xóa--------------------------
+                if (listDelete.Count() > 0)
                 {
-                    case EditMode.Create:
-                    case EditMode.Copy:
-                        var dataInsert = await MapCreateDtoToEntityValidateAsync(data);
-                        data.SetValue($"{typeof(TEntity).Name}Id", dataInsert.GetKey());
-                        result += await _crudRepository.InsertAsync(dataInsert);
-                        break;
-                    case EditMode.Update:
-                        var dataUpdate = await MapUpdateDtoToEntityValidateAsync(data.GetKey(), data);
-                        result += await _crudRepository.UpdateAsync(dataUpdate);
-                        break;
-                    default:
-                        break;
+                    //Hàm validate xóa
+                    await ValidateListDelete(listDelete);
+                    var listIdsDelete = listDelete.Select(entity => entity.GetKey().ToString());
+                    var listIdsToString = string.Join(",", listIdsDelete);
+                    result += await _crudRepository.DeleteManyAsync(listIdsToString);
                 }
-                result += await AfterSave(data);
-                await AfterSaveSuccess(data);
+                //---------------------------------------Update list hàng hóa-------------------------------
+                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
+                if (listUpdate.Count() > 0)
+                {
+                    await ValidateListUpdate(listUpdate);
+                    //Không có lỗi thì Update
+                    var listEntityUpdate = _mapper.Map<List<TEntity>>(listUpdate);
+
+                    result += await _crudRepository.UpdateMultipleAsync(listEntityUpdate);
+
+                }
+                //---------------------------------------Create list hàng hóa--------------------------------
+                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
+                if (listCreate.Count() > 0)
+                {
+                    await ValidateListCreate(listCreate);
+                    //Không có lỗi thì thêm mới
+                    var listEntityCreate = _mapper.Map<List<TEntity>>(listCreate);
+
+                    result += await _crudRepository.InsertMultipleAsync(listEntityCreate);
+
+                }
+
+                result += await AfterSave(listData);
+                await AfterSaveSuccess(listData);
                 await _unitOfWork.CommitAsync();
                 return result;
             }
@@ -155,65 +175,19 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
                 throw;
             }
         }
-        /// <summary>
-        /// Hàm Thêm sửa xóa
-        /// </summary>
-        /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
-        /// <returns>Bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (23/08/2023)
-        public async Task<int> CUDListService(List<TEntityRequestDto> data)
-        {
-            //Nếu có detail thì cập nhật Master và Detail
-            int result = 0;
-            var listDelete = data.Where(entity => entity.EditMode == EditMode.Delete).ToList();
-            var listUpdate = data.Where(entity => entity.EditMode == EditMode.Update).ToList();
-            var listCreate = data.Where(entity => entity.EditMode == EditMode.Create).ToList();
-
-            //--------------------------------------Xóa những hàng hóa bị xóa--------------------------
-            if (listDelete.Count() > 0)
-            {
-                //Hàm validate xóa
-                await ValidateListDelete(listDelete);
-                var listIdsDelete = listDelete.Select(entity => entity.GetKey().ToString());
-                var listIdsToString = string.Join(",", listIdsDelete);
-                result += await _crudRepository.DeleteManyAsync(listIdsToString);
-            }
-            //---------------------------------------Update list hàng hóa-------------------------------
-            //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-            if (listUpdate.Count() > 0)
-            {
-                await ValidateListUpdate(listUpdate);
-                //Không có lỗi thì Update
-                var listEntityUpdate = _mapper.Map<List<TEntity>>(listUpdate);
-
-                result += await _crudRepository.UpdateMultipleAsync(listEntityUpdate);
-
-            }
-            //---------------------------------------Create list hàng hóa--------------------------------
-            //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-            if (listCreate.Count() > 0)
-            {
-                await ValidateListCreate(listCreate);
-                //Không có lỗi thì thêm mới
-                var listEntityCreate = _mapper.Map<List<TEntity>>(listCreate);
-
-                result += await _crudRepository.InsertMultipleAsync(listEntityCreate);
-
-            }
-            return result;
-        }
+        
         /// <summary>
         /// Trước khi lưu
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public virtual void PreSave(TEntityRequestDto data) { }
+        public virtual void PreSave(List<TEntityRequestDto> listData) { }
         /// <summary>
         /// Sau khi lưu
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public virtual async Task<int> AfterSave(TEntityRequestDto data)
+        public virtual async Task<int> AfterSave(List<TEntityRequestDto> listData)
         {
             return 0;
         }
@@ -222,7 +196,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public virtual async Task AfterSaveSuccess(TEntityRequestDto data) { }
+        public virtual async Task AfterSaveSuccess(List<TEntityRequestDto> listData) { }
         /// <summary>
         /// Validate trước khi xóa list
         /// </summary>

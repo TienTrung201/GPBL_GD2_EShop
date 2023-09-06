@@ -127,6 +127,11 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>  
         public bool IsUpdateBarcode { get; set; } = false;
         /// <summary>
+        /// Ngày tạo
+        /// </summary>
+        /// CreatedBy: NTTrung (16/07/2023) 
+        public DateTimeOffset? CreatedDate { get; set; }
+        /// <summary>
         /// Danh sách detail
         /// </summary>  
         public List<InventoryRequestDto>? Detail { get; set; }

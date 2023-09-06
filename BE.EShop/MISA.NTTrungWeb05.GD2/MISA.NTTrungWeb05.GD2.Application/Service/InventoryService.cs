@@ -118,68 +118,57 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public override void PreSave(InventoryRequestDto data)
+        public override void PreSave(List<InventoryRequestDto> listData)
         {
             //Cập nhật giá trung bình
-            var hasDetail = false;
-            if (data.Detail?.Any() == true)//data.Detail?.Any() sẽ trả về giá trị true nếu danh sách có ít nhất một phần tử
+            var master = listData.FirstOrDefault(data => string.IsNullOrEmpty(data.ColorCode) && string.IsNullOrEmpty(data.SizeCode));
+            if (master.EditMode == EditMode.Create)
             {
-                var dataUpdateCreate = data.Detail.Where((data) => data.EditMode != EditMode.Delete).ToList();
-                if (dataUpdateCreate.Count() > 0)
+                master.InventoryId = Guid.NewGuid();
+            }
+            var detail = listData.Where(data => !string.IsNullOrEmpty(data.ColorCode) || !string.IsNullOrEmpty(data.SizeCode)).ToList();
+
+            var dataUpdateCreate = detail.Where((data) => data.EditMode != EditMode.Delete).ToList();
+            if (dataUpdateCreate.Count() > 0)
+            {
+                decimal? totalUnitPrice = 0;
+                decimal? totalCostPrice = 0;
+                dataUpdateCreate.ForEach(inventory =>
                 {
-                    decimal? totalUnitPrice = 0;
-                    decimal? totalCostPrice = 0;
-                    dataUpdateCreate.ForEach(inventory =>
-                                {
-                                    hasDetail = true;
-                                    if (inventory.UnitPrice.HasValue)
-                                    {
-                                        totalUnitPrice += inventory.UnitPrice;
-                                    }
-                                    if (inventory.CostPrice.HasValue)
-                                    {
-                                        totalCostPrice += inventory.CostPrice;
-                                    }
+                    inventory.ParentId = master.InventoryId;
+                    if (inventory.UnitPrice.HasValue)
+                    {
+                        totalUnitPrice += inventory.UnitPrice;
+                    }
+                    if (inventory.CostPrice.HasValue)
+                    {
+                        totalCostPrice += inventory.CostPrice;
+                    }
 
-                                });
-                    var newAvgUnitPrice = totalUnitPrice / dataUpdateCreate.Count();
-                    var newAvgCostPrice = totalCostPrice / dataUpdateCreate.Count();
-                    data.AvgCostPrice = newAvgCostPrice;
-                    data.AvgUnitPrice = newAvgUnitPrice;
-                }
+                });
+                var newAvgUnitPrice = totalUnitPrice / dataUpdateCreate.Count();
+                var newAvgCostPrice = totalCostPrice / dataUpdateCreate.Count();
+                master.AvgCostPrice = newAvgCostPrice;
+                master.AvgUnitPrice = newAvgUnitPrice;
             }
-            if (!hasDetail)
+            else
             {
-                data.AvgCostPrice = data.UnitPrice;
-                data.AvgUnitPrice = data.CostPrice;
+                master.AvgCostPrice = master.UnitPrice;
+                master.AvgUnitPrice = master.CostPrice;
             }
-
-
         }
         /// <summary>
-        /// Sau khi lưu
+        /// Update mã code với tiền tố và tăng mã code lên 1
         /// </summary>
-        /// <param name="data">Bản ghi được gửi đến</param>
+        /// <param name="data"></param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public async override Task<int> AfterSave(InventoryRequestDto data)
+        public async override Task AfterSaveSuccess(List<InventoryRequestDto> listData)
         {
-            int result = 0;
-            if (data.Detail?.Any() == true)
-            {
-                data.Detail.ForEach(dataDetail =>
-                {
-                    dataDetail.ParentId = data.InventoryId;
-                });
-                result += await CUDListService(data.Detail);
-            }
-            return result;
-        }
-        public async override Task AfterSaveSuccess(InventoryRequestDto data)
-        {
-            if (data.EditMode == EditMode.Create)
+            var master = listData.FirstOrDefault(data => data.ParentId == null);
+            if (master.EditMode == EditMode.Create)
             {
                 string pattern = "^[A-Za-z]+";
-                string prefix = Regex.Match(data.SKUCode, pattern).Value;
+                string prefix = Regex.Match(master.SKUCode, pattern).Value;
 
                 await _inventoryRepository.UpdateCodeAsync(prefix);
             }

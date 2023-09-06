@@ -103,6 +103,11 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>  
         public string UnitName { get; set; } = string.Empty;
         /// <summary>
+        /// Ngày tạo
+        /// </summary>
+        /// CreatedBy: NTTrung (16/07/2023) 
+        public DateTimeOffset? CreatedDate { get; set; }
+        /// <summary>
         /// Danh sách detail
         /// </summary>  
         public List<InventoryResponseDto>? Detail { get; set; }

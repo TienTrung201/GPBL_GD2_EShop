@@ -19,7 +19,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
     /// CreatedBy: NTTrung (14/07/2023)
     public abstract class CRUDRepository<TEntity, TModel> :
         ReadOnlyRepository<TEntity, TModel>, ICRUDRepository<TEntity, TModel>
-        where TEntity : BaseAudiEntity //chắc chắn TEntity phải kế thừa IHaskey thì mới .GetKey được
+        where TEntity : BaseAudiEntity //chắc chắn TEntity phải kế thừa BaseAudiEntity thì mới .GetKey được
     {
         protected CRUDRepository(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
@@ -182,7 +182,6 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                 foreach (var property in properties)
                 {
                     var value = property.GetValue(entity);
-                    //var valueData = value == null ? "NULL" : $"'{value}'";
                     string nameProperty = property.Name;
                     string paramName = $"@{nameProperty}{indexData}";
                     query.Append($"`{nameProperty}` = {paramName} ");
