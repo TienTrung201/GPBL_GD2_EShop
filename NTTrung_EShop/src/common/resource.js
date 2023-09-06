@@ -183,6 +183,22 @@ const MISAResource = {
             DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
             InventoryDuplicateCode: 'Mã hàng hóa bị trùng',
         },
+        ItemCategoryInvalidError: {
+            ItemCategoryCodeEmpty: 'Mã không được để trống.',
+            ItemCategoryCodeMaxLength: 'Mã không quá @number ký tự.',
+            ItemCategoryCodeFormat: 'Mã không đúng định dạng.',
+            ItemCategoryNameEmpty: 'Tên nhóm hàng hóa không được để trống.',
+            ItemCategoryNameMaxLength: 'Tên nhóm hàng hóa không quá @number ký tự.',
+            DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
+        },
+        UnitInvalidError: {
+            UnitCodeEmpty: 'Mã không được để trống.',
+            UnitCodeMaxLength: 'Mã không quá @number ký tự.',
+            UnitCodeFormat: 'Mã không đúng định dạng.',
+            UnitNameEmpty: 'Tên đơn vị tính không được để trống.',
+            UnitNameMaxLength: 'Tên đơn vị tính không quá @number ký tự.',
+            DescriptionMaxLength: 'Mô tả không quá @number ký tự.',
+        },
         Toast: {
             Title: {
                 Info: 'Thông tin!',
@@ -238,18 +254,18 @@ const MISAResource = {
             DeleteInventory: {
                 Title: 'Xóa hàng hóa?',
                 DeleteContent: 'Bạn có chắc chắn muốn xóa hàng hóa <b class="content-delete">SKUCode</b> không?',
-                DeleteListContent: 'Bạn có chắc chắn muốn xóa các hàng hóa đã chọn không??',
+                DeleteListContent: 'Bạn có chắc chắn muốn xóa các hàng hóa đã chọn không?',
             },
             DeleteItemCategory: {
                 Title: 'Xóa nhóm hàng hóa?',
                 DeleteContent:
                     'Bạn có chắc chắn muốn xóa nhóm hàng hóa <b class="content-delete">ItemCategoryCode</b> không?',
-                DeleteListContent: 'Bạn có chắc chắn muốn xóa các nhóm hàng hóa đã chọn không??',
+                DeleteListContent: 'Bạn có chắc chắn muốn xóa các nhóm hàng hóa đã chọn không?',
             },
             DeleteUnit: {
                 Title: 'Xóa đơn vị tính?',
                 DeleteContent: 'Bạn có chắc chắn muốn xóa đơn vị tính <b class="content-delete">UnitCode</b> không?',
-                DeleteListContent: 'Bạn có chắc chắn muốn xóa các đơn vị tính đã chọn không??',
+                DeleteListContent: 'Bạn có chắc chắn muốn xóa các đơn vị tính đã chọn không?',
             },
             Warning: {
                 Title: 'Có lỗi!',
@@ -613,6 +629,14 @@ const MISAResource = {
             InventoryUnitPriceMaxLength: 'UnitPrice limit: @number characters',
             DescriptionMaxLength: 'Description limit: @number characters.',
             InventoryDuplicateCode: 'Duplicate SKUCode Inventory',
+        },
+        UnitInvalidError: {
+            UnitCodeEmpty: 'Unit Code Code Not Empty.',
+            UnitCodeMaxLength: 'Unit Code limit: @number characters.',
+            UnitCodeFormat: 'Unit Code Invalid.',
+            UnitNameEmpty: 'Unit Name Not Empty.',
+            UnitNameMaxLength: 'Unit Name limit: @number characters.',
+            DescriptionMaxLength: 'Description limit: @number characters.',
         },
         Toast: {
             Title: {

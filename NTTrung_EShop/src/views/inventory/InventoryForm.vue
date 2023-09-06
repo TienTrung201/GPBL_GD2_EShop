@@ -472,7 +472,7 @@ function closeForm() {
 const autoFocusForm = () => {
     try {
         //Nếu là lỗi trùng mã chủ động cho input bị lỗi để báo
-        if (dialog.errorCode === Enum.ErorCode.DuplicateCode) {
+        if (dialog.errorCode === Enum.ErorCode.DuplicateCode && modalForm.isShow === false) {
             dialog.setErrorCode(0);
             validateForm.value.SKUCode = MISAResource[resource.langCode].InventoryInvalidError.InventoryDuplicateCode;
             iSKUCode.value.autoFocus();

@@ -44,17 +44,13 @@ const props = defineProps({
  * Description: Hàm get employee theo id
  */
 const getDataId = async () => {
-    try {
-        baseApi.method = Enum.ApiMethod.GET;
-        baseApi.path = Enum.Router.Unit.Api;
-        if (dialog.objectData.UnitId) {
-            const res = await baseApi.request(dialog.objectData.UnitId);
-            return res.data;
-        }
-        return {};
-    } catch (error) {
-        console.log(error);
+    baseApi.method = Enum.ApiMethod.GET;
+    baseApi.path = Enum.Router.Unit.Api;
+    if (dialog.objectData.UnitId) {
+        const res = await baseApi.request(dialog.objectData.UnitId);
+        return res.data;
     }
+    return {};
 };
 
 /*
@@ -148,6 +144,7 @@ const submitForm = async () => {
         } else {
             await saveData(formData.value);
             modalForm.close();
+            await modalForm.affterSubmitSuccess();
         }
     } catch (error) {
         console.log(error);
@@ -163,9 +160,9 @@ const submitForm = async () => {
 function validateCode(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.isRequired(MISAResource[resource.langCode]?.PositionInvalidError?.PositionCodeEmpty),
-            Validator.isCode(MISAResource[resource.langCode]?.PositionInvalidError?.PositionCodeFormat),
-            Validator.maxLength(20, MISAResource[resource.langCode]?.PositionInvalidError?.PositionCodeMaxLength),
+            Validator.isRequired(MISAResource[resource.langCode]?.UnitInvalidError?.UnitCodeEmpty),
+            Validator.isCode(MISAResource[resource.langCode]?.UnitInvalidError?.UnitCodeFormat),
+            Validator.maxLength(20, MISAResource[resource.langCode]?.UnitInvalidError?.UnitCodeMaxLength),
         ]);
         validateForm.value.unitCode = errorMessage;
         return errorMessage;
@@ -177,8 +174,8 @@ function validateCode(value) {
 function validateName(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.isRequired(MISAResource[resource.langCode]?.PositionInvalidError?.PositionNameEmpty),
-            Validator.maxLength(100, MISAResource[resource.langCode]?.PositionInvalidError?.PositionNameMaxLength),
+            Validator.isRequired(MISAResource[resource.langCode]?.UnitInvalidError?.UnitNameEmpty),
+            Validator.maxLength(100, MISAResource[resource.langCode]?.UnitInvalidError?.UnitNameMaxLength),
         ]);
         validateForm.value.unitName = errorMessage;
         return errorMessage;
@@ -190,7 +187,7 @@ function validateName(value) {
 function validateDescription(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.maxLength(255, MISAResource[resource.langCode]?.PositionInvalidError?.DescriptionMaxLength),
+            Validator.maxLength(255, MISAResource[resource.langCode]?.UnitInvalidError?.DescriptionMaxLength),
         ]);
         validateForm.value.description = errorMessage;
         return errorMessage;
@@ -328,7 +325,7 @@ onUnmounted(() => {
                             focus
                             v-model:value="formData.unitCode"
                             name="id"
-                            :label="'Mã đơn vị tính'"
+                            :label="MISAResource[resource.langCode]?.Manage?.Unit?.UnitCode"
                             validate="true"
                             :errorMessage="validateForm.unitCode"
                             errorBottom
@@ -343,7 +340,7 @@ onUnmounted(() => {
                             require
                             v-model:value="formData.unitName"
                             name="name"
-                            :label="'Tên đơn vị tính'"
+                            :label="MISAResource[resource.langCode]?.Manage?.Unit?.UnitName"
                             validate="true"
                             errorBottom
                             row
@@ -358,7 +355,7 @@ onUnmounted(() => {
                             :errorMessage="validateForm.description"
                             v-model:value="formData.description"
                             name="name"
-                            :label="MISAResource[resource.langCode]?.Manage?.PositionInfo?.Description"
+                            :label="MISAResource[resource.langCode]?.Manage?.Unit?.Description"
                             validate="true"
                             @keydown.tab="buttonCancel.autoFocus()"
                             :maxLength="255"

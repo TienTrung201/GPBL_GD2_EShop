@@ -164,9 +164,12 @@ const submitForm = async () => {
 function validateCode(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.isRequired(MISAResource[resource.langCode]?.PositionInvalidError?.PositionCodeEmpty),
-            Validator.isCode(MISAResource[resource.langCode]?.PositionInvalidError?.PositionCodeFormat),
-            Validator.maxLength(20, MISAResource[resource.langCode]?.PositionInvalidError?.PositionCodeMaxLength),
+            Validator.isRequired(MISAResource[resource.langCode]?.ItemCategoryInvalidError?.ItemCategoryCodeEmpty),
+            Validator.isCode(MISAResource[resource.langCode]?.ItemCategoryInvalidError?.ItemCategoryCodeFormat),
+            Validator.maxLength(
+                20,
+                MISAResource[resource.langCode]?.ItemCategoryInvalidError?.ItemCategoryCodeMaxLength,
+            ),
         ]);
         validateForm.value.itemCategoryCode = errorMessage;
         return errorMessage;
@@ -178,8 +181,11 @@ function validateCode(value) {
 function validateName(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.isRequired(MISAResource[resource.langCode]?.PositionInvalidError?.PositionNameEmpty),
-            Validator.maxLength(100, MISAResource[resource.langCode]?.PositionInvalidError?.PositionNameMaxLength),
+            Validator.isRequired(MISAResource[resource.langCode]?.ItemCategoryInvalidError?.ItemCategoryNameEmpty),
+            Validator.maxLength(
+                100,
+                MISAResource[resource.langCode]?.ItemCategoryInvalidError?.ItemCategoryNameMaxLength,
+            ),
         ]);
         validateForm.value.itemCategoryName = errorMessage;
         return errorMessage;
@@ -191,7 +197,7 @@ function validateName(value) {
 function validateDescription(value) {
     try {
         const errorMessage = Validator(value, [
-            Validator.maxLength(255, MISAResource[resource.langCode]?.PositionInvalidError?.DescriptionMaxLength),
+            Validator.maxLength(255, MISAResource[resource.langCode]?.ItemCategoryInvalidError?.DescriptionMaxLength),
         ]);
         validateForm.value.description = errorMessage;
         return errorMessage;
@@ -329,7 +335,7 @@ onUnmounted(() => {
                             focus
                             v-model:value="formData.itemCategoryCode"
                             name="id"
-                            :label="'Mã nhóm hàng hóa'"
+                            :label="MISAResource[resource.langCode]?.Manage?.ItemCategory?.ItemCategoryCode"
                             validate="true"
                             :errorMessage="validateForm.itemCategoryCode"
                             errorBottom
@@ -344,7 +350,7 @@ onUnmounted(() => {
                             require
                             v-model:value="formData.itemCategoryName"
                             name="name"
-                            :label="'Tên nhóm hàng hóa'"
+                            :label="MISAResource[resource.langCode]?.Manage?.ItemCategory?.ItemCategoryName"
                             validate="true"
                             errorBottom
                             row
@@ -359,7 +365,7 @@ onUnmounted(() => {
                             :errorMessage="validateForm.description"
                             v-model:value="formData.description"
                             name="name"
-                            :label="MISAResource[resource.langCode]?.Manage?.PositionInfo?.Description"
+                            :label="MISAResource[resource.langCode]?.Manage?.ItemCategory?.Description"
                             validate="true"
                             @keydown.tab="buttonCancel.autoFocus()"
                             :maxLength="255"

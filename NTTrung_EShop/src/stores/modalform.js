@@ -40,6 +40,7 @@ export const useModalForm = defineStore('modalform', {
             this.isShow = false;
             this.object = {};
             this.method = Enum.EditMode.None;
+            this.affterSubmitSuccess = async () => {};
         },
         /**
          * Author: Tiến Trung 24/06/2023)
