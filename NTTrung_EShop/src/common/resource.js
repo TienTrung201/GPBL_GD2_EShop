@@ -253,18 +253,17 @@ const MISAResource = {
             },
             DeleteInventory: {
                 Title: 'Xóa hàng hóa?',
-                DeleteContent: 'Bạn có chắc chắn muốn xóa hàng hóa <b class="content-delete">SKUCode</b> không?',
+                DeleteContent: 'Bạn có chắc chắn muốn xóa hàng hóa <b class="content-delete">code</b> không?',
                 DeleteListContent: 'Bạn có chắc chắn muốn xóa các hàng hóa đã chọn không?',
             },
             DeleteItemCategory: {
                 Title: 'Xóa nhóm hàng hóa?',
-                DeleteContent:
-                    'Bạn có chắc chắn muốn xóa nhóm hàng hóa <b class="content-delete">ItemCategoryCode</b> không?',
+                DeleteContent: 'Bạn có chắc chắn muốn xóa nhóm hàng hóa <b class="content-delete">code</b> không?',
                 DeleteListContent: 'Bạn có chắc chắn muốn xóa các nhóm hàng hóa đã chọn không?',
             },
             DeleteUnit: {
                 Title: 'Xóa đơn vị tính?',
-                DeleteContent: 'Bạn có chắc chắn muốn xóa đơn vị tính <b class="content-delete">UnitCode</b> không?',
+                DeleteContent: 'Bạn có chắc chắn muốn xóa đơn vị tính <b class="content-delete">code</b> không?',
                 DeleteListContent: 'Bạn có chắc chắn muốn xóa các đơn vị tính đã chọn không?',
             },
             Warning: {
@@ -686,17 +685,17 @@ const MISAResource = {
             },
             DeleteInventory: {
                 Title: 'Delete inventory?',
-                DeleteContent: 'Do you want to delete inventory <b class="content-delete">SKUCode</b>?',
+                DeleteContent: 'Do you want to delete inventory <b class="content-delete">code</b>?',
                 DeleteListContent: 'Do you want to delete the selected inventory?',
             },
             DeleteItemCategory: {
                 Title: 'Delete item category?',
-                DeleteContent: 'Do you want to delete item category <b class="content-delete">ItemCategoryCode</b>?',
+                DeleteContent: 'Do you want to delete item category <b class="content-delete">code</b>?',
                 DeleteListContent: 'Do you want to delete the selected item category?',
             },
             DeleteUnit: {
                 Title: 'Delete unit?',
-                DeleteContent: 'Do you want to delete unit <b class="content-delete">UnitCode</b>?',
+                DeleteContent: 'Do you want to delete unit <b class="content-delete">code</b>?',
                 DeleteListContent: 'Do you want to delete the selected unit?',
             },
             Warning: {

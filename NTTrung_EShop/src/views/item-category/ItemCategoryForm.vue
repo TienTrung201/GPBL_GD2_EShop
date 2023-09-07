@@ -15,6 +15,7 @@ const dialog = useDialog();
 const resource = useResource();
 const formData = ref({});
 const couterChangeForm = ref(0);
+const oldCode = ref('');
 const validateForm = ref({
     itemCategoryCode: '',
     itemCategoryName: '',
@@ -206,7 +207,7 @@ function validateDescription(value) {
     }
 }
 ///Validator-------------------------------------------------------
-const oldCode = ref('');
+
 /**
  * Author: Tiến Trung (05/07/2023)
  * Description: Hàm update form nếu form mới thì call api lấy newCode
@@ -223,8 +224,7 @@ const updateForm = async () => {
             editmode: modalForm.method,
             createdDate: dataId.CreatedDate,
         };
-        // oldC
-        iItemCategoryCode.value.autoFocus();
+        (oldCode.value = dataId.ItemCategoryCode), iItemCategoryCode.value.autoFocus();
     } catch (error) {
         console.log(error);
     }
@@ -278,10 +278,10 @@ const handleKeyDown = (e) => {
  * Author: Tiến Trung (07/09/2023)
  * Description: Hàm update data nếu là code mới thì isupdatecode true
  */
-const setDataEditMode = (value, oldValue) => {
+const setDataEditMode = (value) => {
     if (couterChangeForm.value > 1) {
         if (formData.value.EditMode !== Enum.EditMode.Add) {
-            formData.value.IsUpdateCode = oldValue !== value;
+            formData.value.IsUpdateCode = oldCode.value !== value;
         }
     }
 };
@@ -339,7 +339,7 @@ onUnmounted(() => {
         <div class="ntt-form custom-form">
             <button ref="firstFocus" class="focusFirst"></button>
             <MISARow justify="space-between">
-                <MISACol display="flex" direction="column" rowGap="24">
+                <MISACol display="flex" direction="column" rowGap="12">
                     <MISARow>
                         <MISAInput
                             ref="iItemCategoryCode"
@@ -357,7 +357,6 @@ onUnmounted(() => {
                             :label="MISAResource[resource.langCode]?.Manage?.ItemCategory?.ItemCategoryCode"
                             validate="true"
                             :errorMessage="validateForm.itemCategoryCode"
-                            errorBottom
                             row
                         ></MISAInput>
                     </MISARow>
@@ -371,7 +370,6 @@ onUnmounted(() => {
                             name="name"
                             :label="MISAResource[resource.langCode]?.Manage?.ItemCategory?.ItemCategoryName"
                             validate="true"
-                            errorBottom
                             row
                         >
                         </MISAInput>
@@ -437,6 +435,7 @@ onUnmounted(() => {
 <style lang="scss">
 @import './item-category-form.scss';
 .custom-form {
+    overflow: unset !important;
     .label-input-row {
         width: 100%;
         p {
@@ -448,6 +447,9 @@ onUnmounted(() => {
         bottom: -20px;
     }
     .input-text-base {
+        max-width: none !important;
+    }
+    .wrapper-input {
         max-width: none !important;
     }
     .ntt-col {

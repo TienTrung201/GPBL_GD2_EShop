@@ -333,8 +333,10 @@ function startResize(e, columnKey) {
     function clearMouseMove() {
         try {
             // Bỏ class để sửa cursor chuột
-            table.value.classList.remove('resize-mouse');
-            window.removeEventListener('mousemove', mouseMove);
+            if (table.value) {
+                table.value.classList.remove('resize-mouse');
+                window.removeEventListener('mousemove', mouseMove);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -615,7 +617,7 @@ defineExpose({ closeMenu });
                             ></RouterLink>
                         </li>
 
-                        <template v-for="(page, index) in pages" :key="index">
+                        <!-- <template v-for="(page, index) in pages" :key="index">
                             <li :class="{ active: page === currentPage }" class="pagination-item">
                                 <RouterLink
                                     :to="{
@@ -628,7 +630,7 @@ defineExpose({ closeMenu });
                                 >
                                 <span class="pagination-ellipsis" v-else>...</span>
                             </li>
-                        </template>
+                        </template> -->
                         <li v-if="currentPage !== totalPage || true" class="pagination-item">
                             <RouterLink
                                 :to="{

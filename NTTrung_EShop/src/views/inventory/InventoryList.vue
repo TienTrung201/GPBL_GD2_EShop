@@ -347,7 +347,7 @@ const openDialogDeleteSelected = () => {
             dialog.open({
                 title: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.Title,
                 content: MISAResource[resource.langCode]?.Dialog?.DeleteInventory?.DeleteContent.replace(
-                    'SKUCode',
+                    'code',
                     dialog.objectData.SKUCode,
                 ),
                 action: MISAResource[resource.langCode]?.Button?.Delete,
@@ -428,18 +428,6 @@ const handleDeleteData = () => {
         });
     } catch (error) {
         console.log(error);
-    }
-};
-
-/**
- * Author: Tiến Trung (29/06/2023)
- * Description: set Loading cho button
- */
-const setLoadingButton = (status, isAddNewForm) => {
-    if (isAddNewForm) {
-        loadingButton.value.saveAdd = status;
-    } else {
-        loadingButton.value.save = status;
     }
 };
 

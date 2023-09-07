@@ -19,6 +19,7 @@ const validateForm = ref({
     unitName: '',
     description: '',
 });
+const oldName = ref('');
 const listErrorMessage = ref([]);
 //Input-------------------
 const iUnitCode = ref(null);
@@ -194,6 +195,7 @@ const updateForm = async () => {
             editmode: modalForm.method,
             createdDate: dataId.CreatedDate,
         };
+        oldName.value = dataId.UnitName;
         iUnitCode.value.autoFocus();
     } catch (error) {
         console.log(error);
@@ -248,9 +250,11 @@ const handleKeyDown = (e) => {
  * Author: Tiến Trung (07/09/2023)
  * Description: Hàm update data nếu là code mới thì isupdatecode true
  */
-const setDataEditMode = (value, oldValue) => {
-    if (formData.value.EditMode !== Enum.EditMode.Add) {
-        formData.value.IsUpdateName = oldValue !== value;
+const setDataEditMode = (value) => {
+    if (couterChangeForm.value > 1) {
+        if (formData.value.EditMode !== Enum.EditMode.Add) {
+            formData.value.IsUpdateName = oldName.value !== value;
+        }
     }
 };
 watch(
@@ -307,14 +311,14 @@ onUnmounted(() => {
         <div class="ntt-form custom-form">
             <button ref="firstFocus" class="focusFirst"></button>
             <MISARow justify="space-between">
-                <MISACol display="flex" direction="column" rowGap="24">
+                <MISACol display="flex" direction="column" rowGap="12">
                     <MISARow>
                         <MISAInput
                             ref="iPositionName"
                             @blur="setDataEditMode"
                             @input-validation="
                                 (value, oldValue) => {
-                                    validateCode(value);
+                                    validateName(value);
                                     setDataEditMode(value, oldValue);
                                 }
                             "
@@ -324,7 +328,6 @@ onUnmounted(() => {
                             name="name"
                             :label="MISAResource[resource.langCode]?.Manage?.Unit?.UnitName"
                             validate="true"
-                            errorBottom
                             row
                         >
                         </MISAInput>

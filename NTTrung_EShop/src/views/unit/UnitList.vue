@@ -28,7 +28,7 @@ const columns = ref([
 ]);
 </script>
 <template lang="">
-    <BaseList :columns="columns" name="Unit"><UnitForm></UnitForm></BaseList>
+    <BaseList :columns="columns" name="Unit" code="Name"><UnitForm></UnitForm></BaseList>
 </template>
 
 <style lang="scss" scoped>

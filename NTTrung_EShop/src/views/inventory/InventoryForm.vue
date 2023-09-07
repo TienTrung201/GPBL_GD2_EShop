@@ -1160,7 +1160,21 @@ watch(
                                             src="../../assets/img/img-inventory-default.jpg"
                                             alt=""
                                         />
-                                        <button @click="file.click()" class="btn-file">...</button>
+                                        <div class="wrapper-button-file">
+                                            <button @click="file.click()" class="btn-file">...</button>
+                                            <button
+                                                v-if="imgUrl"
+                                                @click="
+                                                    () => {
+                                                        imgUrl = null;
+                                                        formData.pictureId = null;
+                                                    }
+                                                "
+                                                class="btn-file center btn-close"
+                                            >
+                                                <MISAIcon width="14" height="16" icon="close"></MISAIcon>
+                                            </button>
+                                        </div>
                                         <button class="btn-select__list-image">
                                             <p class="icon center">
                                                 <MISAIcon width="22" height="12" icon="edit" />

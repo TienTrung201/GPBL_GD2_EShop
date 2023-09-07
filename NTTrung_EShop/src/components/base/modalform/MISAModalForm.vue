@@ -8,7 +8,7 @@
                         <MISARow colGap="24px"><slot name="checkboxs"></slot></MISARow>
                     </div>
                     <button
-                        v-tooltip.absoluteBottom="Enum.KeyboardShortcuts.Esc"
+                        v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
                         @click="closeModal"
                         class="modal-close center"
                     >

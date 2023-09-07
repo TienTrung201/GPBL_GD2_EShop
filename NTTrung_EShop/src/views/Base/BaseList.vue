@@ -41,6 +41,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    code: {
+        type: String,
+        default: 'Code',
+    },
 });
 /**
  * Author: Tiến Trung (24/06/2023)
@@ -269,11 +273,12 @@ const openDialogDeleteSelected = () => {
             dialog.setMethod(Enum.EditMode.Delete);
             modalForm.setMethod(Enum.EditMode.Delete);
             dialog.setFunction(deleteData);
+            debugger;
             dialog.open({
                 title: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.Title,
                 content: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.DeleteContent.replace(
-                    props.name + 'Code',
-                    dialog.objectData[props.name + 'Code'],
+                    'code',
+                    dialog.objectData[props.name + props.code],
                 ),
                 action: MISAResource[resource.langCode]?.Button?.Delete,
                 buttonSec: MISAResource[resource.langCode]?.Button?.No,

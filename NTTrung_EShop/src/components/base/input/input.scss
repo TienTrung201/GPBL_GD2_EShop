@@ -127,8 +127,9 @@
     display: flex;
 }
 .error-wrapper {
-    position: relative;
-    width: 10px;
+    // position: absolute;
+    right: 0px;
+    // width: 32px;
     &:hover {
         .error-message {
             display: block;
@@ -142,8 +143,10 @@
         }
     }
     .error-message {
+        z-index: 999;
         transition: 0.3s ease-in;
         position: absolute;
+        left: calc(100% + 10px);
         background-color: var(--red-color3);
         color: #fff;
         padding: 8px 8px;
@@ -153,7 +156,7 @@
         top: 50%;
         transform: translateY(-50%);
         z-index: 2;
-        left: calc(100% + 26px);
+        // left: calc(100% + 26px);
         width: max-content;
         display: none;
         &::after {
