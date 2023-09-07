@@ -863,6 +863,15 @@ const handleOpenForm = (type) => {
     }
 };
 /**
+ * Author: Tiến Trung (07/09/2023)
+ * Description: Hàm update data nếu là code mới thì isupdatecode true
+ */
+const setDataEditMode = (value, oldValue) => {
+    if (formData.value.EditMode !== Enum.EditMode.Add) {
+        formData.value.IsUpdateCode = oldValue !== value;
+    }
+};
+/**
  * Author: Tiến Trung (2/07/2023)
  * Description: khi component được tạo thì get data
  * mỗi lần cất và thêm thì lại tạo form mới
@@ -1011,8 +1020,18 @@ watch(
                                 type="text"
                                 validate="true"
                                 row
-                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.SKUCode)"
-                                @input-validation="validateCode"
+                                @blur="
+                                    (value, oldValue) => {
+                                        onBlurInputFormUpdateData(value, inputType.SKUCode);
+                                        setDataEditMode(value, oldValue);
+                                    }
+                                "
+                                @input-validation="
+                                    (value, oldValue) => {
+                                        validateCode(value);
+                                        setDataEditMode(value, oldValue);
+                                    }
+                                "
                                 :errorMessage="validateForm.SKUCode"
                             ></MISAInput>
                         </MISARow>

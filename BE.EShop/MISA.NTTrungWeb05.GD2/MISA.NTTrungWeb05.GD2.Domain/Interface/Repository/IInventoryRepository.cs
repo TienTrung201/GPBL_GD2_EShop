@@ -24,13 +24,13 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Repository
         /// <paran name="entity">Chuỗi mã lỗi</paran>
         /// <returns>Chuỗi mã không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        Task<string> GetSKUCodeInvalid(string listSKUCodes);
+        Task<string> GetSKUCodeInvalidAsync(string listSKUCodes);
         /// <summary>
         /// lấy mã vạch không hợp lệ
         /// </summary>
         /// <paran name="entity">Chuỗi mã vạch lõi</paran>
         /// <returns>Chuỗi mã vạch không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        Task<string> GetBarcodeInvalid(string listBarcodes);
+        Task<string> GetBarcodeInvalidAsync(string listBarcodes);
     }
 }

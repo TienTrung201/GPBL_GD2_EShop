@@ -57,7 +57,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// <paran name="entity">Chuỗi mã lỗi</paran>
         /// <returns>Chuỗi mã không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<string> GetSKUCodeInvalid(string listSKUCodes)
+        public async Task<string> GetSKUCodeInvalidAsync(string listSKUCodes)
         {
             var storedProcedureName = $"Proc_Inventory_CheckListCodes";
             var param = new DynamicParameters();
@@ -73,7 +73,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// <paran name="entity">Chuỗi mã vạch lõi</paran>
         /// <returns>Chuỗi mã vạch không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<string> GetBarcodeInvalid(string listBarcodes)
+        public async Task<string> GetBarcodeInvalidAsync(string listBarcodes)
         {
             var storedProcedureName = $"Proc_Inventory_CheckListBarcodes";
             var param = new DynamicParameters();

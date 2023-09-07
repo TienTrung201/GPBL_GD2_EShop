@@ -16,7 +16,6 @@ const resource = useResource();
 const formData = ref({});
 const couterChangeForm = ref(0);
 const validateForm = ref({
-    unitCode: '',
     unitName: '',
     description: '',
 });
@@ -27,8 +26,6 @@ const iUnitName = ref(null);
 const iDescription = ref(null);
 
 //Input-------------------
-
-const buttonSaveAdd = ref(null);
 const buttonSave = ref(null);
 const buttonCancel = ref(null);
 const firstFocus = ref(null);
@@ -125,7 +122,6 @@ const saveData = async (data) => {
 const submitForm = async () => {
     try {
         //Nếu mà có lỗi thì lấy ra danh sách lỗi
-        validateCode(formData.value.unitCode);
         validateName(formData.value.unitName);
         validateDescription(formData.value.description);
         const listError = getListErrorMessage();
@@ -142,7 +138,7 @@ const submitForm = async () => {
                 loading: false,
             });
         } else {
-            await saveData(formData.value);
+            await saveData([formData.value]);
             modalForm.close();
             await modalForm.affterSubmitSuccess();
         }
@@ -156,20 +152,6 @@ const submitForm = async () => {
  * Author: Tiến Trung (03/07/2023)
  * Description: Hàm validate form
  */
-//Hàm validate mã
-function validateCode(value) {
-    try {
-        const errorMessage = Validator(value, [
-            Validator.isRequired(MISAResource[resource.langCode]?.UnitInvalidError?.UnitCodeEmpty),
-            Validator.isCode(MISAResource[resource.langCode]?.UnitInvalidError?.UnitCodeFormat),
-            Validator.maxLength(20, MISAResource[resource.langCode]?.UnitInvalidError?.UnitCodeMaxLength),
-        ]);
-        validateForm.value.unitCode = errorMessage;
-        return errorMessage;
-    } catch (error) {
-        console.log(error);
-    }
-}
 //Hàm validate name
 function validateName(value) {
     try {
@@ -207,10 +189,10 @@ const updateForm = async () => {
         couterChangeForm.value = 0;
         formData.value = {
             unitId: dataId.UnitId,
-            unitCode: dataId.UnitCode,
             unitName: dataId.UnitName,
             description: dataId.Description,
             editmode: modalForm.method,
+            createdDate: dataId.CreatedDate,
         };
         iUnitCode.value.autoFocus();
     } catch (error) {
@@ -260,6 +242,15 @@ const handleKeyDown = (e) => {
     }
     if (e.keyCode === Enum.Keyboard.ESC) {
         closeForm();
+    }
+};
+/**
+ * Author: Tiến Trung (07/09/2023)
+ * Description: Hàm update data nếu là code mới thì isupdatecode true
+ */
+const setDataEditMode = (value, oldValue) => {
+    if (formData.value.EditMode !== Enum.EditMode.Add) {
+        formData.value.IsUpdateName = oldValue !== value;
     }
 };
 watch(
@@ -319,23 +310,14 @@ onUnmounted(() => {
                 <MISACol display="flex" direction="column" rowGap="24">
                     <MISARow>
                         <MISAInput
-                            ref="iUntiCode"
-                            require
-                            @input-validation="validateCode"
-                            focus
-                            v-model:value="formData.unitCode"
-                            name="id"
-                            :label="MISAResource[resource.langCode]?.Manage?.Unit?.UnitCode"
-                            validate="true"
-                            :errorMessage="validateForm.unitCode"
-                            errorBottom
-                            row
-                        ></MISAInput>
-                    </MISARow>
-                    <MISARow>
-                        <MISAInput
                             ref="iPositionName"
-                            @input-validation="validateName"
+                            @blur="setDataEditMode"
+                            @input-validation="
+                                (value, oldValue) => {
+                                    validateCode(value);
+                                    setDataEditMode(value, oldValue);
+                                }
+                            "
                             :errorMessage="validateForm.unitName"
                             require
                             v-model:value="formData.unitName"

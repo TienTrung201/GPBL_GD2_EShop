@@ -47,5 +47,18 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
                 await _itemCategoryRepository.GetByIdAsync(id.Value);
             }
         }
+        /// <summary>
+        /// Kiểm tra danh sách mã trùng
+        /// </summary>
+        /// <param name="listCodes">Danh sách mã</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        public async Task CheckDublicateListCodes(string listBarcode)
+        {
+            var result = await _itemCategoryRepository.GetCodeInvalidAsync(listBarcode);
+            if (result != null)
+            {
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
+            }
+        }
     }
 }

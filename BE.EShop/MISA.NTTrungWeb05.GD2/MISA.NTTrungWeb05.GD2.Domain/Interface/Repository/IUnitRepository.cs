@@ -9,7 +9,14 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Repository
 {
-    public interface IUnitRepository : ICodeRepository<Unit, UnitModel>
+    public interface IUnitRepository : ICRUDRepository<Unit, UnitModel>
     {
+        /// <summary>
+        /// lấy mã lỗi không hợp lệ
+        /// </summary>
+        /// <paran name="entity">Chuỗi mã lỗi</paran>
+        /// <returns>Chuỗi mã không hợp lệ</returns>
+        /// CreatedBy: NTTrung (24/08/2023)
+        Task<string> GetNameInvalidAsync(string listCodes);
     }
 }

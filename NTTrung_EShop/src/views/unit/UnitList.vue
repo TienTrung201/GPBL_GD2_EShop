@@ -7,17 +7,6 @@ import { useResource } from '../../stores/resource.js';
 const resource = useResource();
 const columns = ref([
     {
-        title: 'Mã đơn vị tính',
-        dataIndex: 'UnitCode',
-        key: 'UnitCode',
-        width: '170',
-        isShow: true,
-        filter: true,
-        type: Enum.TypeDataTable.Code,
-
-        // pin: true,
-    },
-    {
         title: 'Tên đơn vị tính',
         dataIndex: 'name',
         key: 'UnitName',

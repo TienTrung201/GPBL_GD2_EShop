@@ -146,7 +146,7 @@ const submitForm = async () => {
                 loading: false,
             });
         } else {
-            await saveData(formData.value);
+            await saveData([formData.value]);
             modalForm.close();
             await modalForm.affterSubmitSuccess();
         }
@@ -206,7 +206,7 @@ function validateDescription(value) {
     }
 }
 ///Validator-------------------------------------------------------
-
+const oldCode = ref('');
 /**
  * Author: Tiến Trung (05/07/2023)
  * Description: Hàm update form nếu form mới thì call api lấy newCode
@@ -221,7 +221,9 @@ const updateForm = async () => {
             itemCategoryName: dataId.ItemCategoryName,
             description: dataId.Description,
             editmode: modalForm.method,
+            createdDate: dataId.CreatedDate,
         };
+        // oldC
         iItemCategoryCode.value.autoFocus();
     } catch (error) {
         console.log(error);
@@ -270,6 +272,17 @@ const handleKeyDown = (e) => {
     }
     if (e.keyCode === Enum.Keyboard.ESC) {
         closeForm();
+    }
+};
+/**
+ * Author: Tiến Trung (07/09/2023)
+ * Description: Hàm update data nếu là code mới thì isupdatecode true
+ */
+const setDataEditMode = (value, oldValue) => {
+    if (couterChangeForm.value > 1) {
+        if (formData.value.EditMode !== Enum.EditMode.Add) {
+            formData.value.IsUpdateCode = oldValue !== value;
+        }
     }
 };
 watch(
@@ -331,7 +344,13 @@ onUnmounted(() => {
                         <MISAInput
                             ref="iItemCategoryCode"
                             require
-                            @input-validation="validateCode"
+                            @blur="setDataEditMode"
+                            @input-validation="
+                                (value, oldValue) => {
+                                    validateCode(value);
+                                    setDataEditMode(value, oldValue);
+                                }
+                            "
                             focus
                             v-model:value="formData.itemCategoryCode"
                             name="id"

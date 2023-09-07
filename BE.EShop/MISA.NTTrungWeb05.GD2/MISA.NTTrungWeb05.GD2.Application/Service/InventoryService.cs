@@ -122,7 +122,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         {
             //Cập nhật giá trung bình
             var master = listData.FirstOrDefault(data => string.IsNullOrEmpty(data.ColorCode) && string.IsNullOrEmpty(data.SizeCode));
-            if (master.EditMode == EditMode.Create)
+            if (master?.EditMode == EditMode.Create)
             {
                 master.InventoryId = Guid.NewGuid();
             }
@@ -135,7 +135,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 decimal? totalCostPrice = 0;
                 dataUpdateCreate.ForEach(inventory =>
                 {
-                    inventory.ParentId = master.InventoryId;
+                    inventory.ParentId = master?.InventoryId;
                     if (inventory.UnitPrice.HasValue)
                     {
                         totalUnitPrice += inventory.UnitPrice;

@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
 using MISA.NTTrungWeb05.GD2.Application.Service.Base;
 using MISA.NTTrungWeb05.GD2.Domain.Entity;
+using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Manager;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Repository;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using MISA.NTTrungWeb05.GD2.Domain.Model;
+using MISA.NTTrungWeb05.GD2.Domain.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service
 {
-    public class UnitService : CodeService<Unit, UnitModel, UnitResponseDto, UnitRequestDto>, IUnitService
+    public class UnitService : CRUDService<Unit, UnitModel, UnitResponseDto, UnitRequestDto>, IUnitService
     {
         private readonly IUnitManager _unitManager;
         private readonly IUnitRepository _unitRepository;
@@ -44,7 +47,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         {
             // validate nghiệp vụ
             // Kiểm tra trùng mã
-            await _unitManager.CheckDublicateCode(createDto.UnitCode, null);
 
             var unit = _mapper.Map<Unit>(createDto);
             unit.UnitId = Guid.NewGuid();
@@ -65,8 +67,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra có tồn tại không
             var department = await _unitRepository.GetByIdAsync(id);
 
-            // Kiểm tra trùng mã
-            await _unitManager.CheckDublicateCode(updateDto.UnitCode, department.UnitCode);
+            // Kiểm tra trùng tên
 
             var updateEmployee = _mapper.Map<Unit>(updateDto);
             updateEmployee.UnitId = department.UnitId;
@@ -91,6 +92,30 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             var result = await _unitRepository.DeleteAsync(entity);
             return result;
 
+        }
+        /// <summary>
+        /// Validate trước khi sửa list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async override Task ValidateListUpdate(List<UnitRequestDto> data)
+        {
+            //Hàm validate sửa
+            var listNamesCreate = data.Where(unit => unit.EditMode == EditMode.Update && unit.IsUpdateName).Select((unit) => unit.UnitName);
+
+            //Kiểm tra xem trùng không
+            await _unitManager.CheckDublicateListNames(string.Join(',', listNamesCreate));
+        }
+        /// <summary>
+        /// Validate trước khi thêm list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async override Task ValidateListCreate(List<UnitRequestDto> data)
+        {
+            //Hàm validate thêm
+            var listNamesCreate = data.Where(unit => unit.EditMode == EditMode.Create).Select((unit) => unit.UnitName);
+            await _unitManager.CheckDublicateListNames(string.Join(',', listNamesCreate));
         }
         #endregion
     }

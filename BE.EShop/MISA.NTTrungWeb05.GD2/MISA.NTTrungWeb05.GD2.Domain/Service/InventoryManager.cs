@@ -64,7 +64,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         /// CreatedBy: NTTrung (24/08/2023)
         public async Task CheckDublicateListBarcodes(string listCode)
         {
-            var result = await _inventoryRepository.GetBarcodeInvalid(listCode);
+            var result = await _inventoryRepository.GetBarcodeInvalidAsync(listCode);
             if (result != null)
             {
                 throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
@@ -77,7 +77,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         /// CreatedBy: NTTrung (24/08/2023)
         public async Task CheckDublicateListCodes(string listBarcode)
         {
-            var result = await _inventoryRepository.GetSKUCodeInvalid(listBarcode);
+            var result = await _inventoryRepository.GetSKUCodeInvalidAsync(listBarcode);
             if (result != null)
             {
                 throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);

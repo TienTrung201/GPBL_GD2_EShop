@@ -22,5 +22,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Manager
         /// <param name="oldCode">Mã cũ</param>
         /// CreatedBy: NTTrung (16/07/2023)
         Task CheckDublicateCode(string newCode, string? oldCode);
+        /// <summary>
+        /// Kiểm tra danh sách mã trùng
+        /// </summary>
+        /// <param name="listCodes">Danh sách mã</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        Task CheckDublicateListCodes(string listCode);
     }
 }

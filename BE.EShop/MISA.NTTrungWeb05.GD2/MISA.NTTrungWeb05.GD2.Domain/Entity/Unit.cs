@@ -21,10 +21,6 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// </summary>
         public string UnitName { get; set; } = string.Empty;
         /// <summary>
-        /// Mã đơn vị
-        /// </summary>
-        public string UnitCode { get; set; } = string.Empty;
-        /// <summary>
         /// Mô tả
         /// </summary>
         public string? Description { get; set; } = string.Empty;
