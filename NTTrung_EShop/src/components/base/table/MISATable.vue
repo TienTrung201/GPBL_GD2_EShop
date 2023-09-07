@@ -9,6 +9,7 @@ import MISAResource from '../../../common/resource';
 import Enum from '../../../common/enum';
 import { useModalForm } from '../../../stores/modalform';
 import { formatAlign } from '../../../common/convert-data';
+import router from '../../../router';
 const emit = defineEmits([
     'select-row',
     'select-all',
@@ -89,6 +90,7 @@ const filter = ref({
     typeColumn: Enum.TypeDataTable.Default,
     filter: [],
 });
+const curentPage = ref(props.currentPage);
 /**
  * Author: Tiến Trung (06/07/2023)
  * Description: Hàm lọc
@@ -223,6 +225,20 @@ const pagination = computed(() => {
         props.TotalRecords
     } ${MISAResource[resource.langCode].Table.Record}`;
 });
+
+const handlePaging = (page) => {
+    if (page.trim('').length === 0) {
+        curentPage.value = props.currentPage;
+    } else {
+        if (page > props.totalPage) {
+            page = props.totalPage;
+        }
+        router.push({
+            path: Enum.Router[props.routerCurrent].Path,
+            query: { page: page },
+        });
+    }
+};
 /**
  * Author: Tiến Trung (12/07/2023)
  * Description: watch theo dõi khi langcode thay đổi thì
@@ -600,6 +616,7 @@ defineExpose({ closeMenu });
                                     },
                                 }"
                                 class="pagination-link"
+                                @click="curentPage = currentPage === 1 ? currentPage : currentPage - 1"
                                 ><MISAIcon width="5" height="8" icon="prev"></MISAIcon
                             ></RouterLink>
                         </li>
@@ -613,10 +630,25 @@ defineExpose({ closeMenu });
                                 }"
                                 :class="{ 'no-select': currentPage === 1 || currentPage === 2 }"
                                 class="pagination-link"
+                                @click="
+                                    curentPage = currentPage === 1 || currentPage === 2 ? currentPage : currentPage - 2
+                                "
                                 ><MISAIcon width="8" height="8" icon="prev2"></MISAIcon
                             ></RouterLink>
                         </li>
-
+                        <div class="page__controll">
+                            <p>{{ MISAResource[resource.langCode].Table.Page }}</p>
+                            <MISAInput
+                                v-model:value="curentPage"
+                                @enter="handlePaging"
+                                @blur="curentPage = props.currentPage"
+                                checkNumber
+                            ></MISAInput>
+                            <p>
+                                {{ MISAResource[resource.langCode].Table.OutOf }}
+                                {{ totalPage }}
+                            </p>
+                        </div>
                         <!-- <template v-for="(page, index) in pages" :key="index">
                             <li :class="{ active: page === currentPage }" class="pagination-item">
                                 <RouterLink
@@ -641,6 +673,7 @@ defineExpose({ closeMenu });
                                 }"
                                 :class="{ 'no-select': currentPage >= totalPage - 1 }"
                                 class="pagination-link"
+                                @click="curentPage = currentPage >= totalPage - 1 ? currentPage : currentPage + 2"
                                 ><MISAIcon width="8" height="8" icon="next2"></MISAIcon
                             ></RouterLink>
                         </li>
@@ -654,6 +687,7 @@ defineExpose({ closeMenu });
                                 }"
                                 :class="{ 'no-select': currentPage === totalPage }"
                                 class="pagination-link"
+                                @click="curentPage = currentPage === totalPage ? currentPage : currentPage + 1"
                                 ><MISAIcon width="5" height="8" icon="next"></MISAIcon
                             ></RouterLink>
                         </li>

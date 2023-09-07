@@ -101,7 +101,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                 {
                     case TypeColumn.Code:
                         string filterBy = "Desc";
-                        if(filter.SortBy== SortBy.Asc)
+                        if (filter.SortBy == SortBy.Asc)
                         {
                             filterBy = "Asc";
                         }
@@ -125,6 +125,10 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                     default:
                         break;
                 }
+            }
+            if (filter.CurrentPage < 1)
+            {
+                filter.CurrentPage = 1;
             }
             queryLimit.Append($"Limit {filter.PageSize} Offset {(filter.CurrentPage - 1) * filter.PageSize}");
             var queryLimitString = queryLimit.ToString();
