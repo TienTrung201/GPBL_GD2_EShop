@@ -16,10 +16,11 @@ using MISA.NTTrungWeb05.GD2.Application.Dtos.Excel;
 using AutoMapper.Execution;
 using System.Globalization;
 using MISA.NTTrungWeb05.GD2.Domain.Resources.Value;
+using MISA.NTTrungWeb05.GD2.Domain.Entity;
 
 namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
 {
-    public class ExcelService<TModal, TEntity> : IExcelService<TModal>
+    public class ExcelService<TModal, TEntity> : IExcelService<TModal> where TEntity : BaseAudiEntity where TModal : TEntity
     {
         #region Field
         private readonly IReadOnlyRepository<TEntity, TModal> _readOnlyRepository;
@@ -78,7 +79,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         public async Task<byte[]> ExportByIdsAsync(string ids, IEnumerable<ColumnExcel> columns)
         {
             var listData = await _readOnlyRepository.GetByIdsAsync(ids);
-            var result = GenerateExcelAsync(listData, columns);
+            var result = await GenerateExcelAsync(listData, columns);
             return result;
         }
         /// <summary>
@@ -89,7 +90,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         public async Task<byte[]> ExportAllAsync(IEnumerable<ColumnExcel> columns)
         {
             var listData = await _readOnlyRepository.GetAllAsync();
-            var result = GenerateExcelAsync(listData, columns);
+            var result = await GenerateExcelAsync(listData, columns);
             return result;
         }
 
@@ -98,7 +99,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         /// </summary>
         /// <returns>byte</returns>
         /// CreatedBy: NTTrung (03/08/2023)
-        public byte[] GenerateExcelAsync(IEnumerable<TModal> listData, IEnumerable<ColumnExcel> columns)
+        public async Task<byte[]> GenerateExcelAsync(IEnumerable<TModal> listData, IEnumerable<ColumnExcel> columns)
         {
             var convertColumnToList = columns.ToList();
 
@@ -202,9 +203,11 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                     var type = convertColumnToList[i].Type;
                     var align = convertColumnToList[i].Align;
                     worksheet.Cells[startRow + 1, i + 2].Style.WrapText = true;
-                    setValueColumn(worksheet, startRow + 1, i + 2, propertyInfo?.GetValue(data), type, align);
+                    await SetValueColumn(worksheet, startRow + 1, i + 2, propertyInfo?.GetValue(data), type, align);
                     //worksheet.Cells[startRow+1, i + 2].Value = value;
                 }
+                //Custom data
+                startRow = await AddDetailDataExcel(worksheet, convertColumnToList, data.GetKey(), startRow);
                 index++;
                 startRow++; //Tăng vị trí hàng tiếp theo
             }
@@ -216,12 +219,21 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             // Chuyển đổi MemoryStream thành mảng byte và trả về
             return stream.ToArray();
         }
+        /// <summary>
+        /// Hàm custom data cho excel
+        /// </summary>
+        /// <returns>int hàng hiện tại</returns>
+        /// CreatedBy: NTTrung (03/08/2023)
+        public async virtual Task<int> AddDetailDataExcel(ExcelWorksheet worksheet, List<ColumnExcel> columns, Guid uid, int startRow)
+        {
+            return startRow;
+        }
 
         /// <summary>
         /// Hàm điền value vào từng cột
         /// </summary>
         /// CreatedBy: NTTrung (03/08/2023)
-        private void setValueColumn(ExcelWorksheet worksheet, int row, int col, object? value, TypeColumn? type, AlignColumn? align)
+        protected async Task SetValueColumn(ExcelWorksheet worksheet, int row, int col, object? value, TypeColumn? type, AlignColumn? align)
         {
             var horizontalAlign = ExcelHorizontalAlignment.Left;
 
@@ -274,7 +286,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                     }
                     break;
                 case TypeColumn.Show:
-                    if(value is bool)
+                    if (value is bool)
                     {
                         if ((bool)value == true)
                         {

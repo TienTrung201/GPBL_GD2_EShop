@@ -44,12 +44,17 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// CreatedBy: NTTrung (24/08/2023)
         public override async Task<InventoryModel> CustomResult(InventoryModel inventory)
         {
-            var storedProcedureName = $"Proc_{TableName}_GetDetail";
-            var param = new DynamicParameters();
-            param.Add("@ParentId", inventory.InventoryId);
-            var result = await _uow.Connection.QueryAsync<InventoryModel>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
+            var result = await GetDetailByParentId(inventory.InventoryId);
             inventory.Detail = result.ToList();
             return inventory;
+        }
+        public async Task<List<InventoryModel>> GetDetailByParentId(Guid uid)
+        {
+            var storedProcedureName = $"Proc_{TableName}_GetDetail";
+            var param = new DynamicParameters();
+            param.Add("@ParentId", uid);
+            var result = await _uow.Connection.QueryAsync<InventoryModel>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
+            return result.ToList();
         }
         /// <summary>
         /// lấy mã lỗi không hợp lệ

@@ -32,5 +32,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Repository
         /// <returns>Chuỗi mã vạch không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
         Task<string> GetBarcodeInvalidAsync(string listBarcodes);
+        /// <summary>
+        /// Hàm lấy detail từ parentid
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        Task<List<InventoryModel>> GetDetailByParentId(Guid uid);
     }
 }
