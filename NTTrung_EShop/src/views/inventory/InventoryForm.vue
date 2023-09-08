@@ -21,10 +21,11 @@ import { Validator } from '../../common/validatior';
 import ItemCategoryForm from '../item-category/ItemCategoryForm.vue';
 import UnitForm from '../unit/UnitForm.vue';
 import { useModalForm } from '../../stores/modalform';
+import { useBaseEntity } from '../../stores/base-entity';
 const dialog = useDialog();
 const toast = useToast();
 const route = useRoute();
-const inventory = useInventory();
+const baseEntity = useBaseEntity();
 const inventoryId = ref(route.params.id); //Biến chứa Id trên param
 const itemCategories = ref([]);
 const units = ref([]);
@@ -85,14 +86,6 @@ const columnTable = ref([
         isEdit: false,
         // pin: true,
     },
-    // {
-    //     title: MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode,
-    //     key: 'SKUCode',
-    //     width: '170',
-    //     isShow: true,
-    //     isEdit: false,
-    //     // type: 'gender',
-    // },
     {
         title: MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode,
         key: 'SKUCodeCustom',
@@ -443,9 +436,9 @@ const handleChangeImg = async (image) => {
 function closeForm() {
     if (isEditForm.value === Enum.EditMode.Update) {
         dialog.setFunction(submitForm);
-        dialog.setMethod(inventory.editMode);
+        dialog.setMethod(baseEntiry.editMode);
         dialog.setCloseNavigationLink(() => {
-            inventory.closeForm();
+            baseEntity.closeForm();
             title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
         });
         dialog.open({
@@ -460,7 +453,7 @@ function closeForm() {
         });
     } else {
         // modalForm.close();
-        inventory.closeForm();
+        baseEntity.closeForm();
         title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
     }
 }
@@ -524,7 +517,7 @@ const getDetail = async () => {
  * Description: Hàm reload page khi có lỗi
  */
 const reloadPage = () => {
-    inventory.openForm(null, Enum.EditMode.Add);
+    baseEntity.openForm(null, Enum.EditMode.Add, Enum.Router.Inventory.Name);
     setTimeout(() => {
         location.reload();
     }, 10);
@@ -565,7 +558,7 @@ const updateForm = async () => {
     updateProperties();
     iInventoryName.value.autoFocus();
     //Nếu là Copy thì gọi mã mới
-    if (inventory.editMode === Enum.EditMode.Copy) {
+    if (baseEntity.editMode === Enum.EditMode.Copy) {
         await getNewCode();
         formData.value.editMode = Enum.EditMode.Add;
         // setTimeout(() => {
@@ -674,7 +667,7 @@ const submitForm = async (typeButtonSave) => {
                     isEditForm.value = Enum.EditMode.None;
                     couterChangeForm.value = 0;
                     formData.value.editMode = Enum.EditMode.Add;
-                    inventory.openForm(null, Enum.EditMode.Add);
+                    baseEntity.openForm(null, Enum.EditMode.Add, Enum.Router.Inventory.Name);
                     updateForm();
                     break;
                 //Button lưu và nhân bản
@@ -685,12 +678,12 @@ const submitForm = async (typeButtonSave) => {
                     await getNewCode();
                     //trả về form chưa thay đổi để biết là form mới không hiện dialog khi đóng
                     isEditForm.value = Enum.EditMode.None;
-                    inventory.openForm(null, Enum.EditMode.Copy);
+                    baseEntity.openForm(null, Enum.EditMode.Copy, Enum.Router.Inventory.Name);
                     //Load bảng mới
                     autoDataTable();
                     break;
                 default:
-                    inventory.closeForm();
+                    baseEntity.closeForm();
                     break;
             }
         }
@@ -878,6 +871,7 @@ const setDataEditMode = (value, oldValue) => {
  */
 onMounted(async () => {
     try {
+        baseEntity.setEntity(Enum.Router.Inventory.Name);
         window.addEventListener('keydown', handleKeyDown);
         await getItemCategory();
         await getUnit();

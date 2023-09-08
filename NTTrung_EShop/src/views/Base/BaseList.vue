@@ -14,6 +14,7 @@ import { useRoute } from 'vue-router';
 import router from '../../router';
 import { useInventory } from '../../stores/inventory';
 import baseApi from '../../api/base-api';
+import { useBaseEntity } from '../../stores/base-entity';
 const route = useRoute();
 const paging = ref({ totalPage: 1, currentPage: 1, pageSize: '10', TotalRecords: 0 });
 const searchData = ref('');
@@ -44,6 +45,14 @@ const props = defineProps({
     code: {
         type: String,
         default: 'Code',
+    },
+    routerForm: {
+        type: Boolean,
+        default: false,
+    },
+    copy: {
+        type: Boolean,
+        default: false,
     },
 });
 /**
@@ -153,17 +162,21 @@ watch(
 const dataSelected = computed(() => {
     return dataTable.value.filter((data) => data.isChecked === true);
 });
-
+const baseEntity = useBaseEntity();
 // /**
 //  * Author: Tiến Trung (28/06/2023)
 //  * Description: hàm click vào button thêm
 //  */
 const showModalAddData = () => {
-    modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.[props.name]?.Add);
-    modalForm.setObjectForm({});
-    dialog.setObjectData({});
-    modalForm.setMethod(Enum.EditMode.Add);
-    modalForm.open();
+    if (props.routerForm) {
+        baseEntity.openForm(null, Enum.EditMode.Add, props.name);
+    } else {
+        modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.[props.name]?.Add);
+        modalForm.setObjectForm({});
+        dialog.setObjectData({});
+        modalForm.setMethod(Enum.EditMode.Add);
+        modalForm.open();
+    }
 };
 /**
  * Author: Tiến Trung (09/07/2023)
@@ -175,11 +188,17 @@ const handleShowEditInfo = (data) => {
         if (!dialog.objectData[props.name + 'Id']) {
             dataEdit = dataSelected.value[0];
         }
-        modalForm.open();
-        modalForm.setAction(MISAResource[resource.langCode]?.FormTitle[props.name]?.Update);
-        modalForm.setObjectForm(dataEdit);
-        dialog.setObjectData(dataEdit);
-        modalForm.setMethod(Enum.EditMode.Update);
+        if (props.routerForm) {
+            dialog.setMethod(Enum.EditMode.Update);
+
+            baseEntity.openForm(dataEdit.InventoryId, Enum.EditMode.Update, props.name);
+        } else {
+            modalForm.open();
+            modalForm.setAction(MISAResource[resource.langCode]?.FormTitle[props.name]?.Update);
+            modalForm.setObjectForm(dataEdit);
+            dialog.setObjectData(dataEdit);
+            modalForm.setMethod(Enum.EditMode.Update);
+        }
 
         //inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Update);
     } catch (error) {
@@ -191,19 +210,19 @@ const handleShowEditInfo = (data) => {
  * Author: Tiến Trung (03/09/2023)
  * Description: Hàm mở form nhân bản
  */
-// const handleReplication = (data) => {
-//     try {
-//         let dataEdit = data;
-//         if (!dialog.objectData?.InventoryId) {
-//             dataEdit = dataSelected.value[0];
-//         }
-//         dialog.setMethod(Enum.EditMode.Add);
-//         //inventory.openForm(dataEdit.InventoryId, Enum.EditMode.Copy);
-//     } catch (error) {
-//         console.log(error);
-//     }
-//     // dialog.setMethod(Enum.EditMode.Copy);
-// };
+const handleReplication = (data) => {
+    try {
+        let dataEdit = data;
+        if (!dialog.objectData?.InventoryId) {
+            dataEdit = dataSelected.value[0];
+        }
+        dialog.setMethod(Enum.EditMode.Add);
+        baseEntity.openForm(dataEdit.InventoryId, Enum.EditMode.Copy, props.name);
+    } catch (error) {
+        console.log(error);
+    }
+    // dialog.setMethod(Enum.EditMode.Copy);
+};
 // /**
 //  * Author: Tiến Trung (01/07/2023)
 //  * Description: hàm nhận emit chọn hàng trên table
@@ -273,7 +292,6 @@ const openDialogDeleteSelected = () => {
             dialog.setMethod(Enum.EditMode.Delete);
             modalForm.setMethod(Enum.EditMode.Delete);
             dialog.setFunction(deleteData);
-            debugger;
             dialog.open({
                 title: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.Title,
                 content: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.DeleteContent.replace(
@@ -460,10 +478,12 @@ const onKeyDownDelete = (e) => {
  */
 const handleKeyDown = (e) => {
     if (dataSelected.value.length === 1 || dialog.objectData[props.name + 'Id']) {
-        // if (e.ctrlKey && e.keyCode === Enum.Keyboard.C) {
-        //     e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
-        //     handleReplication(dialog.objectData);
-        // }
+        if (props.copy) {
+            if (e.ctrlKey && e.keyCode === Enum.Keyboard.C) {
+                e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
+                handleReplication(dialog.objectData);
+            }
+        }
         if (e.ctrlKey && e.keyCode === Enum.Keyboard.E) {
             e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
             handleShowEditInfo(dialog.objectData);
@@ -494,11 +514,13 @@ onUpdated(() => {
         window.addEventListener('keydown', onKeyDownInsertNew);
     }
     // Khi mở form thì xóa sự kiện cũ
-    // if (inventory.editMode !== Enum.EditMode.None) {
-    //     window.removeEventListener('keydown', handleKeyDown);
-    // } else {
-    //     window.addEventListener('keydown', handleKeyDown);
-    // }
+    if (props.copy) {
+        if (inventory.editMode !== Enum.EditMode.None) {
+            window.removeEventListener('keydown', handleKeyDown);
+        } else {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+    }
 });
 /**
  * Author: Tiến Trung (30/07/2023)
@@ -542,7 +564,8 @@ onUnmounted(() => {
                             <MISAIcon width="21" height="10" icon="plus" />
                         </template>
                     </MISAButton>
-                    <!-- <MISAButton
+                    <MISAButton
+                        v-if="props.copy"
                         @click="handleReplication(dialog.objectData)"
                         :disable="
                             !(dataSelected.length > 0 && dataSelected.length < 2) &&
@@ -555,7 +578,7 @@ onUnmounted(() => {
                         <template #icon>
                             <MISAIcon width="25" height="15" icon="replication" />
                         </template>
-                    </MISAButton> -->
+                    </MISAButton>
                     <MISAButton
                         @click="handleShowEditInfo(dialog.objectData)"
                         :disable="
@@ -591,7 +614,7 @@ onUnmounted(() => {
                         </template>
                     </MISAButton>
                     <MISAButton
-                        @click="showSettingTable = true"
+                        @click="showSettingTable = !showSettingTable"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Setting"
                     >
