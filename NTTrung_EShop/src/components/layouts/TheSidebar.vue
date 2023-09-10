@@ -42,7 +42,7 @@
                 >
                     <a class="menuBar__item-link" :to="Enum.Router.ItemCategory.Path">
                         <p class="menuBar__icon center">
-                            <MISAIcon icon="product"></MISAIcon>
+                            <MISAIcon icon="process"></MISAIcon>
                         </p>
                         <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.ItemCategory }}</p>
                     </a>
@@ -58,7 +58,7 @@
                 >
                     <a class="menuBar__item-link" :to="Enum.Router.Unit.Path">
                         <p class="menuBar__icon center">
-                            <MISAIcon icon="product"></MISAIcon>
+                            <MISAIcon icon="calc"></MISAIcon>
                         </p>
                         <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Unit }}</p>
                     </a>

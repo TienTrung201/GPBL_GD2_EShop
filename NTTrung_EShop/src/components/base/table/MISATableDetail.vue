@@ -174,25 +174,31 @@ function startResize(e, columnKey) {
     }
     //Khi di chuyển chuột
     function mouseMove(e) {
-        // Thêm class để sửa cursor chuột
-        table.value.classList.add('resize-mouse');
-        //Lấy vị trí bắt đầu element
-        const leftPositionElement = element.left;
-        //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
-        const newWidth = e.clientX - leftPositionElement;
-        const columnResize = columnsTable.value.find((col) => col.key === columnKey);
-        if (columnResize) {
-            if (newWidth >= 170) {
-                columnResize.width = newWidth;
+        try {
+            // Thêm class để sửa cursor chuột
+            table.value.classList.add('resize-mouse');
+            //Lấy vị trí bắt đầu element
+            const leftPositionElement = element.left;
+            //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
+            const newWidth = e.clientX - leftPositionElement;
+            const columnResize = columnsTable.value.find((col) => col.key === columnKey);
+            if (columnResize) {
+                if (newWidth >= 170) {
+                    columnResize.width = newWidth;
+                }
             }
+            window.addEventListener('mouseup', clearMouseMove);
+        } catch (error) {
+            console.log(error);
         }
-        window.addEventListener('mouseup', clearMouseMove);
     }
     // Khi bỏ giữ chuột
     function clearMouseMove() {
         // Bỏ class để sửa cursor chuột
-        table.value.classList.remove('resize-mouse');
-        window.removeEventListener('mousemove', mouseMove);
+        if (table.value) {
+            table.value.classList.remove('resize-mouse');
+            window.removeEventListener('mousemove', mouseMove);
+        }
     }
 }
 

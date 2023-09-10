@@ -148,8 +148,8 @@ const submitForm = async () => {
             });
         } else {
             await saveData([formData.value]);
-            modalForm.close();
             await modalForm.affterSubmitSuccess();
+            modalForm.close();
         }
     } catch (error) {
         console.log(error);
@@ -279,10 +279,8 @@ const handleKeyDown = (e) => {
  * Description: Hàm update data nếu là code mới thì isupdatecode true
  */
 const setDataEditMode = (value) => {
-    if (couterChangeForm.value > 1) {
-        if (formData.value.EditMode !== Enum.EditMode.Add) {
-            formData.value.IsUpdateCode = oldCode.value !== value;
-        }
+    if (formData.value.EditMode !== Enum.EditMode.Add) {
+        formData.value.IsUpdateCode = oldCode.value !== value;
     }
 };
 watch(
@@ -344,11 +342,10 @@ onUnmounted(() => {
                         <MISAInput
                             ref="iItemCategoryCode"
                             require
-                            @blur="setDataEditMode"
                             @input-validation="
                                 (value, oldValue) => {
                                     validateCode(value);
-                                    setDataEditMode(value, oldValue);
+                                    setDataEditMode(value);
                                 }
                             "
                             focus

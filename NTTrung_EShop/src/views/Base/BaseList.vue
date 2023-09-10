@@ -538,6 +538,7 @@ onUnmounted(() => {
     window.removeEventListener('keydown', onKeyDownInsertNew);
     window.removeEventListener('keydown', onKeyDownDelete);
     window.removeEventListener('click', closeMenuExport);
+    window.removeEventListener('keydown', handleKeyDown);
 });
 </script>
 <template lang="">

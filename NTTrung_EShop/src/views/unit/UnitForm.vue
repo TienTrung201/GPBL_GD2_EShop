@@ -140,8 +140,8 @@ const submitForm = async () => {
             });
         } else {
             await saveData([formData.value]);
-            modalForm.close();
             await modalForm.affterSubmitSuccess();
+            modalForm.close();
         }
     } catch (error) {
         console.log(error);
@@ -251,10 +251,8 @@ const handleKeyDown = (e) => {
  * Description: Hàm update data nếu là code mới thì isupdatecode true
  */
 const setDataEditMode = (value) => {
-    if (couterChangeForm.value > 1) {
-        if (formData.value.EditMode !== Enum.EditMode.Add) {
-            formData.value.IsUpdateName = oldName.value !== value;
-        }
+    if (formData.value.EditMode !== Enum.EditMode.Add) {
+        formData.value.IsUpdateName = oldName.value !== value;
     }
 };
 watch(
@@ -314,8 +312,7 @@ onUnmounted(() => {
                 <MISACol display="flex" direction="column" rowGap="12">
                     <MISARow>
                         <MISAInput
-                            ref="iPositionName"
-                            @blur="setDataEditMode"
+                            ref="iUnitName"
                             @input-validation="
                                 (value, oldValue) => {
                                     validateName(value);

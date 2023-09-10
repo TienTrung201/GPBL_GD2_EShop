@@ -63,7 +63,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Excel
                     var type = columns[i].Type;
                     var align = columns[i].Align;
                     worksheet.Cells[startRow + 1, i + 2].Style.WrapText = true;
-                    SetValueColumn(worksheet, startRow + 1, i + 2, propertyInfo?.GetValue(data), type, align);
+                    await SetValueColumn(worksheet, startRow + 1, i + 2, propertyInfo?.GetValue(data), type, align);
                 }
                 index++;
             }

@@ -183,14 +183,17 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                 {
                     var value = property.GetValue(entity);
                     string nameProperty = property.Name;
-                    string paramName = $"@{nameProperty}{indexData}";
-                    query.Append($"`{nameProperty}` = {paramName} ");
-                    parameters.Add(paramName, value);
-                    if (indexColumn != properties.Count() - 1)
+                    if (nameProperty != "CreatedDate")
                     {
-                        query.Append(", ");
+                        string paramName = $"@{nameProperty}{indexData}";
+                        query.Append($"`{nameProperty}` = {paramName} ");
+                        parameters.Add(paramName, value);
+                        if (indexColumn != properties.Count() - 2)//Bỏ qua createdDate nên - 2 và index từ 0
+                        {
+                            query.Append(", ");
+                        }
+                        indexColumn++; ;
                     }
-                    indexColumn++; ;
                 }
                 indexData++;
                 query.Append($"Where {TableName}Id = '{entity.GetKey()}'; ");

@@ -4,7 +4,7 @@ import baseAxios from './base-axios';
 
 /**
  * Author: Tiến Trung (06/07/2023)
- * Description: base Api cho Department
+ * Description: base Api
  */
 const baseApi = {
     method: Enum.ApiMethod.GET,
@@ -31,7 +31,7 @@ const baseApi = {
         });
     },
     /**
-     * @param {Array} data //Mảng cột được truyền vào
+     * @param {Array} data
      * Author: Tiến Trung (26/08/2023)
      * Description: Hàm gọi Api gửi ảnh
      */
