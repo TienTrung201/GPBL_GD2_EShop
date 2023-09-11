@@ -296,7 +296,7 @@ const openDialogDeleteSelected = () => {
                 title: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.Title,
                 content: MISAResource[resource.langCode]?.Dialog['Delete' + props.name]?.DeleteContent.replace(
                     'code',
-                    dialog.objectData[props.name + props.code],
+                    dialog.objectData[props.code],
                 ),
                 action: MISAResource[resource.langCode]?.Button?.Delete,
                 buttonSec: MISAResource[resource.langCode]?.Button?.No,

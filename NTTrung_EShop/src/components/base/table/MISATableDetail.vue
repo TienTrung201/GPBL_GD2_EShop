@@ -206,11 +206,15 @@ function startResize(e, columnKey) {
  * Author: Tiến Trung (25/08/2023)
  * Description: hàm gán tên cho editindex để mở input sửa
  */
-const handleOpenEditColumn = (item, index) => {
-    if (item.isEdit) {
-        editIndex.value = index;
-    }
-};
+// const handleOpenEditColumn = (item, index) => {
+//     try {
+//         if (item.isEdit) {
+//             editIndex.value = index;
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// };
 /**
  * Author: Tiến Trung (25/08/2023)
  * Description: Hàm update data
@@ -226,6 +230,10 @@ const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
         }
     }
 };
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: Hàm chuyển max length cho tiền
+ */
 const convertMaxLength = (type) => {
     let length = 0;
     switch (type) {
@@ -333,8 +341,9 @@ watch(
                                 placement: item.width > 400 ? 'left' : 'top',
                             }"
                         >
-                            <div @click="handleOpenEditColumn(item, index + '' + indexCol)" class="edit-data">
-                                <div
+                            <!-- @click="handleOpenEditColumn(item, index + '' + indexCol)" -->
+                            <div class="edit-data">
+                                <!-- <div
                                     class="data-show"
                                     v-if="editIndex !== index + '' + indexCol"
                                     :style="{
@@ -346,7 +355,8 @@ watch(
                                     <slot :name="item.key" v-bind="rowData">
                                         {{ rowData[item.key] }}
                                     </slot>
-                                </div>
+                                </div> -->
+                                <!-- v-if="editIndex === index + '' + indexCol " -->
                                 <MISAInput
                                     :right="item.type === Enum.TypeDataTable.Money"
                                     @input-validation="
@@ -360,12 +370,12 @@ watch(
                                         }
                                     "
                                     :money="item.type === Enum.TypeDataTable.Money"
-                                    autoFocusMount
-                                    v-if="editIndex === index + '' + indexCol"
                                     validate="true"
                                     v-model:value="rowData[item.key]"
                                     :maxLength="convertMaxLength(item.type)"
                                     notDelete
+                                    noborder
+                                    :readonly="!item.isEdit"
                                 ></MISAInput>
                             </div>
                         </td>

@@ -43,6 +43,7 @@
 }
 .input-text-base.readonly {
     cursor: auto;
+    border: none !important;
 }
 
 .validate {
@@ -193,4 +194,8 @@
     // bottom: -8px;
     bottom: -25px;
     left: 0;
+}
+.noborder {
+    border: none;
+    background-color: transparent;
 }

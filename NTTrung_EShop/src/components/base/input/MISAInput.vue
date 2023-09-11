@@ -4,7 +4,7 @@
         <div class="wrapper-input error">
             <input
                 :autocomplete="false"
-                @focus="input.select(), (showMessage = true)"
+                @focus="handleFocusInput"
                 ref="input"
                 :class="[
                     'input-text-base',
@@ -13,6 +13,7 @@
                     { validate: props.validate },
                     { 'ntt-error': errorMessage },
                     { 'text-align--right': right },
+                    { noborder: noborder },
                 ]"
                 :type="type"
                 :name="''"
@@ -71,10 +72,21 @@ const props = defineProps({
     money: { type: Boolean, default: false }, //Định dạng tiền tệ
     notDelete: { type: Boolean, default: false }, //Định dạng tiền tệ
     errorBottom: { type: Boolean, default: false }, //Error message ở dưới
+    noborder: { type: Boolean, default: false }, //input không có border
 });
 const input = ref(null);
 const oldValue = ref(props.value);
 const showMessage = ref(false);
+/**
+ * Author: Tiến Trung (29/06/2023)
+ * Description: hàm sự kiện focus vào input
+ */
+const handleFocusInput = () => {
+    if (!props.readonly) {
+        input.value.select();
+        showMessage.value = true;
+    }
+};
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm sự kiện blur
@@ -97,6 +109,10 @@ const onBlur = (e) => {
         console.log(error);
     }
 };
+/**
+ * Author: Tiến Trung (29/06/2023)
+ * Description: hàm sự kiện khi enter
+ */
 const onEnter = (e) => {
     emit('enter', e.target.value);
 };

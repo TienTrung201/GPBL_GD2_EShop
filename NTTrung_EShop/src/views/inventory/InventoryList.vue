@@ -134,7 +134,7 @@ const columns = ref([
 ]);
 </script>
 <template lang="">
-    <BaseList copy routerForm :columns="columns" name="Inventory"> </BaseList>
+    <BaseList copy routerForm :columns="columns" name="Inventory" code="SKUCode"> </BaseList>
 </template>
 
 <style lang="scss" scoped>

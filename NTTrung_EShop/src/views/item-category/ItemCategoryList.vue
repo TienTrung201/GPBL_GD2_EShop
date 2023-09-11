@@ -38,7 +38,7 @@ const columns = ref([
 ]);
 </script>
 <template lang="">
-    <BaseList :columns="columns" name="ItemCategory">
+    <BaseList :columns="columns" name="ItemCategory" code="ItemCategoryCode">
         <ItemCategoryForm></ItemCategoryForm>
     </BaseList>
 </template>
