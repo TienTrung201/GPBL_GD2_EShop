@@ -9,7 +9,7 @@
                 :class="[
                     'input-text-base',
                     { 'ntt-success': props.isSuccess },
-                    { readonly: props.readonly },
+                    { readonly: readonly },
                     { validate: props.validate },
                     { 'ntt-error': errorMessage },
                     { 'text-align--right': right },

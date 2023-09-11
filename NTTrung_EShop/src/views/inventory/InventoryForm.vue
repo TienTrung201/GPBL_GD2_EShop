@@ -1035,13 +1035,14 @@ watch(
                                 ref="iCostPrice"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice"
                                 type="text"
-                                validate="true"
+                                :validate="dataTable.length === 0"
                                 row
                                 money
                                 right
                                 @input-validation="validateCostPrice"
                                 :errorMessage="validateForm.costPrice"
                                 :maxLength="18"
+                                :readonly="dataTable.length > 0"
                             ></MISAInput>
                         </MISARow>
                         <MISARow>
@@ -1049,7 +1050,7 @@ watch(
                                 v-model:value="formData.unitPrice"
                                 ref="iUnitPrice"
                                 type="text"
-                                validate="true"
+                                :validate="dataTable.length === 0"
                                 row
                                 money
                                 right
@@ -1057,6 +1058,7 @@ watch(
                                 :errorMessage="validateForm.unitPrice"
                                 :label="MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice"
                                 :maxLength="18"
+                                :readonly="dataTable.length > 0"
                             >
                             </MISAInput>
                         </MISARow>

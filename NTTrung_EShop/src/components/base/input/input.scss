@@ -43,13 +43,13 @@
 }
 .input-text-base.readonly {
     cursor: auto;
-    border: none !important;
+    background-color: var(--background-input-hover-color);
 }
-
-.validate {
+.readonly {
+    cursor: auto;
+    background-color: var(--background-input-hover-color);
     &:focus {
-        border: 1px solid var(--border-input-color);
-        outline: none;
+        border: 1px solid var(--grey-color3) !important;
     }
 }
 
@@ -174,9 +174,6 @@
         display: block;
     }
 }
-.readonly {
-    background-color: #e6e6e6;
-}
 
 .ntt-error {
     border: 1px solid var(--red-color5);
@@ -195,7 +192,17 @@
     bottom: -25px;
     left: 0;
 }
-.noborder {
-    border: none;
+.input-text-base.noborder {
+    border: none !important;
     background-color: transparent;
+    &:focus {
+        border: none;
+        outline: none;
+    }
+}
+.validate {
+    &:focus {
+        border: 1px solid var(--border-input-color) !important;
+        outline: none;
+    }
 }

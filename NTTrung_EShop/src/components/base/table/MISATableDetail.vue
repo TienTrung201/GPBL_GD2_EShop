@@ -327,7 +327,7 @@ watch(
             <tbody class="table-body">
                 <!-- dataTable -->
                 <tr v-for="(rowData, index) in dataTableRefence" :key="rowData[propertiesIdName]">
-                    <template :key="item.dataIndex" v-for="(item, indexCol) in columnsTable">
+                    <template :key="item.dataIndex" v-for="item in columnsTable">
                         <td
                             v-if="item.isShow"
                             :class="[{ sticky: item.pin }, { 'no-edit': !item.isEdit }]"
@@ -370,7 +370,7 @@ watch(
                                         }
                                     "
                                     :money="item.type === Enum.TypeDataTable.Money"
-                                    validate="true"
+                                    :validate="item.isEdit"
                                     v-model:value="rowData[item.key]"
                                     :maxLength="convertMaxLength(item.type)"
                                     notDelete
