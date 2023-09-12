@@ -210,9 +210,10 @@ const getPropertiesDetail = (color, size) => {
  */
 const pushDataTable = (color, size) => {
     const propertiesDetail = getPropertiesDetail(color, size);
+    const unitName = units.value.find((unit) => unit.value === formData.value.unitId)?.option;
     genDataTable.value.push({
         InventoryName: propertiesDetail.nameDetail ? propertiesDetail.nameDetail : '',
-        UnitName: formData.value.unitName ? formData.value.unitName : null,
+        UnitName: unitName ? unitName : null,
         SKUCode: propertiesDetail.SKUCodeDetail,
         SKUCodeCustom: propertiesDetail.SKUCodeDetail,
         Color: propertiesDetail.colorDetail,
@@ -233,56 +234,60 @@ const pushDataTable = (color, size) => {
  * Description: hàm update thuộc tính và tự động tạo bảng detail
  */
 const autoDataTable = () => {
-    genDataTable.value = [];
-    if (properties.value.color.length === 0) {
-        properties.value.size.forEach((size) => {
-            pushDataTable(null, size);
-        });
-    }
-    if (properties.value.color.length > 0 && properties.value.size.length === 0) {
-        properties.value.color.forEach((color) => {
-            pushDataTable(color, null);
-        });
-    }
-    if (properties.value.color.length > 0 && properties.value.size.length > 0) {
-        properties.value.color.forEach((color) => {
+    try {
+        genDataTable.value = [];
+        if (properties.value.color.length === 0) {
             properties.value.size.forEach((size) => {
-                pushDataTable(color, size);
+                pushDataTable(null, size);
             });
-        });
-    }
-    //Tự động tạo bảng
-    let isDeleteAllData = true;
-    const dataGenAuto = [];
-    genDataTable.value.forEach((dataGen) => {
-        const dataOld = dataTable.value.find((dataOld) => dataOld.SKUCode === dataGen.SKUCode);
-        if (dataOld) {
-            isDeleteAllData = false;
-            //Hình như đoạn này bị thừa :))
-            if (dataOld.EditMode === Enum.EditMode.None) {
-                dataOld.InventoryName = dataGen.InventoryName;
-            }
-            dataGenAuto.push(dataOld);
-        } else {
-            dataGen.EditMode = Enum.EditMode.Add;
-            dataGen.UnitPrice = formData.value.unitPrice;
-            dataGen.CostPrice = formData.value.costPrice;
-            dataGenAuto.push(dataGen);
         }
-    });
-    //Kiểm tra xem data có bị xóa hết không nếu xóa hết thì add vào mảng data xóa
-    //Nếu xóa tag mà data cũ bị xóa hết
-    if (isDeleteAllData) {
-        //Chỉ return ra data cũ có ID thì sẽ không dính vào data mới
-        const findDataDelete = dataTable.value.filter((data) => {
-            data.EditMode = Enum.EditMode.Delete;
-            data.UnitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
-            data.CostPrice = Number(data.CostPrice?.replace(/\./g, ''));
-            return data.InventoryId;
+        if (properties.value.color.length > 0 && properties.value.size.length === 0) {
+            properties.value.color.forEach((color) => {
+                pushDataTable(color, null);
+            });
+        }
+        if (properties.value.color.length > 0 && properties.value.size.length > 0) {
+            properties.value.color.forEach((color) => {
+                properties.value.size.forEach((size) => {
+                    pushDataTable(color, size);
+                });
+            });
+        }
+        //Tự động tạo bảng
+        let isDeleteAllData = true;
+        const dataGenAuto = [];
+        genDataTable.value.forEach((dataGen) => {
+            const dataOld = dataTable.value.find((dataOld) => dataOld.SKUCode === dataGen.SKUCode);
+            if (dataOld) {
+                isDeleteAllData = false;
+                //Hình như đoạn này bị thừa :))
+                if (dataOld.EditMode === Enum.EditMode.None) {
+                    dataOld.InventoryName = dataGen.InventoryName;
+                }
+                dataGenAuto.push(dataOld);
+            } else {
+                dataGen.EditMode = Enum.EditMode.Add;
+                dataGen.UnitPrice = formData.value.unitPrice;
+                dataGen.CostPrice = formData.value.costPrice;
+                dataGenAuto.push(dataGen);
+            }
         });
-        dataDelete.value.push(...findDataDelete);
+        //Kiểm tra xem data có bị xóa hết không nếu xóa hết thì add vào mảng data xóa
+        //Nếu xóa tag mà data cũ bị xóa hết
+        if (isDeleteAllData) {
+            //Chỉ return ra data cũ có ID thì sẽ không dính vào data mới
+            const findDataDelete = dataTable.value.filter((data) => {
+                data.EditMode = Enum.EditMode.Delete;
+                data.UnitPrice = Number(data.UnitPrice?.replace(/\./g, ''));
+                data.CostPrice = Number(data.CostPrice?.replace(/\./g, ''));
+                return data.InventoryId;
+            });
+            dataDelete.value.push(...findDataDelete);
+        }
+        dataTable.value = dataGenAuto;
+    } catch (error) {
+        console.log(error);
     }
-    dataTable.value = dataGenAuto;
 };
 /*
  **
@@ -290,18 +295,22 @@ const autoDataTable = () => {
  * Description: Hàm xử lý khi xóa tag thì xóa tất cả data có tag đấy
  */
 const handleRemoveTag = (index, type, tagCode) => {
-    const findDataDelete = dataTable.value.filter((data) => {
-        return data[convertToTitleCase(type) + 'Code'] === tagCode && data.InventoryId;
-    });
-    dataDelete.value.push(...findDataDelete);
-    findDataDelete.forEach((dataDelete) => {
-        dataDelete.EditMode = Enum.EditMode.Delete;
-        dataDelete.CostPrice = Number(dataDelete.CostPrice?.replace(/\./g, ''));
-        dataDelete.UnitPrice = Number(dataDelete.UnitPrice?.replace(/\./g, ''));
-        dataTable.value = dataTable.value.filter((data) => data.SKUCode !== dataDelete.SKUCode);
-    });
-    properties.value[type].splice(index, 1);
-    autoDataTable();
+    try {
+        const findDataDelete = dataTable.value.filter((data) => {
+            return data[convertToTitleCase(type) + 'Code'] === tagCode && data.InventoryId;
+        });
+        dataDelete.value.push(...findDataDelete);
+        findDataDelete.forEach((dataDelete) => {
+            dataDelete.EditMode = Enum.EditMode.Delete;
+            dataDelete.CostPrice = Number(dataDelete.CostPrice?.replace(/\./g, ''));
+            dataDelete.UnitPrice = Number(dataDelete.UnitPrice?.replace(/\./g, ''));
+            dataTable.value = dataTable.value.filter((data) => data.SKUCode !== dataDelete.SKUCode);
+        });
+        properties.value[type].splice(index, 1);
+        autoDataTable();
+    } catch (error) {
+        console.log(error);
+    }
 };
 /*
  **
@@ -1185,18 +1194,18 @@ watch(
                                                 <MISAIcon width="14" height="16" icon="close"></MISAIcon>
                                             </button>
                                         </div>
-                                        <button class="btn-select__list-image">
+                                        <!-- <button class="btn-select__list-image">
                                             <p class="icon center">
                                                 <MISAIcon width="22" height="12" icon="edit" />
                                             </p>
                                             <p>Biểu tượng</p>
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                                 <div class="wrapper__content">
-                                    <p class="image__content">
+                                    <!-- <p class="image__content">
                                         {{ MISAResource[resource.langCode]?.Manage?.Inventory?.ImageContent }}
-                                    </p>
+                                    </p> -->
                                     <p class="image__content">
                                         {{ MISAResource[resource.langCode]?.Manage?.Inventory?.ImageValidate }}
                                     </p>

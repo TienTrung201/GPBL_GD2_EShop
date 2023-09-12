@@ -480,7 +480,7 @@ const onKeyDownDelete = (e) => {
 const handleKeyDown = (e) => {
     if (dataSelected.value.length === 1 || dialog.objectData[props.name + 'Id']) {
         if (props.copy) {
-            if (e.ctrlKey && e.keyCode === Enum.Keyboard.C) {
+            if (e.ctrlKey && e.shiftKey && e.keyCode === Enum.Keyboard.C) {
                 e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
                 handleReplication(dialog.objectData);
             }
@@ -575,7 +575,7 @@ onUnmounted(() => {
                         "
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Replication"
-                        v-tooltip-tippy="Enum.KeyboardShortcuts.CtrlC"
+                        v-tooltip-tippy="Enum.KeyboardShortcuts.CtrlShiftC"
                     >
                         <template #icon>
                             <MISAIcon width="25" height="15" icon="replication" />

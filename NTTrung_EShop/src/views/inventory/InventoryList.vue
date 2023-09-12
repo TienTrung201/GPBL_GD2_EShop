@@ -58,6 +58,7 @@ const columns = ref([
         align: Enum.AlignColumn.Right,
         isShow: true,
         filter: true,
+        tooltip: MISAResource[resource.langCode]?.Tooltip?.AvgCostPrice,
     },
     {
         title: MISAResource[resource.langCode]?.Manage?.Inventory?.AvgUnitPrice,
@@ -68,6 +69,7 @@ const columns = ref([
         align: Enum.AlignColumn.Right,
         isShow: false,
         filter: true,
+        tooltip: MISAResource[resource.langCode]?.Tooltip?.AvgUnitPrice,
     },
     {
         title: MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice,
@@ -121,6 +123,7 @@ const columns = ref([
         type: Enum.TypeDataTable.Show,
         filter: true,
         isShow: true,
+        tooltip: MISAResource[resource.langCode]?.Tooltip?.IsShowMenu,
     },
     {
         title: MISAResource[resource.langCode]?.Manage?.Inventory?.IsActive,

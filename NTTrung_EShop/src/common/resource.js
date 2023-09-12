@@ -359,6 +359,9 @@ const MISAResource = {
             Pin: 'Ghim',
             Drag: 'Đổi cột',
             ResetData: 'Load toàn bộ dữ liệu',
+            AvgCostPrice: 'Giá mua trung bình',
+            AvgUnitPrice: 'Giá bán trung bình',
+            IsShowMenu: 'Hiển thị trên màn hình bán hàng',
         },
         DatePicker: {
             Today: 'Hôm nay',
