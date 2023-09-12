@@ -93,6 +93,13 @@ const filter = ref({
 const curentPage = ref(props.currentPage);
 /**
  * Author: Tiến Trung (06/07/2023)
+ * Hàm reset curent input page
+ */
+const onResetCurrentPage = () => {
+    curentPage.value = 1;
+};
+/**
+ * Author: Tiến Trung (06/07/2023)
  * Description: Hàm lọc
  */
 const emitFilterData = (filterObject) => {
@@ -109,6 +116,7 @@ const emitFilterData = (filterObject) => {
         filter.value.filter = filter.value.filter.filter((filter) => filter.property != filterObject.property);
     }
     emit('filter-data', filter.value);
+    curentPage.value = 1;
 };
 /**
  * Author: Tiến Trung (06/07/2023)
@@ -136,6 +144,7 @@ const setSort = (keyName, isFilter, typeColumn) => {
             filter.value.typeColumn = typeColumn;
         }
         emit('filter-data', filter.value);
+        curentPage.value = 1;
     }
 };
 /**
@@ -421,10 +430,11 @@ watch(
     () => pageSize.value,
     () => {
         emit('set-pagesize', pageSize.value);
+        curentPage.value = 1;
     },
     { deep: true },
 );
-defineExpose({ closeMenu });
+defineExpose({ closeMenu, onResetCurrentPage });
 </script>
 <template lang="">
     <div class="wrapper-table">

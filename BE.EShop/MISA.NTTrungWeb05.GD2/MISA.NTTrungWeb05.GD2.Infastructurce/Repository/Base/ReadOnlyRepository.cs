@@ -82,7 +82,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                             queryWhere.Append($"view.{filter.Property} > '{filter.Value.Replace("'", "''")}' ");
                             break;
                         case Operator.AllData:
-                            queryWhere.Append($"view.{filter.Property} = true or view.{filter.Property} = false ");
+                            queryWhere.Append($"(view.{filter.Property} = true or view.{filter.Property} = false) ");
                             break;
                         default:
                             break;

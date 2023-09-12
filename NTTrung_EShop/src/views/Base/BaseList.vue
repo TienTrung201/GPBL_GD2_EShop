@@ -130,7 +130,7 @@ const setPageSize = (pageSize) => {
         getData(filter.value);
     } else {
         router.push({
-            path: Enum.Router.ItemCategory.Path,
+            path: Enum.Router[props.name].Path,
             query: { page: 1 },
         });
     }
@@ -365,8 +365,9 @@ async function reset() {
     });
     dialog.setObjectData({});
     dataTable.value = [];
+    table.value.onResetCurrentPage();
     // filter.value={}
-    await getData(filter.value);
+    // await getData(filter.value);
 }
 /**
  * Author: Tiến Trung (10/07/2023)
