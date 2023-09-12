@@ -196,7 +196,7 @@ const updateForm = async () => {
             createdDate: dataId.CreatedDate,
         };
         oldName.value = dataId.UnitName;
-        iUnitCode.value.autoFocus();
+        iUnitName.value.autoFocus();
     } catch (error) {
         console.log(error);
     }

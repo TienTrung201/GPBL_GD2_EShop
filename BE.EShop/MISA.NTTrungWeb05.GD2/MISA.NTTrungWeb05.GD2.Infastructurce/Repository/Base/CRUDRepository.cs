@@ -125,7 +125,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             listEntity.ForEach((entity) =>
             {
                 var entityIdName = $"{TableName}Id";
-                entity.SetValue(entityIdName, Guid.NewGuid());
+                //entity.SetValue(entityIdName, Guid.NewGuid());
                 entity.CreatedDate = DateTime.Now;
 
                 //entity.AvgCostPrice = 0;

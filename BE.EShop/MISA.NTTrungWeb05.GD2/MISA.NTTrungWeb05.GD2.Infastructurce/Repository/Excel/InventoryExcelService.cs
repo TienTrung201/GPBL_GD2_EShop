@@ -24,6 +24,15 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Excel
         {
             _inventoryRepository = inventoryRepository;
         }
+        /// <summary>
+        /// Hàm thêm các detail cho master
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="columns"></param>
+        /// <param name="uid"></param>
+        /// <param name="startRow"></param>
+        /// <returns></returns>
+        /// CreatedBy: NTTrung (12/03/2023)
         public override async Task<int> AddDetailDataExcel(ExcelWorksheet worksheet, List<ColumnExcel> columns, Guid uid, int startRow)
         {
 

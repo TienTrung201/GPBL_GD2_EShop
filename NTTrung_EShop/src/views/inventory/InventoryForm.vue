@@ -258,12 +258,15 @@ const autoDataTable = () => {
         const dataOld = dataTable.value.find((dataOld) => dataOld.SKUCode === dataGen.SKUCode);
         if (dataOld) {
             isDeleteAllData = false;
+            //Hình như đoạn này bị thừa :))
             if (dataOld.EditMode === Enum.EditMode.None) {
                 dataOld.InventoryName = dataGen.InventoryName;
             }
             dataGenAuto.push(dataOld);
         } else {
             dataGen.EditMode = Enum.EditMode.Add;
+            dataGen.UnitPrice = formData.value.unitPrice;
+            dataGen.CostPrice = formData.value.costPrice;
             dataGenAuto.push(dataGen);
         }
     });
@@ -334,7 +337,7 @@ const onBlurInputFormUpdateData = async (value, nameForm) => {
             nameDetail = `${nameDetail} (${data.Color}/${data.Size})`;
         }
         if (data.Color && data.Size === '') {
-            nameDetail = `${data.Size} (${data.Color})`;
+            nameDetail = `${nameDetail} (${data.Color})`;
         }
         if (data.Size && data.Color === '') {
             nameDetail = `${nameDetail} (${data.Size})`;
@@ -342,11 +345,15 @@ const onBlurInputFormUpdateData = async (value, nameForm) => {
         data.EditMode = Enum.EditMode.Update;
         switch (nameForm) {
             case inputType.value.Name:
-                data.InventoryName = nameDetail;
+                if (isEditForm.value === Enum.EditMode.Update) {
+                    data.InventoryName = nameDetail;
+                }
                 break;
             case inputType.value.SKUCode:
-                data.SKUCode = SKUCodeDetail;
-                data.SKUCodeCustom = SKUCodeDetail;
+                if (isEditForm.value === Enum.EditMode.Update) {
+                    data.SKUCode = SKUCodeDetail;
+                    data.SKUCodeCustom = SKUCodeDetail;
+                }
                 break;
             case inputType.value.Unit:
                 data.UnitId = formData.value.unitId;
@@ -436,7 +443,7 @@ const handleChangeImg = async (image) => {
 function closeForm() {
     if (isEditForm.value === Enum.EditMode.Update) {
         dialog.setFunction(submitForm);
-        dialog.setMethod(baseEntiry.editMode);
+        dialog.setMethod(baseEntity.editMode);
         dialog.setCloseNavigationLink(() => {
             baseEntity.closeForm();
             title.setTitle(MISAResource[resource.langCode]?.SideBar?.Inventory);
@@ -681,6 +688,7 @@ const submitForm = async (typeButtonSave) => {
                     baseEntity.openForm(null, Enum.EditMode.Copy, Enum.Router.Inventory.Name);
                     //Load bảng mới
                     autoDataTable();
+                    dataDelete.value = [];
                     break;
                 default:
                     baseEntity.closeForm();
