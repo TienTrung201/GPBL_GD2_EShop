@@ -320,7 +320,12 @@ const handleRemoveTag = (index, type, tagCode) => {
 const getNewCode = async () => {
     const parts = removeVietnameseTones(formData.value.inventoryName).split(' '); //các bộ phận
     const abbreviation = parts
-        .map((part) => part[0])
+        .map((part) => {
+            if (part[0] >= 0) {
+                return '';
+            }
+            return part[0];
+        })
         .join('')
         .toUpperCase(); //Viết tắt
 
@@ -351,7 +356,9 @@ const onBlurInputFormUpdateData = async (value, nameForm) => {
         if (data.Size && data.Color === '') {
             nameDetail = `${nameDetail} (${data.Size})`;
         }
-        data.EditMode = Enum.EditMode.Update;
+        if (data.EditMode !== Enum.EditMode.Add) {
+            data.EditMode = Enum.EditMode.Update;
+        }
         switch (nameForm) {
             case inputType.value.Name:
                 if (isEditForm.value === Enum.EditMode.Update) {
