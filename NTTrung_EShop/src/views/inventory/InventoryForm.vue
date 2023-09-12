@@ -571,6 +571,7 @@ const updateForm = async () => {
         // setTimeout(() => {
         isEditForm.value = Enum.EditMode.None;
         formEditMode.value = Enum.EditMode.Copy;
+        autoDataTable();
         // }, 1000);
     }
     inventoryOldName.value = formData.value.inventoryName;
@@ -849,6 +850,10 @@ const handleKeyDown = (e) => {
     }
 };
 const modalForm = useModalForm();
+/**
+ * Author: Tiến Trung (11/07/2023)
+ * Description: hàm mở form thêm nhanh
+ */
 const handleOpenForm = (type) => {
     openForm.value = type;
     modalForm.setAction(MISAResource[resource.langCode]?.FormTitle?.[type]?.Add);
@@ -1155,6 +1160,7 @@ watch(
                                             type="file"
                                             name="inventory"
                                             id=""
+                                            accept=".jpg, .jpeg, .png, .gif"
                                         />
                                         <img class="image-file" v-if="imgUrl" :src="imgUrl" alt="" />
 

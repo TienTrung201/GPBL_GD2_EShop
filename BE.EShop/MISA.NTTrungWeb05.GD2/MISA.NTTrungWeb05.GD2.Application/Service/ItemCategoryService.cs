@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
 using MISA.NTTrungWeb05.GD2.Application.Service.Base;
 using MISA.NTTrungWeb05.GD2.Domain.Entity;
@@ -118,6 +119,21 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             //Hàm validate thêm
             var listCodesCreate = data.Where(itemCategory => itemCategory.EditMode == EditMode.Create).Select((itemCategory) => itemCategory.ItemCategoryCode);
             await _itemCategoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
+        }
+        /// <summary>
+        /// Trước khi lưu
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public override void PreSave(List<ItemCategoryRequestDto> listData)
+        {
+            listData.ForEach(data =>
+            {
+                if(data.EditMode == EditMode.Create)
+                {
+                    data.ItemCategoryId = Guid.NewGuid();
+                }
+            });
         }
         #endregion
     }

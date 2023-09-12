@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
@@ -116,6 +117,21 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             //Hàm validate thêm
             var listNamesCreate = data.Where(unit => unit.EditMode == EditMode.Create).Select((unit) => unit.UnitName);
             await _unitManager.CheckDublicateListNames(string.Join(',', listNamesCreate));
+        }
+        /// <summary>
+        /// Trước khi lưu
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public override void PreSave(List<UnitRequestDto> listData)
+        {
+            listData.ForEach(data =>
+            {
+                if (data.EditMode == EditMode.Create)
+                {
+                    data.UnitId = Guid.NewGuid();
+                }
+            });
         }
         #endregion
     }
