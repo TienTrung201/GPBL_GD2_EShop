@@ -325,6 +325,7 @@ const deleteData = async () => {
             path: Enum.Router[props.name]?.Path,
             query: { page: paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1 },
         });
+        table.value.onResetCurrentPage(paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1); //Có bug ở đây nếu là trang 1 thì sao
     } else {
         dataTable.value = [];
         await getData(filter.value);
@@ -349,6 +350,7 @@ const deleteDataSelected = async () => {
             path: Enum.Router[props.name].Path,
             query: { page: paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1 },
         });
+        table.value.onResetCurrentPage(paging.value.totalPage - 1 === 0 ? 1 : paging.value.totalPage - 1);
     } else {
         dataTable.value = [];
         await getData(filter.value);
@@ -365,7 +367,7 @@ async function reset() {
     });
     dialog.setObjectData({});
     dataTable.value = [];
-    table.value.onResetCurrentPage();
+    table.value.onResetCurrentPage(1);
     // filter.value={}
     // await getData(filter.value);
 }

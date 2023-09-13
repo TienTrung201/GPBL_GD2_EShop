@@ -95,8 +95,8 @@ const curentPage = ref(props.currentPage);
  * Author: Tiến Trung (06/07/2023)
  * Hàm reset curent input page
  */
-const onResetCurrentPage = () => {
-    curentPage.value = 1;
+const onResetCurrentPage = (page) => {
+    curentPage.value = page;
 };
 /**
  * Author: Tiến Trung (06/07/2023)
@@ -616,20 +616,6 @@ defineExpose({ closeMenu, onResetCurrentPage });
             <div v-if="dataTable.length" class="table-paging">
                 <div class="table-page">
                     <ul class="pagination-list">
-                        <li class="pagination-item">
-                            <RouterLink
-                                :class="{ 'no-select': currentPage === 1 }"
-                                :to="{
-                                    path: Enum.Router[routerCurrent].Path,
-                                    query: {
-                                        page: currentPage === 1 ? currentPage : currentPage - 1,
-                                    },
-                                }"
-                                class="pagination-link"
-                                @click="curentPage = currentPage === 1 ? currentPage : currentPage - 1"
-                                ><MISAIcon width="5" height="8" icon="prev"></MISAIcon
-                            ></RouterLink>
-                        </li>
                         <li v-if="currentPage !== 1 || true" class="pagination-item">
                             <RouterLink
                                 :to="{
@@ -646,6 +632,21 @@ defineExpose({ closeMenu, onResetCurrentPage });
                                 ><MISAIcon width="8" height="8" icon="prev2"></MISAIcon
                             ></RouterLink>
                         </li>
+                        <li class="pagination-item">
+                            <RouterLink
+                                :class="{ 'no-select': currentPage === 1 }"
+                                :to="{
+                                    path: Enum.Router[routerCurrent].Path,
+                                    query: {
+                                        page: currentPage === 1 ? currentPage : currentPage - 1,
+                                    },
+                                }"
+                                class="pagination-link"
+                                @click="curentPage = currentPage === 1 ? currentPage : currentPage - 1"
+                                ><MISAIcon width="5" height="8" icon="prev"></MISAIcon
+                            ></RouterLink>
+                        </li>
+
                         <div class="page__controll">
                             <p>{{ MISAResource[resource.langCode].Table.Page }}</p>
                             <MISAInput
@@ -673,20 +674,6 @@ defineExpose({ closeMenu, onResetCurrentPage });
                                 <span class="pagination-ellipsis" v-else>...</span>
                             </li>
                         </template> -->
-                        <li v-if="currentPage !== totalPage || true" class="pagination-item">
-                            <RouterLink
-                                :to="{
-                                    path: Enum.Router[routerCurrent].Path,
-                                    query: {
-                                        page: currentPage >= totalPage - 1 ? currentPage : currentPage + 2,
-                                    },
-                                }"
-                                :class="{ 'no-select': currentPage >= totalPage - 1 }"
-                                class="pagination-link"
-                                @click="curentPage = currentPage >= totalPage - 1 ? currentPage : currentPage + 2"
-                                ><MISAIcon width="8" height="8" icon="next2"></MISAIcon
-                            ></RouterLink>
-                        </li>
                         <li class="pagination-item">
                             <RouterLink
                                 :to="{
@@ -699,6 +686,20 @@ defineExpose({ closeMenu, onResetCurrentPage });
                                 class="pagination-link"
                                 @click="curentPage = currentPage === totalPage ? currentPage : currentPage + 1"
                                 ><MISAIcon width="5" height="8" icon="next"></MISAIcon
+                            ></RouterLink>
+                        </li>
+                        <li v-if="currentPage !== totalPage || true" class="pagination-item">
+                            <RouterLink
+                                :to="{
+                                    path: Enum.Router[routerCurrent].Path,
+                                    query: {
+                                        page: currentPage >= totalPage - 1 ? currentPage : currentPage + 2,
+                                    },
+                                }"
+                                :class="{ 'no-select': currentPage >= totalPage - 1 }"
+                                class="pagination-link"
+                                @click="curentPage = currentPage >= totalPage - 1 ? currentPage : currentPage + 2"
+                                ><MISAIcon width="8" height="8" icon="next2"></MISAIcon
                             ></RouterLink>
                         </li>
                     </ul>

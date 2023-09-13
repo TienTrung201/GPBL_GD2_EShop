@@ -54,6 +54,9 @@
                     props.filterType === Enum.TypeDataTable.Money ||
                     props.filterType === Enum.TypeDataTable.Code
                 "
+                :right="props.filterType === Enum.TypeDataTable.Money"
+                :money="props.filterType === Enum.TypeDataTable.Money"
+                :noMoneyDefault="props.filterType === Enum.TypeDataTable.Money"
             >
             </MISAInput>
         </div>
@@ -222,21 +225,10 @@ onMounted(() => {
             case Enum.TypeDataTable.Money:
                 filterByOption.value = [
                     {
-                        option: MISAResource[resource.langCode]?.Table?.Filter?.Contain,
-                        value: Enum.FilterBy.Contain,
-                    },
-                    {
-                        option: MISAResource[resource.langCode]?.Table?.Filter?.NotContain,
-                        value: Enum.FilterBy.NotContain,
-                    },
-                    {
                         option: MISAResource[resource.langCode]?.Table?.Filter?.Equal,
                         value: Enum.FilterBy.Equal,
                     },
-                    {
-                        option: MISAResource[resource.langCode]?.Table?.Filter?.NotEqual,
-                        value: Enum.FilterBy.NotEqual,
-                    },
+
                     {
                         option: MISAResource[resource.langCode]?.Table?.Filter?.Greater,
                         value: Enum.FilterBy.Greater,
@@ -246,7 +238,7 @@ onMounted(() => {
                         value: Enum.FilterBy.Smaller,
                     },
                 ];
-                filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Contain;
+                filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Equal;
                 filterSearch.value = props.filterValue ? props.filterValue : '';
                 break;
 

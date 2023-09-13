@@ -19,6 +19,7 @@
                 :name="''"
                 :placeholder="props.placeholder"
                 :readonly="props.readonly"
+                :tabindex="props.readonly ? -1 : null"
                 :value="value"
                 @input="handleChangeInput"
                 @blur="onBlur"
@@ -70,6 +71,7 @@ const props = defineProps({
     row: { type: Boolean, default: false },
     autoFocusMount: { type: Boolean, default: false }, //Khi mount thì input tự động focus
     money: { type: Boolean, default: false }, //Định dạng tiền tệ
+    noMoneyDefault: { type: Boolean, default: false }, //default thì k có giá là 0
     notDelete: { type: Boolean, default: false }, //Định dạng tiền tệ
     errorBottom: { type: Boolean, default: false }, //Error message ở dưới
     noborder: { type: Boolean, default: false }, //input không có border
@@ -135,8 +137,13 @@ const handleChangeInput = (e) => {
         }
     } else if (props.money) {
         if (e.target.value.trim('').length === 0) {
-            emit('update:value', '0');
-            emit('input-validation', '0');
+            if (props.noMoneyDefault) {
+                emit('update:value', '');
+                emit('input-validation', '');
+            } else {
+                emit('update:value', '0');
+                emit('input-validation', '0');
+            }
         }
         const value = e.target.value.replace(/\./g, '');
         if (/^\d+$/.test(value)) {

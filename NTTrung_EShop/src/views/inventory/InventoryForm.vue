@@ -888,9 +888,9 @@ const handleOpenForm = (type) => {
  * Author: Tiến Trung (07/09/2023)
  * Description: Hàm update data nếu là code mới thì isupdatecode true
  */
-const setDataEditMode = (value, oldValue) => {
+const setDataEditMode = (value) => {
     if (formData.value.EditMode !== Enum.EditMode.Add) {
-        formData.value.IsUpdateCode = oldValue !== value;
+        formData.value.IsUpdateCode = SKUCodeOld.value !== value;
     }
 };
 /**
