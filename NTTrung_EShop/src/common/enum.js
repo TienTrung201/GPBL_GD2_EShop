@@ -1,6 +1,7 @@
 const Enum = {
     LocalStorage: {
         LangCode: 'lang',
+        PageSize: 'pagesize',
     },
     ApiMethod: {
         GET: 1,

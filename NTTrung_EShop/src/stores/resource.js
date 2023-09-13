@@ -12,7 +12,7 @@ export const useResource = defineStore('resource', {
     actions: {
         setLangCode(langCode) {
             this.langCode = langCode;
-            localStorage.setItem('lang', langCode);
+            localStorage.setItem(Enum.LocalStorage.LangCode, langCode);
         },
     },
 });

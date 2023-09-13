@@ -16,7 +16,12 @@ import { useInventory } from '../../stores/inventory';
 import baseApi from '../../api/base-api';
 import { useBaseEntity } from '../../stores/base-entity';
 const route = useRoute();
-const paging = ref({ totalPage: 1, currentPage: 1, pageSize: '10', TotalRecords: 0 });
+const paging = ref({
+    totalPage: 1,
+    currentPage: 1,
+    pageSize: localStorage.getItem(Enum.LocalStorage.PageSize) || '10',
+    TotalRecords: 0,
+});
 const searchData = ref('');
 const dataTable = ref([]);
 const table = ref(null);
@@ -123,6 +128,7 @@ const filterData = (filterObject) => {
 //  * Description: Hàm nhận emit set pagesize cho bảng dữ liệu
 //  */
 const setPageSize = (pageSize) => {
+    localStorage.setItem(Enum.LocalStorage.PageSize, pageSize);
     paging.value.pageSize = pageSize;
     paging.value.currentPage = 1;
     if (route.query.page === '1') {
