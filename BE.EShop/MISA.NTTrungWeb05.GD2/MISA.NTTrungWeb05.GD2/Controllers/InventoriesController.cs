@@ -15,24 +15,11 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
     {
         #region Field
         private readonly IInventoryExcelService _InventoryExcelService;
-        private readonly IInventoryService _InventoryService;
         #endregion
         public InventoriesController(IInventoryService inventoryService, IInventoryExcelService unitExcelService) : base(inventoryService)
         {
             _InventoryExcelService = unitExcelService;
-            _InventoryService = inventoryService;
         }
-        // <summary>
-        // Lưu thông tin hàng hóa
-        // </summary>
-        // <returns>Số bản ghi thay đổi trong db</returns>
-        // createdby: nttrung (22/08/2023)
-        [HttpPost("SaveData")]
-        public async Task<IActionResult> SaveData([FromBody] InventoryRequestDto data)
-        {
-            var result = await _InventoryService.SaveData(data);
-            return Ok(result);
-        } 
         // <summary>
         // Xuất file excel
         // </summary>

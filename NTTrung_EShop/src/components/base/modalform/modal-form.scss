@@ -12,10 +12,10 @@
         left: 50%;
         transform: translate(-50%, -50%);
         max-width: calc(100vw - 32px);
-        width: 950px;
+        width: 500px;
         height: fit-content;
         box-shadow: 0 0 20px #0000002a;
-        border-radius: 10px;
+        border-radius: 3px;
         background-color: #fff;
         animation: opacity 0.2s ease;
         z-index: 1;
@@ -31,12 +31,14 @@
             }
         }
         .ntt-modal-form__header {
-            padding: 16px;
+            padding: 10px 14px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #dfdfdf;
             .ntt-modal--right {
                 display: flex;
             }
             .ntt-modal-form__title {
-                margin-right: 16px;
+                margin-right: 16px !important;
             }
             .ntt-modal-form__btn-close {
                 height: 28px;
@@ -47,7 +49,7 @@
                 outline: none;
                 background-color: transparent;
                 cursor: pointer;
-                border-radius: 10px;
+                border-radius: 3px;
                 position: relative;
                 .ms-icon {
                     position: absolute;
@@ -85,9 +87,10 @@
                 outline: none;
                 background-color: transparent;
                 cursor: pointer;
-                border-radius: 4px;
+                border-radius: 3px;
                 .ms-icon {
-                    background-color: #000;
+                    background-color: #b3b3b3;
+                    transform: scale(0.9);
                 }
                 &:hover {
                     // border: var(--primary-color) solid 1px;
@@ -111,10 +114,15 @@
         }
 
         .ntt-modal-form__body {
-            padding: 0 16px 0 16px;
+            padding: 16px;
         }
         .ntt-modal-form__footer {
             padding: 16px 16px;
+            button {
+                height: 35px !important;
+                overflow: hidden;
+            }
+            border-top: 1px solid #dfdfdf;
         }
     }
 }

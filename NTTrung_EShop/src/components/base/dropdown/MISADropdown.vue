@@ -37,6 +37,11 @@
                     <img class="i-img" src="../../../assets/icons/arrow-down.svg" alt="" />
                 </template>
             </MISAButton>
+            <div @click="props.function" @click.stop="" v-if="props.buttonAdd" class="button-add-quick center">
+                <span class="center">
+                    <MISAIcon width="11" height="10" icon="plus" />
+                </span>
+            </div>
             <div v-show="!props.combobox ? isShowDropdown : true" class="wrapper-select">
                 <ul>
                     <li
@@ -106,6 +111,8 @@ const props = defineProps({
     selectEmpty: { type: Boolean, default: false }, //Nếu có selectEmpty thì không được chọn rỗng
     require: { type: Boolean, default: false }, //Có thể dùng phím để không chọn trường nòa
     row: { type: Boolean, default: false },
+    buttonAdd: { type: Boolean, default: false }, // nếu có thêm nhanh thì hiện thêm button add
+    function: { type: Function, default: () => {} },
 });
 const itemDropdown = ref(null);
 const emptyItem = ref(null);
@@ -132,6 +139,8 @@ const updateValue = (data) => {
 const firstFocusDropdown = () => {
     if (firstFocus.value) {
         isShowDropdown.value = true;
+    } else {
+        optionsSearchCombobox.value = props.options;
     }
 };
 /**
@@ -172,6 +181,8 @@ const closeDropdown = () => {
 const clickButton = () => {
     if (!props.combobox) {
         toggleDropdown();
+    } else {
+        optionsSearchCombobox.value = props.options;
     }
     inputElement.value.focus();
 };
@@ -185,8 +196,11 @@ const updateComboboxInput = (e) => {
     try {
         inputSearchCombobox.value = e.target.value;
         if (e.target.value === '') {
-            emit('update:value', '');
-            emit('blur', '');
+            if (props.combobox) {
+                // emit('update:value', '');
+                // emit('blur', '');
+            }
+
             optionsSearchCombobox.value = props.options;
         } else {
             filterOption();

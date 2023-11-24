@@ -4,7 +4,7 @@ import baseAxios from './base-axios';
 
 /**
  * Author: Tiến Trung (06/07/2023)
- * Description: base Api cho Department
+ * Description: base Api
  */
 const baseApi = {
     method: Enum.ApiMethod.GET,
@@ -24,10 +24,23 @@ const baseApi = {
      * Description: Hàm gọi Api xuất excel
      */
     downloadExcel(data) {
-        const url = `/${this.path}/Excel`;
+        const url = `${this.path}/Excel`;
         const parsedData = JSON.parse(JSON.stringify(data));
         return baseAxios.post(url, parsedData, {
             responseType: 'arraybuffer',
+        });
+    },
+    /**
+     * @param {Array} data
+     * Author: Tiến Trung (26/08/2023)
+     * Description: Hàm gọi Api gửi ảnh
+     */
+    uploadPirture(data) {
+        const url = `${this.path}`;
+        return baseAxios.post(url, data, {
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
         });
     },
 };

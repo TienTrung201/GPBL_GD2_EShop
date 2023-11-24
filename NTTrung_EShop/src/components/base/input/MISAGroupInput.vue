@@ -12,7 +12,7 @@
         />
         <MISAButton @click="handleSearch(), input.focus()" class="i-group" type="icon">
             <template #icon>
-                <!-- <img class="i-img" src="../../../assets/icons/search 2-1.svg" alt="" /> -->
+                <img class="i-img" src="../../../assets/icons/search 2-1.svg" alt="" />
             </template>
         </MISAButton>
     </div>
@@ -96,4 +96,5 @@ const input = ref();
 
 .width300 {
     width: 300px;
-}</style>
+}
+</style>

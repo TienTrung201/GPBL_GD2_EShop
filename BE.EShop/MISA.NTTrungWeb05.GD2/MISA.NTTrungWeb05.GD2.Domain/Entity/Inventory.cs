@@ -31,7 +31,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// <summary>
         /// Mã vạch
         /// </summary>
-        public string BarCode { get; set; } = string.Empty;
+        public string Barcode { get; set; } = string.Empty;
         /// <summary>
         /// Giá mua
         /// </summary>
@@ -43,11 +43,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// <summary>
         /// Giá trung bình bán
         /// </summary>
-        public decimal? AvgUnitPrice { get; set; }
+        public decimal? AvgUnitPrice { get; set; } = decimal.Zero;
         /// <summary>
         /// Giá trung bình mua
         /// </summary>
-        public decimal? AvgCostPrice { get; set; }
+        public decimal? AvgCostPrice { get; set; } = decimal.Zero;
         /// <summary>
         /// Màu sắc
         /// </summary>
@@ -87,11 +87,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// /// <summary>
         /// Nhóm hàng hóa
         /// </summary>  
-        public Guid ItemCategoryId { get; set; }
+        public Guid? ItemCategoryId { get; set; }
         /// <summary>
         /// Tên đơn vị tính
         /// </summary>  
-        public Guid UnitId { get; set; }
+        public Guid? UnitId { get; set; }
         /// <summary>
         /// Lấy Id Entity
         /// </summary>

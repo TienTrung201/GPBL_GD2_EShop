@@ -40,9 +40,25 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         /// </summary>
         /// <paran name="id">Định danh</paran>
         /// CreatedBy: NTTrung (16/07/2023)
-        public async Task CheckExistAsync(Guid id)
+        public async Task CheckExistAsync(Guid? id)
         {
-            await _itemCategoryRepository.GetByIdAsync(id);
+            if (id.HasValue)
+            {
+                await _itemCategoryRepository.GetByIdAsync(id.Value);
+            }
+        }
+        /// <summary>
+        /// Kiểm tra danh sách mã trùng
+        /// </summary>
+        /// <param name="listCodes">Danh sách mã</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        public async Task CheckDublicateListCodes(string listBarcode)
+        {
+            var result = await _itemCategoryRepository.GetCodeInvalidAsync(listBarcode);
+            if (result != null)
+            {
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
 }
+
 .ms-icon-pin {
     -webkit-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
     -moz-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
@@ -285,6 +286,21 @@
     -ms-mask-position: -291px -1587px;
     -o-mask-position: -291px -1587px;
     mask-position: -291px -1587px;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+.ms-icon-calc {
+    -webkit-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
+    -moz-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
+    -ms-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
+    -o-mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
+    mask-image: url('../../../assets/icons/Sprites.64af8f61.svg');
+
+    -webkit-mask-position: -467px -1586px;
+    -moz-mask-position: -467px -1586px;
+    -ms-mask-position: -467px -1586px;
+    -o-mask-position: -467px -1586px;
+    mask-position: -467px -1586px;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
 }
@@ -675,11 +691,21 @@
     -o-mask-position: -536px -144px;
     mask-position: -536px -144px; */
 }
+.ms-icon-question-dialog {
+    background: url('../../../assets/icons/icon-popup.webp') no-repeat -169px -3px;
+    //36 36
+}
 .ms-icon-warning {
-    background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -815px -143px;
+    background: url('../../../assets/icons/icon-popup.webp') no-repeat -57px -4px;
+}
+.ms-icon-error-big {
+    background: url('../../../assets/icons/icon-popup.webp') no-repeat -114px -3px;
 }
 .ms-icon-success {
     background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -1600px -256px;
+}
+.ms-icon-error {
+    background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -536px -144px;
 }
 .ms-icon-info {
     background: url('../../../assets/icons/Sprites.64af8f61.svg') no-repeat -670px -460px;

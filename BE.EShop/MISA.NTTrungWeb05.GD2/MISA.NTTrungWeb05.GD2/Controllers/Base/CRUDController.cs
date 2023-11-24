@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
 
 namespace MISA.NTTrungWeb05.GD2.Controllers.Base
@@ -65,6 +66,17 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
         {
             var result = await _crudService.DeleteManyAsync(ids);
             return StatusCode(StatusCodes.Status200OK, result);
+        }
+        // <summary>
+        // Lưu thông tin hàng hóa
+        // </summary>
+        // <returns>Số bản ghi thay đổi trong db</returns>
+        // createdby: nttrung (22/08/2023)
+        [HttpPost("SaveData")]
+        public async Task<IActionResult> SaveData([FromBody] List<TRequestDto> listData)
+        {
+            var result = await _crudService.SaveData(listData);
+            return Ok(result);
         }
         #endregion
     }

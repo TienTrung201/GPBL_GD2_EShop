@@ -13,14 +13,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Manager
         /// </summary>
         /// <paran name="id">Định danh</paran>
         /// CreatedBy: NTTrung (16/07/2023)
-        Task CheckExistAsync(Guid id);
-
+        Task CheckExistAsync(Guid? id);
         /// <summary>
-        /// Kiểm tra mã trùng
+        /// Kiểm tra danh sách tên trùng
         /// </summary>
-        /// <param name="newCode">Mã mới</param>
-        /// <param name="oldCode">Mã cũ</param>
-        /// CreatedBy: NTTrung (16/07/2023)
-        Task CheckDublicateCode(string newCode, string? oldCode);
+        /// <param name="listCodes">Danh sách mã</param>
+        /// CreatedBy: NTTrung (24/08/2023)
+        Task CheckDublicateListNames(string listName);
     }
 }

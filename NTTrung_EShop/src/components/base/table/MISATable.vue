@@ -1,7 +1,6 @@
 <script setup>
 import MISAMenucontext from './MISAMenuContext.vue';
 import MISAFilter from './MISAFilter.vue';
-import MISAFilterSelected from './MISAFilterSelected.vue';
 import { computed, onMounted, ref, watch, onUnmounted } from 'vue';
 import { useDialog } from '../../../stores/dialog';
 import { useResource } from '../../../stores/resource.js';
@@ -10,6 +9,7 @@ import MISAResource from '../../../common/resource';
 import Enum from '../../../common/enum';
 import { useModalForm } from '../../../stores/modalform';
 import { formatAlign } from '../../../common/convert-data';
+import router from '../../../router';
 const emit = defineEmits([
     'select-row',
     'select-all',
@@ -79,7 +79,7 @@ const dialog = useDialog();
 const modalForm = useModalForm();
 const resource = useResource();
 const positionMenuContext = ref({ left: 0, bottom: 0 });
-const pageSize = ref('10');
+const pageSize = ref(localStorage.getItem(Enum.LocalStorage.PageSize) || '10');
 const pageSizeOption = ref();
 const columnsTable = ref(props.columns);
 const filterValue = ref(null);
@@ -87,8 +87,17 @@ const filterBy = ref(null);
 const filter = ref({
     propertySort: null,
     sortBy: null,
-    Filter: [],
+    typeColumn: Enum.TypeDataTable.Default,
+    filter: [],
 });
+const curentPage = ref(props.currentPage);
+/**
+ * Author: Tiến Trung (06/07/2023)
+ * Hàm reset curent input page
+ */
+const onResetCurrentPage = (page) => {
+    curentPage.value = page;
+};
 /**
  * Author: Tiến Trung (06/07/2023)
  * Description: Hàm lọc
@@ -96,23 +105,24 @@ const filter = ref({
 const emitFilterData = (filterObject) => {
     //Nếu đang có giá trị để filter thì thêm vào
     if (filterObject.isFilter) {
-        var currentFilter = filter.value.Filter.findIndex(filter => filter.property === filterObject.property)
+        var currentFilter = filter.value.filter.findIndex((filter) => filter.property === filterObject.property);
         if (currentFilter != -1) {
-            filter.value.Filter[currentFilter] = filterObject
+            filter.value.filter[currentFilter] = filterObject;
         } else {
-            filter.value.Filter.push(filterObject);
+            filter.value.filter.push(filterObject);
         }
         //Nếu không có thì xóa filter cũ đi
     } else {
-        filter.value.Filter = filter.value.Filter.filter(filter => filter.property != filterObject.property)
+        filter.value.filter = filter.value.filter.filter((filter) => filter.property != filterObject.property);
     }
     emit('filter-data', filter.value);
+    curentPage.value = 1;
 };
 /**
  * Author: Tiến Trung (06/07/2023)
  * Description: Hàm sắp xếp
  */
-const setSort = (keyName, isFilter) => {
+const setSort = (keyName, isFilter, typeColumn) => {
     if (isFilter) {
         if (filter.value.propertySort === keyName) {
             switch (filter.value.sortBy) {
@@ -122,6 +132,7 @@ const setSort = (keyName, isFilter) => {
                 case Enum.Sort.Asc:
                     filter.value.sortBy = null;
                     filter.value.propertySort = '';
+                    filter.value.typeColumn = Enum.TypeDataTable.Default;
                     break;
                 default:
                     filter.value.sortBy = Enum.Sort.Desc;
@@ -130,8 +141,10 @@ const setSort = (keyName, isFilter) => {
         } else {
             filter.value.sortBy = Enum.Sort.Desc;
             filter.value.propertySort = keyName;
+            filter.value.typeColumn = typeColumn;
         }
         emit('filter-data', filter.value);
+        curentPage.value = 1;
     }
 };
 /**
@@ -217,9 +230,24 @@ const pagination = computed(() => {
         '-' +
         (props.currentPage * Number(pageSize.value) - Number(pageSize.value) + props.dataTable.length);
 
-    return `${MISAResource[resource.langCode].Table?.Show} ${page} ${MISAResource[resource.langCode].Table.OutOf} ${props.TotalRecords
-        } ${MISAResource[resource.langCode].Table.Record}`;
+    return `${MISAResource[resource.langCode].Table?.Show} ${page} ${MISAResource[resource.langCode].Table.OutOf} ${
+        props.TotalRecords
+    } ${MISAResource[resource.langCode].Table.Record}`;
 });
+
+const handlePaging = (page) => {
+    if (page.trim('').length === 0) {
+        curentPage.value = props.currentPage;
+    } else {
+        if (page > props.totalPage) {
+            page = props.totalPage;
+        }
+        router.push({
+            path: Enum.Router[props.routerCurrent].Path,
+            query: { page: page },
+        });
+    }
+};
 /**
  * Author: Tiến Trung (12/07/2023)
  * Description: watch theo dõi khi langcode thay đổi thì
@@ -308,25 +336,35 @@ function startResize(e, columnKey) {
     }
     //Khi di chuyển chuột
     function mouseMove(e) {
-        // Thêm class để sửa cursor chuột
-        table.value.classList.add('resize-mouse');
-        //Lấy vị trí bắt đầu element
-        const leftPositionElement = element.left;
-        //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
-        const newWidth = e.clientX - leftPositionElement;
-        const columnResize = columnsTable.value.find((col) => col.key === columnKey);
-        if (columnResize) {
-            if (newWidth >= 170) {
-                columnResize.width = newWidth;
+        try {
+            // Thêm class để sửa cursor chuột
+            table.value.classList.add('resize-mouse');
+            //Lấy vị trí bắt đầu element
+            const leftPositionElement = element.left;
+            //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
+            const newWidth = e.clientX - leftPositionElement;
+            const columnResize = columnsTable.value.find((col) => col.key === columnKey);
+            if (columnResize) {
+                if (newWidth >= 170) {
+                    columnResize.width = newWidth;
+                }
             }
+            window.addEventListener('mouseup', clearMouseMove);
+        } catch (e) {
+            console.log(e);
         }
-        window.addEventListener('mouseup', clearMouseMove);
     }
     // Khi bỏ giữ chuột
     function clearMouseMove() {
-        // Bỏ class để sửa cursor chuột
-        table.value.classList.remove('resize-mouse');
-        window.removeEventListener('mousemove', mouseMove);
+        try {
+            // Bỏ class để sửa cursor chuột
+            if (table.value) {
+                table.value.classList.remove('resize-mouse');
+                window.removeEventListener('mousemove', mouseMove);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 /**
@@ -392,10 +430,11 @@ watch(
     () => pageSize.value,
     () => {
         emit('set-pagesize', pageSize.value);
+        curentPage.value = 1;
     },
     { deep: true },
 );
-defineExpose({ closeMenu });
+defineExpose({ closeMenu, onResetCurrentPage });
 </script>
 <template lang="">
     <div class="wrapper-table">
@@ -416,10 +455,9 @@ defineExpose({ closeMenu });
                         <th
                             v-if="item.isShow"
                             :style="{
-                                textAlign: 'center',
+                                left: item.pin ? item.stickyLeft + 'px' : '',
                                 width: item.width + 'px',
                                 maxWidth: item.width + 'px',
-                                left: item.pin ? item.stickyLeft + 'px' : '',
                             }"
                             v-tooltip-tippy="{
                                 content: item.tooltip || item.title,
@@ -435,15 +473,14 @@ defineExpose({ closeMenu });
                             ]"
                         >
                             <div class="th__wrapper">
-                                <p @mousedown="setSort(item.key, item.filter)" class="th__content">
+                                <!-- :style="{
+                                        textAlign: 'center',
+                                        width: item.width + 'px',
+                                        maxWidth: item.width + 'px',
+                                    }" -->
+                                <p @mousedown="setSort(item.key, item.filter, item.type)" class="th__content">
                                     {{ item.title }}
-                                    <span
-                                        v-if="
-                                            item.filter &&
-                                            filter.propertySort === item.key
-                                        "
-                                        class="icon-sort"
-                                    >
+                                    <span v-if="item.filter && filter.propertySort === item.key" class="icon-sort">
                                         <MISAIcon
                                             :class="{ asc: filter.sortBy === Enum.Sort.Asc }"
                                             width="11"
@@ -492,6 +529,7 @@ defineExpose({ closeMenu });
                     }"
                     v-for="rowData in dataTable"
                     :key="rowData[propertiesIdName]"
+                    @click="dialog.setObjectData(rowData)"
                 >
                     <td :class="[{ 'table-row--checked': rowData.isChecked }, 'checkbox']" scope="row">
                         <MISACheckbox @change-checkbox="handleSelectRow(rowData)" :valueCheckbox="rowData.isChecked" />
@@ -575,22 +613,9 @@ defineExpose({ closeMenu });
 
     <div class="tt-continer__footer">
         <div class="table-footer">
-            <div class="table-paging">
+            <div v-if="dataTable.length" class="table-paging">
                 <div class="table-page">
                     <ul class="pagination-list">
-                        <li class="pagination-item">
-                            <RouterLink
-                                :class="{ 'no-select': currentPage === 1 }"
-                                :to="{
-                                    path: Enum.Router[routerCurrent].Path,
-                                    query: {
-                                        page: currentPage === 1 ? currentPage : currentPage - 1,
-                                    },
-                                }"
-                                class="pagination-link"
-                                ><MISAIcon width="5" height="8" icon="prev"></MISAIcon
-                            ></RouterLink>
-                        </li>
                         <li v-if="currentPage !== 1 || true" class="pagination-item">
                             <RouterLink
                                 :to="{
@@ -601,11 +626,41 @@ defineExpose({ closeMenu });
                                 }"
                                 :class="{ 'no-select': currentPage === 1 || currentPage === 2 }"
                                 class="pagination-link"
+                                @click="
+                                    curentPage = currentPage === 1 || currentPage === 2 ? currentPage : currentPage - 2
+                                "
                                 ><MISAIcon width="8" height="8" icon="prev2"></MISAIcon
                             ></RouterLink>
                         </li>
+                        <li class="pagination-item">
+                            <RouterLink
+                                :class="{ 'no-select': currentPage === 1 }"
+                                :to="{
+                                    path: Enum.Router[routerCurrent].Path,
+                                    query: {
+                                        page: currentPage === 1 ? currentPage : currentPage - 1,
+                                    },
+                                }"
+                                class="pagination-link"
+                                @click="curentPage = currentPage === 1 ? currentPage : currentPage - 1"
+                                ><MISAIcon width="5" height="8" icon="prev"></MISAIcon
+                            ></RouterLink>
+                        </li>
 
-                        <template v-for="(page, index) in pages" :key="index">
+                        <div class="page__controll">
+                            <p>{{ MISAResource[resource.langCode].Table.Page }}</p>
+                            <MISAInput
+                                v-model:value="curentPage"
+                                @enter="handlePaging"
+                                @blur="curentPage = props.currentPage"
+                                checkNumber
+                            ></MISAInput>
+                            <p>
+                                {{ MISAResource[resource.langCode].Table.OutOf }}
+                                {{ totalPage }}
+                            </p>
+                        </div>
+                        <!-- <template v-for="(page, index) in pages" :key="index">
                             <li :class="{ active: page === currentPage }" class="pagination-item">
                                 <RouterLink
                                     :to="{
@@ -618,20 +673,7 @@ defineExpose({ closeMenu });
                                 >
                                 <span class="pagination-ellipsis" v-else>...</span>
                             </li>
-                        </template>
-                        <li v-if="currentPage !== totalPage || true" class="pagination-item">
-                            <RouterLink
-                                :to="{
-                                    path: Enum.Router[routerCurrent].Path,
-                                    query: {
-                                        page: currentPage >= totalPage - 1 ? currentPage : currentPage + 2,
-                                    },
-                                }"
-                                :class="{ 'no-select': currentPage >= totalPage - 1 }"
-                                class="pagination-link"
-                                ><MISAIcon width="8" height="8" icon="next2"></MISAIcon
-                            ></RouterLink>
-                        </li>
+                        </template> -->
                         <li class="pagination-item">
                             <RouterLink
                                 :to="{
@@ -642,7 +684,22 @@ defineExpose({ closeMenu });
                                 }"
                                 :class="{ 'no-select': currentPage === totalPage }"
                                 class="pagination-link"
+                                @click="curentPage = currentPage === totalPage ? currentPage : currentPage + 1"
                                 ><MISAIcon width="5" height="8" icon="next"></MISAIcon
+                            ></RouterLink>
+                        </li>
+                        <li v-if="currentPage !== totalPage || true" class="pagination-item">
+                            <RouterLink
+                                :to="{
+                                    path: Enum.Router[routerCurrent].Path,
+                                    query: {
+                                        page: currentPage >= totalPage - 1 ? currentPage : currentPage + 2,
+                                    },
+                                }"
+                                :class="{ 'no-select': currentPage >= totalPage - 1 }"
+                                class="pagination-link"
+                                @click="curentPage = currentPage >= totalPage - 1 ? currentPage : currentPage + 2"
+                                ><MISAIcon width="8" height="8" icon="next2"></MISAIcon
                             ></RouterLink>
                         </li>
                     </ul>
@@ -652,7 +709,7 @@ defineExpose({ closeMenu });
                     <MISADropdown v-model:value="pageSize" selectEmpty :options="pageSizeOption"></MISADropdown>
                 </p>
             </div>
-            <p v-if="dataTable.length>0" class="table-total">
+            <p v-if="dataTable.length > 0" class="table-total">
                 {{ pagination }}
             </p>
         </div>

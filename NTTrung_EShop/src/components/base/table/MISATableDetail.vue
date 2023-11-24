@@ -4,7 +4,7 @@ import { useResource } from '../../../stores/resource.js';
 // import MISAResource from '../../../common/resource';
 import Enum from '../../../common/enum';
 import { formatAlign } from '../../../common/convert-data';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 const emit = defineEmits([
     'select-row',
     'select-all',
@@ -69,6 +69,7 @@ const props = defineProps({
         default: 0,
     },
 });
+const editIndex = ref('');
 const table = ref(null);
 const dialog = useDialog();
 const resource = useResource();
@@ -77,6 +78,7 @@ const filter = ref({
     sortColumn: '',
     sortOrder: null,
 });
+const dataTableRefence = ref([]);
 /**
  * Author: Tiến Trung (19/08/2023)
  * Description: Hàm xóa detail
@@ -126,6 +128,7 @@ watch(
     },
     { deep: true },
 );
+
 setStickyTable();
 /**
  * Author: Tiến Trung (12/07/2023)
@@ -171,27 +174,94 @@ function startResize(e, columnKey) {
     }
     //Khi di chuyển chuột
     function mouseMove(e) {
-        // Thêm class để sửa cursor chuột
-        table.value.classList.add('resize-mouse');
-        //Lấy vị trí bắt đầu element
-        const leftPositionElement = element.left;
-        //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
-        const newWidth = e.clientX - leftPositionElement;
-        const columnResize = columnsTable.value.find((col) => col.key === columnKey);
-        if (columnResize) {
-            if (newWidth >= 170) {
-                columnResize.width = newWidth;
+        try {
+            // Thêm class để sửa cursor chuột
+            table.value.classList.add('resize-mouse');
+            //Lấy vị trí bắt đầu element
+            const leftPositionElement = element.left;
+            //Chiều ngang mới = vị trí chuột hiện tại trừ đi vị trí  element
+            const newWidth = e.clientX - leftPositionElement;
+            const columnResize = columnsTable.value.find((col) => col.key === columnKey);
+            if (columnResize) {
+                if (newWidth >= 170) {
+                    columnResize.width = newWidth;
+                }
             }
+            window.addEventListener('mouseup', clearMouseMove);
+        } catch (error) {
+            console.log(error);
         }
-        window.addEventListener('mouseup', clearMouseMove);
     }
     // Khi bỏ giữ chuột
     function clearMouseMove() {
         // Bỏ class để sửa cursor chuột
-        table.value.classList.remove('resize-mouse');
-        window.removeEventListener('mousemove', mouseMove);
+        if (table.value) {
+            table.value.classList.remove('resize-mouse');
+            window.removeEventListener('mousemove', mouseMove);
+        }
     }
 }
+
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: hàm gán tên cho editindex để mở input sửa
+ */
+// const handleOpenEditColumn = (item, index) => {
+//     try {
+//         if (item.isEdit) {
+//             editIndex.value = index;
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// };
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: Hàm update data
+ */
+const setDataEditMode = (value, oldValue, data, isCode, isBarcode) => {
+    if (data.EditMode !== Enum.EditMode.Add) {
+        data.EditMode = Enum.EditMode.Update;
+        if (isCode) {
+            data.IsUpdateCode = oldValue !== value;
+        }
+        if (isBarcode) {
+            data.IsUpdateBarcode = oldValue !== value;
+        }
+    }
+};
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: Hàm chuyển max length cho tiền
+ */
+const convertMaxLength = (type) => {
+    let length = 0;
+    switch (type) {
+        case Enum.TypeDataTable.Money:
+            length = Enum.MaxLength.Money;
+            break;
+        case Enum.TypeDataTable.Code:
+            length = Enum.MaxLength.Code;
+            break;
+        default:
+            length = Enum.MaxLength.Default;
+            break;
+    }
+    return length;
+};
+/**
+ * Author: Tiến Trung (25/08/2023)
+ * Description: khi component dc hiển thị thì gán dữ liệu  dataTableRefence
+ */
+onMounted(() => {
+    dataTableRefence.value = props.dataTable;
+});
+watch(
+    () => props.dataTable,
+    () => {
+        dataTableRefence.value = props.dataTable;
+    },
+);
 </script>
 <template lang="">
     <div class="wrapper-table">
@@ -256,16 +326,12 @@ function startResize(e, columnKey) {
 
             <tbody class="table-body">
                 <!-- dataTable -->
-                <tr v-for="(rowData, index) in dataTable" :key="rowData[propertiesIdName]">
+                <tr v-for="(rowData, index) in dataTableRefence" :key="rowData[propertiesIdName]">
                     <template :key="item.dataIndex" v-for="item in columnsTable">
                         <td
                             v-if="item.isShow"
-                            :class="[{ sticky: item.pin }]"
-                            @dblclick="handleShowEditInfo(rowData)"
+                            :class="[{ sticky: item.pin }, { 'no-edit': !item.isEdit }]"
                             :style="{
-                                textAlign: formatAlign(item.align),
-                                width: item.width + 'px',
-                                maxWidth: item.width + 'px',
                                 left: item.pin ? item.stickyLeft + 'px' : '',
                             }"
                             v-tooltip-tippy="{
@@ -275,9 +341,43 @@ function startResize(e, columnKey) {
                                 placement: item.width > 400 ? 'left' : 'top',
                             }"
                         >
-                            <slot :name="item.key" v-bind="rowData">
-                                {{ rowData[item.key] }}
-                            </slot>
+                            <!-- @click="handleOpenEditColumn(item, index + '' + indexCol)" -->
+                            <div class="edit-data">
+                                <!-- <div
+                                    class="data-show"
+                                    v-if="editIndex !== index + '' + indexCol"
+                                    :style="{
+                                        textAlign: formatAlign(item.align),
+                                        width: item.width + 'px',
+                                        maxWidth: item.width + 'px',
+                                    }"
+                                >
+                                    <slot :name="item.key" v-bind="rowData">
+                                        {{ rowData[item.key] }}
+                                    </slot>
+                                </div> -->
+                                <!-- v-if="editIndex === index + '' + indexCol " -->
+                                <MISAInput
+                                    :right="item.type === Enum.TypeDataTable.Money"
+                                    @input-validation="
+                                        (value, oldValue) =>
+                                            setDataEditMode(value, oldValue, rowData, item.isCode, item.isBarcode)
+                                    "
+                                    @blur="
+                                        (value, oldValue) => {
+                                            editIndex = '';
+                                            setDataEditMode(value, oldValue, rowData, item.isCode, item.isBarcode);
+                                        }
+                                    "
+                                    :money="item.type === Enum.TypeDataTable.Money"
+                                    :validate="item.isEdit"
+                                    v-model:value="rowData[item.key]"
+                                    :maxLength="convertMaxLength(item.type)"
+                                    notDelete
+                                    noborder
+                                    :readonly="!item.isEdit"
+                                ></MISAInput>
+                            </div>
                         </td>
                     </template>
                     <td class="text-align--center td-control">
@@ -317,5 +417,10 @@ function startResize(e, columnKey) {
 <style lang="scss" scoped>
 @import './misa-table.scss';
 .td-control {
+}
+td {
+    padding: 0 1px !important;
+    padding-top: 1px !important;
+    padding-right: 2px !important;
 }
 </style>

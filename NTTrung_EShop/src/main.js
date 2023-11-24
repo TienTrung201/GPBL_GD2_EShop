@@ -25,14 +25,16 @@ import MISADropdown from './components/base/dropdown/MISADropdown.vue';
 import MISASelectFilter from './components/base/dropdown/MISASelectFilter.vue';
 import MISARow from './components/base/grid/MISARow.vue';
 import MISACol from './components/base/grid/MISACol.vue';
-import MISAInputManyTag from './components/base/inputManyTag/MISAInputManyTag.vue';
+import MISAInputManyTag from './components/base/input-many-tag/MISAInputManyTag.vue';
 import MISALoading from './components/base/loading/MISALoading.vue';
-
+import MISAMenuContext from './components/base/table/MISAMenuContext.vue';
+import BaseList from './views/Base/BaseList.vue';
 const app = createApp(App);
 
 app.directive('tooltip', tooltipDerective);
 
 app.use(createPinia());
+app.component('BaseList', BaseList);
 app.component('MISAModalForm', MISAModalForm);
 app.component('MISAToast', MISAToast);
 app.component('MISADialog', MISADialog);
@@ -52,6 +54,7 @@ app.component('MISASelectFilter', MISASelectFilter);
 app.component('MISADatePicker', MISADatePicker);
 app.component('MISALoading', MISALoading);
 app.component('MISAInputManyTag', MISAInputManyTag);
+app.component('MISAMenuContext', MISAMenuContext);
 
 app.use(VueTippy, {
     directive: 'tooltip-tippy',

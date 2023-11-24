@@ -20,29 +20,27 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         {
             _unitRepository = unitRepository;
         }
+
         #endregion
-        /// <summary>
-        /// Kiểm tra mã trùng
-        /// </summary>
-        /// <param name="newCode">Mã mới</param>
-        /// <param name="oldCode">Mã cũ</param>
-        /// CreatedBy: NTTrung (16/07/2023)
-        public async Task CheckDublicateCode(string newCode, string? oldCode)
-        {
-            var entity = await _unitRepository.GetByCodeAsync(newCode);
-            if (entity != null && entity.UnitCode != oldCode)
-            {
-                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, newCode), (int)ErrorCode.DuplicateCode);
-            }
-        }
         /// <summary>
         /// Kiểm tra có tồn tại không
         /// </summary>
         /// <paran name="id">Định danh</paran>
         /// CreatedBy: NTTrung (16/07/2023)
-        public async Task CheckExistAsync(Guid id)
+        public async Task CheckExistAsync(Guid? id)
         {
-            await _unitRepository.GetByIdAsync(id);
+            if (id.HasValue)
+            {
+                await _unitRepository.GetByIdAsync(id.Value);
+            }
+        }
+        public async Task CheckDublicateListNames(string listNames)
+        {
+            var result = await _unitRepository.GetNameInvalidAsync(listNames);
+            if (result != null)
+            {
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
+            }
         }
     }
 }

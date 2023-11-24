@@ -19,7 +19,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
     /// CreatedBy: NTTrung (14/07/2023)
     public abstract class CRUDRepository<TEntity, TModel> :
         ReadOnlyRepository<TEntity, TModel>, ICRUDRepository<TEntity, TModel>
-        where TEntity : BaseAudiEntity //chắc chắn TEntity phải kế thừa IHaskey thì mới .GetKey được
+        where TEntity : BaseAudiEntity //chắc chắn TEntity phải kế thừa BaseAudiEntity thì mới .GetKey được
     {
         protected CRUDRepository(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
@@ -99,6 +99,109 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                 parameters.Add($"@{property.Name}", value);
             }
             return parameters;//Trả về đối tượng parameters từ đối tượng entity
+        }
+
+        /// <summary>
+        /// Thêm nhiều
+        /// </summary>
+        /// <paran name="entity">Danh sách bản ghi thêm</paran>
+        /// <returns>Bản ghi</returns>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async Task<int> InsertMultipleAsync(List<TEntity> listEntity)
+        {
+            var parameters = new DynamicParameters();
+            var query = new StringBuilder();
+            var properties = typeof(TEntity).GetProperties();//Lấy danh sách các thuộc tính của đối tượng
+
+            query.Append($"INSERT INTO {TableName} ");
+            var listPropertiesToString = new List<string>();
+
+            foreach (var property in properties)
+            {
+                listPropertiesToString.Add($"`{property.Name}`");
+            }
+            query.Append($"( {string.Join(", ", listPropertiesToString)} ) Values ");
+            int indexData = 0;
+            listEntity.ForEach((entity) =>
+            {
+                var entityIdName = $"{TableName}Id";
+                //entity.SetValue(entityIdName, Guid.NewGuid());
+                entity.CreatedDate = DateTime.Now;
+
+                //entity.AvgCostPrice = 0;
+                //entity.AvgUnitPrice = 0;
+                query.Append("( ");
+                int indexColumn = 0;
+                foreach (var property in properties)
+                {
+                    var value = property.GetValue(entity);
+                    string nameProperty = property.Name;
+                    string paramName = $"@{nameProperty}{indexData}";
+                    query.Append(paramName);
+                    parameters.Add(paramName, value);
+                    if (indexColumn != properties.Count() - 1)
+                    {
+                        query.Append(", ");
+                    }
+                    indexColumn++;
+                };
+
+                if (indexData != listEntity.Count() - 1)
+                {
+                    query.Append("), ");
+                }
+                else
+                {
+                    query.Append(") ");
+                }
+                indexData++;
+            });
+            var queryString = query.ToString();
+
+            var result = await _uow.Connection.ExecuteAsync(queryString, parameters, commandType: CommandType.Text, transaction: _uow.Transaction);
+            return result;
+        }
+        /// <summary>
+        /// Sửa nhiều
+        /// </summary>
+        /// <paran name="entity">Danh sách bản ghi sửa</paran>
+        /// <returns>Bản ghi</returns>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async Task<int> UpdateMultipleAsync(List<TEntity> listEntity)
+        {
+            var parameters = new DynamicParameters();
+            var query = new StringBuilder();
+            var properties = typeof(TEntity).GetProperties();//Lấy danh sách các thuộc tính của đối tượng
+
+            int indexData = 0;
+            listEntity.ForEach((entity) =>
+            {
+                entity.ModifiedDate = DateTime.Now;
+                query.Append($"Update {TableName} Set ");
+                int indexColumn = 0;
+                foreach (var property in properties)
+                {
+                    var value = property.GetValue(entity);
+                    string nameProperty = property.Name;
+                    if (nameProperty != "CreatedDate")
+                    {
+                        string paramName = $"@{nameProperty}{indexData}";
+                        query.Append($"`{nameProperty}` = {paramName} ");
+                        parameters.Add(paramName, value);
+                        if (indexColumn != properties.Count() - 2)//Bỏ qua createdDate nên - 2 và index từ 0
+                        {
+                            query.Append(", ");
+                        }
+                        indexColumn++; ;
+                    }
+                }
+                indexData++;
+                query.Append($"Where {TableName}Id = '{entity.GetKey()}'; ");
+            });
+            var queryString = query.ToString();
+
+            var result = await _uow.Connection.ExecuteAsync(queryString, parameters, commandType: CommandType.Text, transaction: _uow.Transaction);
+            return result;
         }
         #endregion
     }

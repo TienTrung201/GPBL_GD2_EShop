@@ -53,7 +53,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
             {
                 pageSize = 10;
             }
-            if (!currentPage.HasValue)
+            if (!currentPage.HasValue || currentPage.Value < 1)
             {
                 currentPage = 1;
             }

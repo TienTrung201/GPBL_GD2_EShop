@@ -45,9 +45,6 @@
             th {
                 color: var(--text-primary-color);
                 min-width: 170px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
                 transition: 0.2s ease;
                 .icon-sort-left {
                     position: relative;
@@ -124,10 +121,14 @@
                 }
             }
             th {
-                overflow: visible;
+                // overflow: visible;
+                // padding: 0 10px;
             }
             td {
                 padding: 0 10px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .thead-wrapper__column {
                 display: flex;
@@ -226,6 +227,7 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    flex-wrap: wrap;
                 }
                 .th__filter {
                     .th__filter-type {
@@ -244,7 +246,35 @@
                     }
                     td {
                         background-color: var(--grey-color1);
+                        &:focus {
+                            outline: none !important;
+                            border: none;
+                        }
                     }
+                }
+                .edit-data {
+                    // height: 34px !important;
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    border: 1px solid transparent;
+                    // &:focus-within {
+                    //     border: 1px solid var(--border-input-color);
+                    //     border-radius: 3px;
+                    // }
+                    .wrapper-input {
+                        margin-top: 0;
+                    }
+                }
+                .data-show {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    padding: 0 12px;
+                }
+                .no-edit {
+                    background-color: #ececec !important;
                 }
             }
             .table-row--checked {
@@ -402,7 +432,7 @@
     }
 }
 .table-footer {
-    height: 56px;
+    height: 53px;
     padding: 12px 16px;
     display: flex;
     align-items: center;
@@ -473,6 +503,27 @@
     // padding-right: 16px;
     column-gap: 4px;
     align-items: center;
+    .page__controll {
+        padding: 0 2px;
+        display: flex;
+        align-items: center;
+        column-gap: 12px;
+        p {
+            font-size: 13px;
+            color: var(--text-primary-color);
+        }
+        .wrapper-input {
+            margin: 0;
+        }
+        .input-text-base {
+            height: 24px;
+            width: 48px;
+            text-align: center;
+            font-size: 12px;
+            padding: 4px 6px;
+            line-height: 0.5;
+        }
+    }
 }
 
 .pagination-item {
@@ -491,7 +542,7 @@
         color: #000;
     }
     .ms-icon {
-        background-color: var(--text-primary-color);
+        background-color: var(--primary-color);
     }
     span {
         margin: 0 !important;
@@ -504,16 +555,13 @@
     border-radius: 4px;
     border: solid 1px transparent;
     color: var(--text-primary-color);
-    border: solid 1px var(--border-color);
-    &:hover {
-        border: solid 1px var(--border-color);
-    }
-    height: 29px;
+    border: solid 1px var(--primary-color);
+    height: 24px;
     width: fit-content;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 30px;
+    min-width: 24px;
 }
 .active {
     .pagination-link {

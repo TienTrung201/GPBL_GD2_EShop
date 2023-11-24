@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service
@@ -50,13 +51,27 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(createDto.SKUCode, null);
             // Kiểm tra trùng mã vạch
-            await _inventoryManager.CheckDublicateBarcode(createDto.BarCode, null);
+            if (!string.IsNullOrEmpty(createDto.Barcode?.Replace(" ", "")))
+            {
+                await _inventoryManager.CheckDublicateBarcode(createDto.Barcode, null);
+            }
+            else
+            {
+                createDto.Barcode = null;
+            }
             //// Kiểm tra UnitId và ItemCategory có hợp lệ không
-            await _itemCategoryManager.CheckExistAsync(createDto.ItemCategoryId);
-            await _unitManager.CheckExistAsync(createDto.UnitId);
+            if (createDto.ItemCategoryId != null)
+            {
+                await _itemCategoryManager.CheckExistAsync(createDto.ItemCategoryId);
+            }
+            if (createDto.UnitId != null)
+            {
+                await _unitManager.CheckExistAsync(createDto.UnitId);
+            }
 
             var entity = _mapper.Map<Inventory>(createDto);
             entity.InventoryId = Guid.NewGuid();
+            //entity.SKUCodeCustom = entity.SKUCode;
             entity.CreatedDate = DateTime.Now;
             entity.ModifiedDate = DateTime.Now;
             return entity;
@@ -75,65 +90,56 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             // Kiểm tra trùng mã
             await _inventoryManager.CheckDublicateCode(updateDto.SKUCode, entity.SKUCode);
             // Kiểm tra trùng mã vạch
-            await _inventoryManager.CheckDublicateBarcode(updateDto.BarCode, entity.BarCode);
-            // Kiểm tra PositionId và DepartmentId có hợp lệ không
-            await _itemCategoryManager.CheckExistAsync(updateDto.ItemCategoryId);
-            await _unitManager.CheckExistAsync(updateDto.UnitId);
-
-            var updateEntity = _mapper.Map<Inventory>(updateDto);
-            updateEntity.InventoryId = entity.InventoryId;
-            updateEntity.ModifiedDate = DateTime.Now;
-            return updateEntity;
-        }
-
-        /// <summary>
-        /// Thêm sửa xóa data
-        /// </summary>
-        /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
-        /// <returns>Bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (23/08/2023)
-        public async Task<int> SaveData(InventoryRequestDto data)
-        {
-            var result = 0;
-            //Cập nhật Master
-            var master = new Inventory();
-            switch (data.EditMode)
+            if (!string.IsNullOrEmpty(updateDto.Barcode?.Replace(" ", "")))
             {
-                case EditMode.Create:
-                    master = await MapCreateDtoToEntityValidateAsync(data);
-                    result += await _inventoryRepository.InsertAsync(master);
-                    break;
-                case EditMode.Update:
-                    master = await MapUpdateDtoToEntityValidateAsync(data.InventoryId, data);
-                    result += await _inventoryRepository.UpdateAsync(master);
-                    break;
-                default:
-                    break;
-            }
-            if (data.Detail == null)
-            {
-                return result;
+                await _inventoryManager.CheckDublicateBarcode(updateDto.Barcode, entity.Barcode);
             }
             else
             {
-                //Nếu có detail thì cập nhật Master và Detail
+                updateDto.Barcode = null;
+            }
+            // Kiểm tra unit và itemcategory có hợp lệ không
+            if (updateDto.ItemCategoryId != null)
+            {
+                await _itemCategoryManager.CheckExistAsync(updateDto.ItemCategoryId);
+            }
+            if (updateDto.UnitId != null)
+            {
+                await _unitManager.CheckExistAsync(updateDto.UnitId);
+            }
+            var updateEntity = _mapper.Map<Inventory>(updateDto);
+            updateEntity.InventoryId = entity.InventoryId;
+            updateEntity.ModifiedDate = DateTime.Now;
+            //updateEntity.SKUCodeCustom = updateEntity.SKUCode;
+            return updateEntity;
+        }
+        /// <summary>
+        /// Trước khi lưu
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public override void PreSave(List<InventoryRequestDto> listData)
+        {
+            //Cập nhật giá trung bình
+            var master = listData.FirstOrDefault(data => string.IsNullOrEmpty(data.ColorCode) && string.IsNullOrEmpty(data.SizeCode));
+            if (master?.EditMode == EditMode.Create)
+            {
+                master.InventoryId = Guid.NewGuid();
+            }
+            var detail = listData.Where(data => !string.IsNullOrEmpty(data.ColorCode) || !string.IsNullOrEmpty(data.SizeCode)).ToList();
 
-                var listDelete = data.Detail.Where(inventory => inventory.EditMode == EditMode.Delete).ToArray();
-                var listUpdate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update).ToArray();
-                var listCreate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Create).ToArray();
-
-                //--------------------------------------Xóa những hàng hóa bị xóa--------------------------
-                var listIdsDelete = listDelete.Select(inventory => inventory.InventoryId.ToString());
-                var listIdsToString = string.Join(", ", listIdsDelete);
-                if (listIdsDelete.Count() > 0)
-                {
-                    result += await _inventoryRepository.DeleteManyAsync(listIdsToString);
-                }
-                //Cập nhật giá trung bình
+            var dataUpdateCreate = detail.Where((data) => data.EditMode != EditMode.Delete).ToList();
+            if (dataUpdateCreate.Count() > 0)
+            {
                 decimal? totalUnitPrice = 0;
                 decimal? totalCostPrice = 0;
-                data.Detail.ForEach(inventory =>
+                dataUpdateCreate.ForEach(inventory =>
                 {
+                    inventory.ParentId = master?.InventoryId;
+                    if (inventory.EditMode == EditMode.Create)
+                    {
+                        inventory.InventoryId = Guid.NewGuid();
+                    }
                     if (inventory.UnitPrice.HasValue)
                     {
                         totalUnitPrice += inventory.UnitPrice;
@@ -142,33 +148,78 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                     {
                         totalCostPrice += inventory.CostPrice;
                     }
+
                 });
-                var newAvgUnitPrice = totalUnitPrice / data.Detail.Count();
-                var newAvgCostPrice = totalCostPrice / data.Detail.Count();
-                data.AvgCostPrice = newAvgCostPrice;
-                data.AvgUnitPrice = newAvgUnitPrice;
-                //---------------------------------------Update list hàng hóa-------------------------------
-                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-                var listCodes = data.Detail.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCode);
-                var listBarcodes = data.Detail.Where(inventory => inventory.EditMode != EditMode.Update && inventory.IsUpdateBarcode).Select((inventory) => inventory.BarCode);
-                await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes)); 
-                await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodes));
-                //Không có lỗi thì Update
-                var listEntityUpdate = _mapper.Map<List<Inventory>>(listUpdate);
-                result += await _inventoryRepository.UpdateMultipleAsync(listEntityUpdate);
-
-                //---------------------------------------Create list hàng hóa--------------------------------
-                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
-                var listCodesCreate = data.Detail.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCode);
-                var listBarcodesCreate = data.Detail.Where(inventory => inventory.EditMode != EditMode.Create).Select((inventory) => inventory.BarCode);
-                await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
-                await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));
-                //Không có lỗi thì thêm mới
-                var listEntityCreate = _mapper.Map<List<Inventory>>(listCreate);
-                result += await _inventoryRepository.InsertMultipleAsync(listEntityCreate, master.ParentId);
-
-                return result;
+                var newAvgUnitPrice = totalUnitPrice / dataUpdateCreate.Count();
+                var newAvgCostPrice = totalCostPrice / dataUpdateCreate.Count();
+                master.AvgCostPrice = newAvgCostPrice;
+                master.AvgUnitPrice = newAvgUnitPrice;
+            }
+            else
+            {
+                master.AvgCostPrice = master.UnitPrice;
+                master.AvgUnitPrice = master.CostPrice;
             }
         }
+        /// <summary>
+        /// Update mã code với tiền tố và tăng mã code lên 1
+        /// </summary>
+        /// <param name="data"></param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async override Task AfterSaveSuccess(List<InventoryRequestDto> listData)
+        {
+            var master = listData.FirstOrDefault(data => data.ParentId == null);
+            if (master.EditMode == EditMode.Create)
+            {
+                string pattern = "^[A-Za-z]+";
+                string prefix = Regex.Match(master.SKUCode, pattern).Value;
+
+                await _inventoryRepository.UpdateCodeAsync(prefix);
+            }
+
+        }
+        /// <summary>
+        /// Validate trước khi sửa list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async override Task ValidateListUpdate(List<InventoryRequestDto> data)
+        {
+            //Hàm validate sửa
+            data.ForEach(data =>
+            {
+                if (string.IsNullOrEmpty(data.Barcode.Replace(" ", "")))
+                {
+                    data.Barcode = null;
+                }
+            });
+            var listCodes = data.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateCode).Select((inventory) => inventory.SKUCodeCustom);
+            var listBarcodes = data.Where(inventory => inventory.EditMode == EditMode.Update && inventory.IsUpdateBarcode).Select((inventory) => inventory.Barcode);
+
+            //Kiểm tra xem trùng không
+            await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodes));
+            await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodes));
+        }
+        /// <summary>
+        /// Validate trước khi thêm list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public async override Task ValidateListCreate(List<InventoryRequestDto> data)
+        {
+            //Hàm validate thêm
+            data.ForEach(data =>
+            {
+                if (string.IsNullOrEmpty(data.Barcode.Replace(" ", "")))
+                {
+                    data.Barcode = null;
+                }
+            });
+            var listCodesCreate = data.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.SKUCodeCustom);
+            var listBarcodesCreate = data.Where(inventory => inventory.EditMode == EditMode.Create).Select((inventory) => inventory.Barcode);
+            await _inventoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
+            await _inventoryManager.CheckDublicateListBarcodes(string.Join(',', listBarcodesCreate));
+        }
+
     }
 }

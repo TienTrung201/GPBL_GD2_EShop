@@ -17,7 +17,8 @@ export const useDialog = defineStore('dialog', {
         loadingBtn: false,
         errorResponse: false, //Nếu có error từ response thì không đóng dialog
         errorCode: 0,
-        submitForm: () => {}, //đây là hàm được gán vào dialog
+        saveData: () => {}, //đây là hàm được gán vào dialog
+        closeNavigationLink: () => {},
     }),
 
     actions: {
@@ -33,7 +34,14 @@ export const useDialog = defineStore('dialog', {
          * Description: gán hàm vào dialog
          */
         setFunction(fn) {
-            this.submitForm = fn;
+            this.saveData = fn;
+        },
+        /**
+         * Author: Tiến Trung 24/06/2023)
+         * Description: gán hàm chuyển hướng vào dialog
+         */
+        setCloseNavigationLink(fn) {
+            this.closeNavigationLink = fn;
         },
         /**
          * Author: Tiến Trung 24/06/2023)

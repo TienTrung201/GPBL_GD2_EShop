@@ -44,15 +44,25 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         /// </summary>
         /// <returns>mã mới</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<string> GetNewCodeAsync()
+        public async Task<string> GetNewCodeAsync(string prefix)
         {
-            var storedProcedureName = $"Proc_{TableName}_GetNewCode";
+            var storedProcedureName = $"Proc_Code_GetNewCode";
             var parameters = new DynamicParameters();
-            parameters.Add("NewCodeOut", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
-
+            parameters.Add("NewCode", dbType: DbType.String, direction: ParameterDirection.Output, size: 20);
+            parameters.Add("@TableName", TableName);
+            parameters.Add("@Prefix", prefix);
             await _uow.Connection.QueryFirstOrDefaultAsync<string>(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
-            var result = parameters.Get<string>("NewCodeOut");
+            var result = parameters.Get<string>("NewCode");
             return result;
+        }
+
+        public async Task UpdateCodeAsync(string prefix)
+        {
+            var storedProcedureName = $"Proc_Code_Update";
+            var parameters = new DynamicParameters();
+            parameters.Add("@TableName", TableName);
+            parameters.Add("@Prefix", prefix);
+            await _uow.Connection.QueryFirstOrDefaultAsync<string>(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
         }
         #endregion
 

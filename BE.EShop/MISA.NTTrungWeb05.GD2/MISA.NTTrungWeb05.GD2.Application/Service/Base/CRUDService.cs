@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
+using MISA.NTTrungWeb05.GD2.Application.Dtos;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Entity;
+using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Interface.Repository;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -12,17 +17,17 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
     public abstract class CRUDService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>
         : ReadOnlyService<TEntity, TModel, TEntityResponseDto>,
-        ICRUDService<TEntityResponseDto, TEntityRequestDto, TModel>
+        ICRUDService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto : BaseDto where TEntity : BaseAudiEntity
     {
         #region Fields
-        protected readonly ICRUDRepository<TEntity, TModel> _baseRepository;
+        protected readonly ICRUDRepository<TEntity, TModel> _crudRepository;
         protected readonly IUnitOfWork _unitOfWork;
         #endregion
         #region Constructor
-        protected CRUDService(ICRUDRepository<TEntity, TModel> baseRepository, IMapper mapper, IUnitOfWork unitOfWork) : base(baseRepository, mapper)
+        protected CRUDService(ICRUDRepository<TEntity, TModel> crudRepository, IMapper mapper, IUnitOfWork unitOfWork) : base(crudRepository, mapper)
         {
             _unitOfWork = unitOfWork;
-            _baseRepository = baseRepository;
+            _crudRepository = crudRepository;
         }
 
         #endregion
@@ -37,7 +42,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         {
             //validate nghiệp vụ
             var entity = await MapCreateDtoToEntityValidateAsync(entityCreateDto);
-            var result = await _baseRepository.InsertAsync(entity);
+            var result = await _crudRepository.InsertAsync(entity);
             return result;
         }
         /// <summary>
@@ -50,7 +55,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         {
             //validate nghiệp vụ
             var entity = await MapUpdateDtoToEntityValidateAsync(id, entityUpdateDto);
-            var result = await _baseRepository.UpdateAsync(entity);
+            var result = await _crudRepository.UpdateAsync(entity);
             return result;
         }
         /// <summary>
@@ -62,11 +67,11 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         public virtual async Task<int> DeleteAsync(Guid id)
         {
 
-            var model = await _baseRepository.GetByIdAsync(id);
+            var model = await _crudRepository.GetByIdAsync(id);
 
             var entity = _mapper.Map<TEntity>(model);
 
-            var result = await _baseRepository.DeleteAsync(entity);
+            var result = await _crudRepository.DeleteAsync(entity);
             return result;
 
         }
@@ -81,7 +86,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
             //try
             //{
             //    await _unitOfWork.BeginTransactionAsync();
-            var result = await _baseRepository.DeleteManyAsync(ids);
+            var result = await _crudRepository.DeleteManyAsync(ids);
             //await _unitOfWork.CommitAsync();
             return result;
             //}
@@ -107,6 +112,110 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// <returns>Bản ghi</returns>
         /// CreatedBy: NTTrung (14/07/2023)
         public abstract Task<TEntity> MapUpdateDtoToEntityValidateAsync(Guid id, TEntityRequestDto updateDto);
+
+
+        /// <summary>
+        /// Thêm sửa xóa data
+        /// </summary>
+        /// <paran name="DATA">Thông tin hàng hóa và list Item</paran>
+        /// <returns>Bản ghi thay đổi</returns>
+        /// CreatedBy: NTTrung (23/08/2023)
+        public async Task<int> SaveData(List<TEntityRequestDto> listData)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                PreSave(listData);
+                var result = 0;
+
+                var listDelete = listData.Where(entity => entity.EditMode == EditMode.Delete).ToList();
+                var listUpdate = listData.Where(entity => entity.EditMode == EditMode.Update).ToList();
+                var listCreate = listData.Where(entity => entity.EditMode == EditMode.Create).ToList();
+
+                //--------------------------------------Xóa những hàng hóa bị xóa--------------------------
+                if (listDelete.Count() > 0)
+                {
+                    //Hàm validate xóa
+                    await ValidateListDelete(listDelete);
+                    var listIdsDelete = listDelete.Select(entity => entity.GetKey().ToString());
+                    var listIdsToString = string.Join(",", listIdsDelete);
+                    result += await _crudRepository.DeleteManyAsync(listIdsToString);
+                }
+                //---------------------------------------Update list hàng hóa-------------------------------
+                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
+                if (listUpdate.Count() > 0)
+                {
+                    await ValidateListUpdate(listUpdate);
+                    //Không có lỗi thì Update
+                    var listEntityUpdate = _mapper.Map<List<TEntity>>(listUpdate);
+
+                    result += await _crudRepository.UpdateMultipleAsync(listEntityUpdate);
+
+                }
+                //---------------------------------------Create list hàng hóa--------------------------------
+                //Kiểm tra xem mã hàng hóa và mã vạch có trùng không
+                if (listCreate.Count() > 0)
+                {
+                    await ValidateListCreate(listCreate);
+                    //Không có lỗi thì thêm mới
+                    var listEntityCreate = _mapper.Map<List<TEntity>>(listCreate);
+
+                    result += await _crudRepository.InsertMultipleAsync(listEntityCreate);
+
+                }
+
+                result += await AfterSave(listData);
+                await AfterSaveSuccess(listData);
+                await _unitOfWork.CommitAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollBackAsync();
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Trước khi lưu
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public virtual void PreSave(List<TEntityRequestDto> listData) { }
+        /// <summary>
+        /// Sau khi lưu
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public virtual async Task<int> AfterSave(List<TEntityRequestDto> listData)
+        {
+            return 0;
+        }
+        /// <summary>
+        /// Sau khi lưu thành công
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public virtual async Task AfterSaveSuccess(List<TEntityRequestDto> listData) { }
+        /// <summary>
+        /// Validate trước khi xóa list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public virtual async Task ValidateListDelete(List<TEntityRequestDto> data) { }
+        /// <summary>
+        /// Validate trước khi sửa list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public virtual async Task ValidateListUpdate(List<TEntityRequestDto> data) { }
+        /// <summary>
+        /// Validate trước khi thêm list
+        /// </summary>
+        /// <param name="data">Bản ghi được gửi đến</param>
+        /// CreatedBy: NTTrung (27/08/2023)
+        public virtual async Task ValidateListCreate(List<TEntityRequestDto> data) { }
+
         #endregion
     }
 }

@@ -3,15 +3,12 @@ import { storeToRefs } from 'pinia';
 import { useDialog } from '../../../stores/dialog';
 import Enum from '../../../common/enum';
 import { onMounted, ref, onUpdated, onUnmounted } from 'vue';
-import { useModalForm } from '../../../stores/modalform';
 
-const emit = defineEmits(['delete-data', 'submit-form']);
 const dialog = useDialog();
-const modal = useModalForm();
 const iPriBtn = ref(null);
 const iSecBtn = ref(null);
 const iclose = ref(null);
-const { actionDialog, buttonThird, title, content, type, buttonSec, icon, method, errorMessage, loadingBtn } =
+const { actionDialog, buttonThird, content, type, buttonSec, icon, method, errorMessage, loadingBtn } =
     storeToRefs(dialog);
 /**
  * Author: Tiến Trung (30/06/2023)
@@ -20,7 +17,8 @@ const { actionDialog, buttonThird, title, content, type, buttonSec, icon, method
 const handleClose = () => {
     // dialog.setMethod(modal.method);
     dialog.close();
-    modal.close();
+    dialog.closeNavigationLink();
+    dialog.setCloseNavigationLink(() => {});
 };
 
 /**
@@ -28,20 +26,18 @@ const handleClose = () => {
  * Description: Hàm click submit dialog
  */
 const submitDialog = () => {
-    if (method.value === Enum.EditMode.None) {
-        dialog.close();
-    }
-    if (
-        method.value === Enum.EditMode.Add ||
-        method.value === Enum.EditMode.Update ||
-        method.value === Enum.EditMode.Copy
-    ) {
-        dialog.setLoading(true);
-        dialog.submitForm(false);
-    }
-    if (method.value === Enum.EditMode.Delete) {
-        dialog.setLoading(true);
-        emit('delete-data');
+    try {
+        switch (method.value) {
+            case Enum.EditMode.None:
+                dialog.close();
+                break;
+            default:
+                dialog.setLoading(true);
+                dialog.saveData(false);
+                break;
+        }
+    } catch (error) {
+        console.log(error);
     }
 };
 /**
@@ -59,10 +55,10 @@ onUpdated(() => {
  * Description: hàm tự động focus vào button
  */
 const autoFocusButton = () => {
-    if (iSecBtn.value) {
-        iSecBtn.value.autoFocus();
-    } else {
+    if (iPriBtn.value) {
         iPriBtn.value.autoFocus();
+    } else {
+        iSecBtn.value.autoFocus();
     }
 };
 /**
@@ -96,7 +92,7 @@ onUnmounted(() => {
         <div @keydown.esc="dialog.close()" @click.stop="" class="modal-dialog savett">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 ntt class="modal-title">{{ title }}</h3>
+                    <h3 ntt class="modal-title">{{ 'MISA eShop' }}</h3>
                     <button
                         v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
                         ref="iclose"
@@ -108,14 +104,14 @@ onUnmounted(() => {
                 </div>
                 <div class="modal-body">
                     <p v-if="icon" class="modal-icon center">
-                        <MISAIcon width="24" height="24" :icon="icon"></MISAIcon>
+                        <MISAIcon width="38" height="38" :icon="icon"></MISAIcon>
                     </p>
                     <template v-if="errorMessage.length > 0">
                         <MISACol
                             ><p>{{ errorMessage }}</p>
                         </MISACol>
                     </template>
-                    <p>{{ content }}</p>
+                    <p class="dialog-content" v-html="content"></p>
                 </div>
                 <div class="modal-footer">
                     <!-- <button @click="handleClose" v-if="buttonSec.length > 0" class="btn-sec btn-base btn-close-dialog">
@@ -127,20 +123,19 @@ onUnmounted(() => {
                     </div>
                     <div>
                         <MISAButton
-                            ref="iSecBtn"
-                            :type="Enum.ButtonType.Sec"
-                            @click="handleClose"
-                            v-if="buttonSec !== undefined"
-                            :action="buttonSec"
-                        ></MISAButton>
-
-                        <MISAButton
-                            @keydown.tab="iclose.focus()"
                             ref="iPriBtn"
                             :loading="loadingBtn"
                             @click="submitDialog"
                             :type="type"
                             :action="actionDialog"
+                        ></MISAButton>
+                        <MISAButton
+                            @keydown.tab="iclose.focus()"
+                            ref="iSecBtn"
+                            :type="Enum.ButtonType.Sec"
+                            @click="handleClose"
+                            v-if="buttonSec !== undefined"
+                            :action="buttonSec"
                         ></MISAButton>
                     </div>
                 </div>

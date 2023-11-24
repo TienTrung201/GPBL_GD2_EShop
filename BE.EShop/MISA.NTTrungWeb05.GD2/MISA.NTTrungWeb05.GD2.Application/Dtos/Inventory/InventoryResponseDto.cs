@@ -1,4 +1,5 @@
-﻿using MISA.NTTrungWeb05.GD2.Domain.Model;
+﻿using MISA.NTTrungWeb05.GD2.Domain.Enum;
+using MISA.NTTrungWeb05.GD2.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
     /// Dữ liệu trả về
     /// </summary>
     /// CreatedBy NTTrung (21/08/2023)
-    public class InventoryResponseDto
+    public class InventoryResponseDto 
     {
         /// <summary>
         /// Định danh
@@ -32,7 +33,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Mã vạch
         /// </summary>
-        public string? BarCode { get; set; } = string.Empty;
+        public string? Barcode { get; set; } = string.Empty;
         /// <summary>
         /// Giá mua
         /// </summary>
@@ -86,6 +87,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>
         public Guid? ParentId { get; set; }
         /// <summary>
+        /// Id nhóm hàng hóa
+        /// </summary>  
+        public Guid? ItemCategoryId { get; set; }
+        /// <summary>
+        /// Id đơn vị tính
+        /// </summary>  
+        public Guid? UnitId { get; set; }
+        /// <summary>
         /// Nhóm hàng hóa
         /// </summary>  
         public string ItemCategoryName { get; set; } = string.Empty;
@@ -94,8 +103,18 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// </summary>  
         public string UnitName { get; set; } = string.Empty;
         /// <summary>
+        /// Ngày tạo
+        /// </summary>
+        /// CreatedBy: NTTrung (16/07/2023) 
+        public DateTimeOffset? CreatedDate { get; set; }
+        /// <summary>
         /// Danh sách detail
         /// </summary>  
         public List<InventoryResponseDto>? Detail { get; set; }
+
+        //public override Guid GetKey()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

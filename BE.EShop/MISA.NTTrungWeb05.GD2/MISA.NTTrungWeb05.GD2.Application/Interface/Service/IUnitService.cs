@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Interface.Service
 {
-    public interface IUnitService : ICodeService<UnitResponseDto, UnitRequestDto, UnitModel>
+    public interface IUnitService : ICRUDService<UnitResponseDto, UnitRequestDto, UnitModel>
     {
     }
 }

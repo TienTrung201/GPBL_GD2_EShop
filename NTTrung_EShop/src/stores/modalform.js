@@ -6,6 +6,7 @@ export const useModalForm = defineStore('modalform', {
         action: '', //Hành động thêm hoặc sửa(title form)
         method: Enum.EditMode.None, //Method form
         object: {}, //Đối tượng truyền vào form
+        affterSubmitSuccess: async () => {},
     }),
     getters: {
         /**
@@ -39,6 +40,7 @@ export const useModalForm = defineStore('modalform', {
             this.isShow = false;
             this.object = {};
             this.method = Enum.EditMode.None;
+            this.affterSubmitSuccess = async () => {};
         },
         /**
          * Author: Tiến Trung 24/06/2023)
@@ -75,6 +77,13 @@ export const useModalForm = defineStore('modalform', {
          */
         setMethod(method) {
             this.method = method;
+        },
+        /**
+         * Author: Tiến Trung 24/06/2023)
+         * Description: hàm thực thi sau khi lưu thành công
+         */
+        setAffterSuccess(fn) {
+            this.affterSubmitSuccess = fn;
         },
     },
 });

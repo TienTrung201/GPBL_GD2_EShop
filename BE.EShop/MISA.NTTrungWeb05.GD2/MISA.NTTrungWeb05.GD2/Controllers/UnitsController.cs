@@ -12,7 +12,7 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UnitsController : CodeController<UnitResponseDto, UnitRequestDto, UnitModel>
+    public class UnitsController : CRUDController<UnitResponseDto, UnitRequestDto, UnitModel>
     {
         #region Field
         private readonly IUnitExcelService _unitExcelService;

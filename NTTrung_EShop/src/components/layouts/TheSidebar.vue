@@ -19,7 +19,9 @@
                 </li>
                 <li
                     @click="handleNavigateToPage(Enum.Router.Inventory.Name)"
-                    :class="{ active: pathName === Enum.Router.Inventory.Name }"
+                    :class="{
+                        active: pathName === Enum.Router.Inventory.Name || pathName === Enum.Router.InventoryForm.Name,
+                    }"
                     class="menuBar__item"
                 >
                     <a class="menuBar__item-link" :to="Enum.Router.Inventory.Path">
@@ -32,50 +34,36 @@
                     <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Inventory }}</p>
                 </li>
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Department.Name)"
-                    :class="{ active: pathName === Enum.Router.Department.Name }"
+                    @click="handleNavigateToPage(Enum.Router.ItemCategory.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.ItemCategory.Name,
+                    }"
                     class="menuBar__item"
                 >
-                    <a class="menuBar__item-link" :to="Enum.Router.Department.Path">
+                    <a class="menuBar__item-link" :to="Enum.Router.ItemCategory.Path">
                         <p class="menuBar__icon center">
-                            <MISAIcon icon="product"></MISAIcon>
+                            <MISAIcon icon="process"></MISAIcon>
                         </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Department }}</p>
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.ItemCategory }}</p>
                     </a>
 
-                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Department }}</p>
+                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.ItemCategory }}</p>
                 </li>
-
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Employee.Name)"
-                    :class="{ active: pathName === Enum.Router.Employee.Name }"
+                    @click="handleNavigateToPage(Enum.Router.Unit.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.Unit.Name,
+                    }"
                     class="menuBar__item"
                 >
-                    <a class="menuBar__item-link" :to="Enum.Router.Employee.Path">
+                    <a class="menuBar__item-link" :to="Enum.Router.Unit.Path">
                         <p class="menuBar__icon center">
-                            <MISAIcon icon="profile"></MISAIcon>
+                            <MISAIcon icon="calc"></MISAIcon>
                         </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Employee }}</p>
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Unit }}</p>
                     </a>
-                    <div class="titleItem center">
-                        <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Employee }}</p>
-                    </div>
-                </li>
 
-                <li
-                    @click="handleNavigateToPage(Enum.Router.Position.Name)"
-                    :class="{ active: pathName === Enum.Router.Position.Name }"
-                    class="menuBar__item"
-                >
-                    <a class="menuBar__item-link" :to="Enum.Router.Position.Path">
-                        <p class="menuBar__icon center">
-                            <MISAIcon icon="position"></MISAIcon>
-                        </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Position }}</p>
-                    </a>
-                    <div class="titleItem center">
-                        <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Position }}</p>
-                    </div>
+                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Unit }}</p>
                 </li>
             </ul>
         </nav>
@@ -97,12 +85,11 @@ import { useResource } from '../../stores/resource.js';
 import MISAResource from '../../common/resource.js';
 import Enum from '../../common/enum';
 import { useTitleHeader } from '../../stores/title-header';
-import { convertToTitleCase } from '../../common/convert-data';
 const title = useTitleHeader();
 const resource = useResource();
 const pathName = ref(window.location.pathname.split('/')[1]);
 const sideBarElement = ref(null);
-const pageNameOld = ref(Enum.Router.Home.Name)
+const pageNameOld = ref(Enum.Router.Home.Name);
 /**
  * @param {string} tab
  * Author: Tiến Trung (21/06/2023)
@@ -118,16 +105,16 @@ const handleChangeTab = (tab) => {
  */
 const handleNavigateToPage = (pageName) => {
     if (pageNameOld.value !== pageName) {
-        pageNameOld.value = pageName
+        pageNameOld.value = pageName;
         router.push({ name: pageName });
         handleChangeTab(pageName);
-        title.setTitle(MISAResource[resource.langCode]?.SideBar[convertToTitleCase(pageName)]);
-        return
+        title.setTitle(MISAResource[resource.langCode]?.SideBar[pageName]);
+        return;
     }
 };
 onMounted(() => {
-    pageNameOld.value = pathName.value.replace('/', '')
-})
+    pageNameOld.value = pathName.value.replace('/', '');
+});
 /**
  * Author: Tiến Trung (21/06/2023)
  * Description: Hàm đóng mở sideBar

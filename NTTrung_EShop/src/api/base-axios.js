@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Enum from '../common/enum';
 import { useDialog } from '../stores/dialog';
-const langCode = localStorage.getItem('lang') || Enum.Language.VN;
+const langCode = localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN;
 import MISAResource from '../common/resource';
 
 /**
@@ -9,7 +9,7 @@ import MISAResource from '../common/resource';
  * Description: Lấy mã ngôn ngữ
  */
 const getLanguage = () => {
-    const language = localStorage.getItem('lang') || Enum.Language.VN;
+    const language = localStorage.getItem(Enum.LocalStorage.LangCode) || Enum.Language.VN;
     if (language === Enum.Language.VN) {
         return 'vi-VN';
     } else {
@@ -75,7 +75,14 @@ baseAxios.interceptors.response.use(
     function (error) {
         const dialog = useDialog();
         //Nếu có bất kì lỗi nào từ BE trả về thì nhảy hết vào đây
-        dialog.setMethod(Enum.EditMode.None);
+        switch (error.response.data.ErrorCode) {
+            case Enum.ErorCode.NotFoundCode:
+                dialog.setMethod(Enum.EditMode.Add);
+                break;
+            default:
+                dialog.setMethod(Enum.EditMode.None);
+                break;
+        }
         dialog.open({
             title: MISAResource[langCode]?.Dialog?.Warning?.Title,
             content: error.response.data.UserMessage || MISAResource[langCode].ErrorMisaAlert,

@@ -17,3 +17,5 @@ D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrung
 D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Domain\obj\Debug\net6.0\refint\MISA.NTTrungWeb05.GD2.Domain.dll
 D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Domain\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Domain.pdb
 D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Domain\obj\Debug\net6.0\ref\MISA.NTTrungWeb05.GD2.Domain.dll
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Domain\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Domain.Resources.Value.ValueDefault.resources
+D:\Wep\learnCode\Misa\GPBL_GD2_EShop\BE.EShop\MISA.NTTrungWeb05.GD2\MISA.NTTrungWeb05.GD2.Domain\obj\Debug\net6.0\MISA.NTTrungWeb05.GD2.Domain.Resources.Value.ValueDefault.en-US.resources

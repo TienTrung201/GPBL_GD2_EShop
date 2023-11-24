@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
 {
@@ -43,103 +44,17 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// CreatedBy: NTTrung (24/08/2023)
         public override async Task<InventoryModel> CustomResult(InventoryModel inventory)
         {
-            var storedProcedureName = $"Proc_{TableName}_GetDetail";
-            var param = new DynamicParameters();
-            param.Add("@ParentId", inventory.InventoryId);
-
-            var result = await _uow.Connection.QueryAsync<InventoryModel>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
+            var result = await GetDetailByParentId(inventory.InventoryId);
             inventory.Detail = result.ToList();
             return inventory;
         }
-        /// <summary>
-        /// Thêm nhiều
-        /// </summary>
-        /// <paran name="entity">Danh sách bản ghi thêm</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<int> InsertMultipleAsync(List<Inventory> listInventories, Guid? parentId)
+        public async Task<List<InventoryModel>> GetDetailByParentId(Guid uid)
         {
-            var storedProcedureName = $"Proc_Excute";
-            var parameters = new DynamicParameters();
-            var query = new StringBuilder();
-            query.Append($"INSERT INTO Inventory ");
-            var listPropertiesToString = new List<string>();
-            var properties = typeof(Inventory).GetProperties();//Lấy danh sách các thuộc tính của đối tượng
-
-            foreach (var property in properties)
-            {
-                listPropertiesToString.Add(property.Name);
-            }
-            query.Append($"( {string.Join(", ", listPropertiesToString)} ) Values ");
-            int index = 1;
-            listInventories.ForEach((inventory) =>
-            {
-                inventory.ParentId = parentId;
-                query.Append("( ");
-                int indexColumn = 0;
-                listPropertiesToString.ForEach(property =>
-                {
-                    PropertyInfo propertyInfo = inventory.GetType().GetProperty(property);
-                    var value = propertyInfo?.GetValue(inventory);
-                    query.Append($"@{propertyInfo}{index}");
-                    parameters.Add($"@{propertyInfo}{index}", value);
-                    if (indexColumn != listPropertiesToString.Count() - 1)
-                    {
-                        query.Append(", ");
-                    }
-                    indexColumn++;
-                });
-                query.Append("), ");
-            });
-            var queryString = query.ToString();
-            parameters.Add("@QueryString", queryString);
-
-            var result = await _uow.Connection.ExecuteAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
-            return result;
-        }
-        /// <summary>
-        /// Sửa nhiều
-        /// </summary>
-        /// <paran name="entity">Danh sách bản ghi sửa</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<int> UpdateMultipleAsync(List<Inventory> listInventories)
-        {
-            var storedProcedureName = $"Proc_Excute";
-            var parameters = new DynamicParameters();
-            var query = new StringBuilder();
-            var listPropertiesToString = new List<string>();
-            var properties = typeof(Inventory).GetProperties();//Lấy danh sách các thuộc tính của đối tượng
-
-            foreach (var property in properties)
-            {
-                listPropertiesToString.Add(property.Name);
-            }
-
-            int index = 1;
-            listInventories.ForEach((inventory) =>
-            {
-                query.Append("Update Inventory Set ");
-                int indexColumn = 0;
-                listPropertiesToString.ForEach(property =>
-                {
-                    PropertyInfo propertyInfo = inventory.GetType().GetProperty(property);
-                    var value = propertyInfo?.GetValue(inventory);
-                    query.Append($"{propertyInfo} = @{propertyInfo}{index} Where InventoryId = {inventory.GetKey()}");
-                    parameters.Add($"@{propertyInfo}{index}", value);
-                    if (indexColumn != listPropertiesToString.Count() - 1)
-                    {
-                        query.Append(", ");
-                    }
-                    indexColumn++;
-                });
-                query.Append(";");
-            });
-            var queryString = query.ToString();
-            parameters.Add("@QueryString", queryString);
-
-            var result = await _uow.Connection.ExecuteAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
-            return result;
+            var storedProcedureName = $"Proc_{TableName}_GetDetail";
+            var param = new DynamicParameters();
+            param.Add("@ParentId", uid);
+            var result = await _uow.Connection.QueryAsync<InventoryModel>(storedProcedureName, param, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
+            return result.ToList();
         }
         /// <summary>
         /// lấy mã lỗi không hợp lệ
@@ -147,7 +62,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// <paran name="entity">Chuỗi mã lỗi</paran>
         /// <returns>Chuỗi mã không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<string> GetSKUCodeInvalid(string listSKUCodes)
+        public async Task<string> GetSKUCodeInvalidAsync(string listSKUCodes)
         {
             var storedProcedureName = $"Proc_Inventory_CheckListCodes";
             var param = new DynamicParameters();
@@ -163,7 +78,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository
         /// <paran name="entity">Chuỗi mã vạch lõi</paran>
         /// <returns>Chuỗi mã vạch không hợp lệ</returns>
         /// CreatedBy: NTTrung (24/08/2023)
-        public async Task<string> GetBarcodeInvalid(string listBarcodes)
+        public async Task<string> GetBarcodeInvalidAsync(string listBarcodes)
         {
             var storedProcedureName = $"Proc_Inventory_CheckListBarcodes";
             var param = new DynamicParameters();

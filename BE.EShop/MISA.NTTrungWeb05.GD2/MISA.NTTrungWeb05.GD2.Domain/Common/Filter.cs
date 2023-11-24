@@ -22,6 +22,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Common
         // createdby: nttrung (22/08/2023)
         public SortBy? SortBy { get; set; }
         // <summary>
+        // Loại cột đang được sắp xếp
+        // </summary>
+        // createdby: nttrung (22/08/2023)
+        public TypeColumn? TypeColumn { get; set; }
+        // <summary>
         // Trang hiện tại
         // </summary>
         // createdby: nttrung (22/08/2023)

@@ -1,26 +1,63 @@
 <template>
-    <div @mousedown.stop :style="{
-        left: props.positionMenuFilter?.left + 'px',
-        top: props.positionMenuFilter?.bottom + 'px',
-    }" class="wrapper-filter"
-        :class="{ 'filter-select': props.filterType === Enum.TypeDataTable.Show || props.filterType === Enum.TypeDataTable.Business }">
-        <div v-if="props.filterType !== Enum.TypeDataTable.Show && props.filterType !== Enum.TypeDataTable.Business"
-            class="filter__by">
+    <div
+        @mousedown.stop
+        :style="{
+            left: props.positionMenuFilter?.left + 'px',
+            top: props.positionMenuFilter?.bottom + 'px',
+        }"
+        class="wrapper-filter"
+        :class="{
+            'filter-select':
+                props.filterType === Enum.TypeDataTable.Show || props.filterType === Enum.TypeDataTable.Business,
+        }"
+    >
+        <div
+            v-if="props.filterType !== Enum.TypeDataTable.Show && props.filterType !== Enum.TypeDataTable.Business"
+            class="filter__by"
+        >
             <MISASelectFilter v-model:value="filterBySelected" selectEmpty :options="filterByOption"></MISASelectFilter>
         </div>
         <div class="filter__value">
-            <MISADropdown selectEmpty :options="isShowMenu" v-model:value="filterShow"
-                v-if="props.filterType === Enum.TypeDataTable.Show"></MISADropdown>
-            <MISADropdown selectEmpty :options="business" v-model:value="filterBusiness"
-                v-if="props.filterType === Enum.TypeDataTable.Business"></MISADropdown>
+            <MISADropdown
+                selectEmpty
+                :options="isShowMenu"
+                v-model:value="filterShow"
+                v-if="props.filterType === Enum.TypeDataTable.Show"
+            ></MISADropdown>
+            <MISADropdown
+                selectEmpty
+                :options="business"
+                v-model:value="filterBusiness"
+                v-if="props.filterType === Enum.TypeDataTable.Business"
+            ></MISADropdown>
             <!-- :placeholder="MISAResource[resource.langCode]?.Table?.Filter?.ValueFilter" -->
-            <MISADropdown selectEmpty :options="genderSelect" v-model:value="filterGenderSelected"
-                v-if="props.filterType === Enum.TypeDataTable.Gender"></MISADropdown>
-            <MISADatePicker :dateTime="filterDateSelect" v-model="filterDateSelect" posiiton="top"
-                v-if="props.filterType === Enum.TypeDataTable.Date"></MISADatePicker>
-            <MISAInput @enter="handleFilterData" @blur="handleFilterData" :maxLength="50" ref="iInput"
+            <MISADropdown
+                selectEmpty
+                :options="genderSelect"
+                v-model:value="filterGenderSelected"
+                v-if="props.filterType === Enum.TypeDataTable.Gender"
+            ></MISADropdown>
+            <MISADatePicker
+                :dateTime="filterDateSelect"
+                v-model="filterDateSelect"
+                posiiton="top"
+                v-if="props.filterType === Enum.TypeDataTable.Date"
+            ></MISADatePicker>
+            <MISAInput
+                @enter="handleFilterData"
+                @blur="handleFilterData"
+                :maxLength="50"
+                ref="iInput"
                 v-model:value="filterSearch"
-                v-if="props.filterType === Enum.TypeDataTable.Default || props.filterType === Enum.TypeDataTable.Money">
+                v-if="
+                    props.filterType === Enum.TypeDataTable.Default ||
+                    props.filterType === Enum.TypeDataTable.Money ||
+                    props.filterType === Enum.TypeDataTable.Code
+                "
+                :right="props.filterType === Enum.TypeDataTable.Money"
+                :money="props.filterType === Enum.TypeDataTable.Money"
+                :noMoneyDefault="props.filterType === Enum.TypeDataTable.Money"
+            >
             </MISAInput>
         </div>
     </div>
@@ -48,7 +85,7 @@ const props = defineProps({
     //Danh sách khóa đã được lọc
     listKeyFilterSelected: Array,
 });
-const inputSearchOld = ref('')
+const inputSearchOld = ref('');
 const iInput = ref(null);
 const buttonFilter = ref(null);
 const filterByOption = ref([
@@ -113,8 +150,8 @@ const business = ref([
 ]);
 const filterDateSelect = ref(null);
 const filterGenderSelected = ref('1');
-const filterShow = ref(Enum.FilterBy.All)
-const filterBusiness = ref(Enum.FilterBy.All)
+const filterShow = ref(Enum.FilterBy.All);
+const filterBusiness = ref(Enum.FilterBy.All);
 const filterBySelected = ref(Enum.FilterBy.Contain);
 const filterSearch = ref('');
 
@@ -123,14 +160,13 @@ const filterSearch = ref('');
  * Description: hàm gửi tiêu chí lọc
  */
 const emitFilter = (value) => {
-    const isFilter = value.length === 0 ? false : true
+    const isFilter = value.length === 0 ? false : true;
     emit('filter-data', {
         property: props.keyName,
         ['value']: value,
         operator: filterBySelected.value,
-        isFilter: isFilter
+        isFilter: isFilter,
     });
-
 };
 /**
  * Author: Tiến Trung (02/08/2023)
@@ -189,21 +225,10 @@ onMounted(() => {
             case Enum.TypeDataTable.Money:
                 filterByOption.value = [
                     {
-                        option: MISAResource[resource.langCode]?.Table?.Filter?.Contain,
-                        value: Enum.FilterBy.Contain,
-                    },
-                    {
-                        option: MISAResource[resource.langCode]?.Table?.Filter?.NotContain,
-                        value: Enum.FilterBy.NotContain,
-                    },
-                    {
                         option: MISAResource[resource.langCode]?.Table?.Filter?.Equal,
                         value: Enum.FilterBy.Equal,
                     },
-                    {
-                        option: MISAResource[resource.langCode]?.Table?.Filter?.NotEqual,
-                        value: Enum.FilterBy.NotEqual,
-                    },
+
                     {
                         option: MISAResource[resource.langCode]?.Table?.Filter?.Greater,
                         value: Enum.FilterBy.Greater,
@@ -212,10 +237,8 @@ onMounted(() => {
                         option: MISAResource[resource.langCode]?.Table?.Filter?.Smaller,
                         value: Enum.FilterBy.Smaller,
                     },
-
-
                 ];
-                filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Contain;
+                filterBySelected.value = props.filterBy ? props.filterBy : Enum.FilterBy.Equal;
                 filterSearch.value = props.filterValue ? props.filterValue : '';
                 break;
 
@@ -235,63 +258,70 @@ onMounted(() => {
  */
 const handleFilterData = (value) => {
     if (value !== inputSearchOld.value) {
-        inputSearchOld.value = value
+        inputSearchOld.value = value;
         emitFilter(value);
     }
-}
+};
 /**
  * Author: Tiến Trung (24/08/2023)
  * Description: watch theo dõi khi lựa chọn lọc thay đổi thì emit
  */
-watch(() => filterBySelected.value, () => {
-    if (inputSearchOld.value.trim('').length !== 0) {
-        emitFilter(inputSearchOld.value);
-    }
-})
+watch(
+    () => filterBySelected.value,
+    () => {
+        if (inputSearchOld.value.trim('').length !== 0) {
+            emitFilter(inputSearchOld.value);
+        }
+    },
+);
 /**
  * Author: Tiến Trung (24/08/2023)
  * Description: watch theo dõi khi lựa chọn lọc hiển thị thay đổi
  */
-watch(() => filterShow.value, () => {
-    if (filterShow.value === Enum.FilterBy.All) {
-        emit('filter-data', {
-            property: props.keyName,
-            ['value']: 'helo',
-            operator: Enum.FilterBy.AllData,
-            isFilter: true
-        });
-    } else {
-        emit('filter-data', {
-            property: props.keyName,
-            ['value']: filterShow.value,
-            operator: Enum.FilterBy.Equal,
-            isFilter: true
-        });
-    }
-
-})
+watch(
+    () => filterShow.value,
+    () => {
+        if (filterShow.value === Enum.FilterBy.All) {
+            emit('filter-data', {
+                property: props.keyName,
+                ['value']: 'helo',
+                operator: Enum.FilterBy.AllData,
+                isFilter: true,
+            });
+        } else {
+            emit('filter-data', {
+                property: props.keyName,
+                ['value']: filterShow.value,
+                operator: Enum.FilterBy.Equal,
+                isFilter: true,
+            });
+        }
+    },
+);
 /**
  * Author: Tiến Trung (24/08/2023)
  * Description: watch theo dõi khi lựa chọn lọc trạng thái kinh doanh thay đổi
  */
-watch(() => filterBusiness.value, () => {
-    if (filterBusiness.value === Enum.FilterBy.All) {
-        emit('filter-data', {
-            property: props.keyName,
-            ['value']: '',
-            operator: Enum.FilterBy.AllData,
-            isFilter: true
-        });
-    } else {
-        emit('filter-data', {
-            property: props.keyName,
-            ['value']: filterBusiness.value,
-            operator: Enum.FilterBy.Equal,
-            isFilter: true
-        });
-    }
-
-})
+watch(
+    () => filterBusiness.value,
+    () => {
+        if (filterBusiness.value === Enum.FilterBy.All) {
+            emit('filter-data', {
+                property: props.keyName,
+                ['value']: '',
+                operator: Enum.FilterBy.AllData,
+                isFilter: true,
+            });
+        } else {
+            emit('filter-data', {
+                property: props.keyName,
+                ['value']: filterBusiness.value,
+                operator: Enum.FilterBy.Equal,
+                isFilter: true,
+            });
+        }
+    },
+);
 </script>
 <style lang="scss">
 @import './filter-table.scss';

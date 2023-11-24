@@ -13,7 +13,7 @@
     align-items: flex-start;
     justify-content: space-between;
     padding: 16px;
-    width: 550px;
+    min-width: 450px;
     box-shadow: 0 0 20px var(--grey-color5);
     border-radius: 4px;
     // animation: to_left 0.3s ease-in-out, fadeOut linear 0.5s 4.5s forwards;
@@ -99,12 +99,14 @@
     }
 }
 .toast-error {
-    flex-direction: column;
+    // flex-direction: column;
+    // width: 520px;
+    align-items: center;
     .toast-title {
         color: var(--red-color5);
     }
     .right-toast {
-        padding-left: 86px;
+        // padding-left: 86px;
     }
 }
 .toast-warning {

@@ -55,6 +55,9 @@ const props = defineProps({
     isName: { type: Boolean, default: false }, // Nếu là kiểu nhập tên thì In Hoa chữ cái đầu
     row: { type: Boolean, default: false },
     class: { type: String, default: '' },
+    maxLength: {
+        type: Number,
+    },
 });
 const input = ref(null);
 /**
@@ -70,8 +73,11 @@ const onBlur = (e) => {
  * Description: hàm để binding Input
  */
 const handleChangeInput = (e) => {
-    // Nếu là chữ thì không cho nhập khi truyền props chỉ nhập số
-
+    //Nếu có max length thì
+    if (e.target.value.length > props.maxLength) {
+        input.value.value = props.value;
+        return;
+    }
     emit('update:value', e.target.value);
     emit('input-validation', e.target.value);
 };
@@ -109,7 +115,6 @@ defineExpose({ autoFocus });
     flex-direction: row;
     align-items: flex-start;
 
-
     p {
         min-width: 170px;
     }
@@ -117,5 +122,14 @@ defineExpose({ autoFocus });
 
 .error-message {
     bottom: -20px;
+}
+.error-message {
+    position: absolute;
+    // margin-top: 8px;
+    color: var(--red-color5);
+    font-size: 12px;
+    // bottom: -8px;
+    bottom: -20px;
+    left: 0;
 }
 </style>

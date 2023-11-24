@@ -19,6 +19,12 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Base
         /// </summary>
         /// <returns>Mã bản ghi</returns>
         /// CreatedBy: NTTrung (17/07/2023)
-        Task<string> GetNewCodeAsync();
+        Task<string> GetNewCodeAsync(string prefix);
+        /// <summary>
+        /// Hàm update mã mới
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        Task UpdateCodeAsync(string prefix);
     }
 }

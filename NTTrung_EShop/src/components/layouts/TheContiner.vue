@@ -1,8 +1,12 @@
 <template lang="">
     <div class="continer"><slot></slot></div>
+    <Teleport to="#app">
+        <MISADialog v-if="dialog.isShow"></MISADialog>
+    </Teleport>
 </template>
-<script>
-export default {};
+<script setup>
+import { useDialog } from '../../stores/dialog';
+const dialog = useDialog();
 </script>
 <style lang="css">
 .continer {

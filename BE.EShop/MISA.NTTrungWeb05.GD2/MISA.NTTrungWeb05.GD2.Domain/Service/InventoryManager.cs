@@ -43,7 +43,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         public async Task CheckDublicateBarcode(string newCode, string? oldCode)
         {
             var entity = await _inventoryRepository.GetByBarcodeAsync(newCode);
-            if (entity != null && entity.BarCode != oldCode)
+            if (entity != null && entity.Barcode != oldCode)
             {
                 throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, newCode), (int)ErrorCode.DuplicateCode);
             }
@@ -64,10 +64,10 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         /// CreatedBy: NTTrung (24/08/2023)
         public async Task CheckDublicateListBarcodes(string listCode)
         {
-            var result = await _inventoryRepository.GetBarcodeInvalid(listCode);
+            var result = await _inventoryRepository.GetBarcodeInvalidAsync(listCode);
             if (result != null)
             {
-                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCode);
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
             }
         }
         /// <summary>
@@ -77,10 +77,10 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Service
         /// CreatedBy: NTTrung (24/08/2023)
         public async Task CheckDublicateListCodes(string listBarcode)
         {
-            var result = await _inventoryRepository.GetSKUCodeInvalid(listBarcode);
+            var result = await _inventoryRepository.GetSKUCodeInvalidAsync(listBarcode);
             if (result != null)
             {
-                throw new DuplicateCodeException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCode);
+                throw new DuplicateCodeDetailException(string.Format(ErrorMessage.DuplicateError, result), (int)ErrorCode.DuplicateCodeDetail);
             }
         }
     }

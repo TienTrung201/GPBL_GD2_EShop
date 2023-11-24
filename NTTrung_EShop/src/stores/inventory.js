@@ -3,8 +3,9 @@ import Enum from '../common/enum';
 import router from '../router';
 export const useInventory = defineStore('inventory', {
     state: () => ({
+        dataSelect: {},
         uid: '',
-        editMode: Enum.EditMode.Add,
+        editMode: Enum.EditMode.None,
         submitForm: () => {}, //đây là hàm được gán vào dialog
     }),
 
@@ -16,7 +17,11 @@ export const useInventory = defineStore('inventory', {
         openForm(uid, editMode) {
             this.editMode = editMode;
             this.uid = uid;
-            router.push({ name: Enum.Router.InventoryForm.Name });
+            if (uid) {
+                router.push({ name: Enum.Router.InventoryForm.NameDetail, params: { id: this.uid } });
+            } else {
+                router.push({ name: Enum.Router.InventoryForm.Name });
+            }
         },
         /**
          * Author: Tiến Trung 18/08/2023)
@@ -26,6 +31,13 @@ export const useInventory = defineStore('inventory', {
             this.uid = '';
             this.editMode = Enum.EditMode.None;
             router.push({ name: Enum.Router.Inventory.Name });
+        },
+        /**
+         * Author: Tiến Trung 27/08/2023)
+         * Description: đóng form trở về danh sách
+         */
+        setDataSelect(data) {
+            this.dataSelect = data;
         },
     },
 });

@@ -1,11 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import EmployeeList from '../Views/employee/EmployeeList.vue';
-import ProductList from '../Views/product/ProductList.vue';
-import ImportExcel from '../views/excel/ImportExcel.vue';
-import DepartmentList from '../views/department/DepartmentList.vue';
-import PositionList from '../views/position/PositionList.vue';
 import HomePage from '../views/home/HomePage.vue';
 import Inventory from '../views/inventory/InventoryList.vue';
+import ItemCategory from '../views/item-category/ItemCategoryList.vue';
+import Unit from '../views/unit/UnitList.vue';
 import InventoryForm from '../views/inventory/InventoryForm.vue';
 import Enum from '../common/enum';
 const router = createRouter({
@@ -17,40 +14,37 @@ const router = createRouter({
             component: HomePage,
         },
         {
-            path: Enum.Router.Employee.Path,
-            name: Enum.Router.Employee.Name,
-            component: EmployeeList,
-        },
-        {
-            path: Enum.Router.Department.Path,
-            name: Enum.Router.Department.Name,
-            component: DepartmentList,
-        },
-        {
-            path: '/product',
-            name: 'product',
-            component: ProductList,
-        },
-        {
-            path: Enum.Router.Position.Path,
-            name: Enum.Router.Position.Name,
-            component: PositionList,
-        },
-        {
-            path: '/excel',
-            name: 'excel',
-            component: ImportExcel,
-        },
-        {
             path: Enum.Router.Inventory.Path,
             name: Enum.Router.Inventory.Name,
             component: Inventory,
         },
         {
+            path: Enum.Router.ItemCategory.Path,
+            name: Enum.Router.ItemCategory.Name,
+            component: ItemCategory,
+        },
+        {
+            path: Enum.Router.Unit.Path,
+            name: Enum.Router.Unit.Name,
+            component: Unit,
+        },
+        {
             path: Enum.Router.InventoryForm.Path,
             name: Enum.Router.InventoryForm.Name,
             component: InventoryForm,
+            children: [
+                {
+                    path: Enum.Router.InventoryForm.PathDetail,
+                    name: Enum.Router.InventoryForm.NameDetail,
+                    component: InventoryForm,
+                },
+            ],
         },
+        // {
+        //     path: Enum.Router.InventoryForm.PathChildren,
+        //     name: Enum.Router.InventoryForm.Name,
+        //     component: InventoryForm,
+        // },
     ],
 });
 

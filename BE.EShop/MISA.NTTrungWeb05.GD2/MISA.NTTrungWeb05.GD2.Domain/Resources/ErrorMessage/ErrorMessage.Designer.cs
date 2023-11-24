@@ -70,7 +70,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mã {0} đã tồn tại trong hệ thống, vui lòng kiểm tra lại..
+        ///   Looks up a localized string similar to Mã &lt;b&gt;{0}&lt;/b&gt; đã tồn tại trong hệ thống, vui lòng kiểm tra lại..
         /// </summary>
         public static string DuplicateError {
             get {
@@ -115,11 +115,29 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mã {0} có xung đột vui lòng xóa các phát sinh liên quan..
+        ///   Looks up a localized string similar to Mã &lt;b&gt;{0}&lt;/b&gt; có xung đột vui lòng xóa các phát sinh liên quan..
         /// </summary>
         public static string ExistedConstrain {
             get {
                 return ResourceManager.GetString("ExistedConstrain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Định dạng file phải là (.jpg, .jpeg, .png, .gif).
+        /// </summary>
+        public static string ImgFileErrorExtension {
+            get {
+                return ResourceManager.GetString("ImgFileErrorExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dung lượng ảnh phải nhỏ hơn 5MB.
+        /// </summary>
+        public static string ImgFileErrorSize {
+            get {
+                return ResourceManager.GetString("ImgFileErrorSize", resourceCulture);
             }
         }
         
@@ -133,7 +151,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Không tìm thấy {0}..
+        ///   Looks up a localized string similar to Không tìm thấy &lt;b&gt;{0}&lt;/b&gt;..
         /// </summary>
         public static string NotFound {
             get {

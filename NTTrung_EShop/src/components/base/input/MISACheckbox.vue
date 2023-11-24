@@ -9,12 +9,14 @@
             id=""
             :checked="props.valueCheckbox"
             :value="props.valueCheckbox"
+            ref="input"
         />
         <div class="checkmark"></div>
         <slot></slot>
     </label>
 </template>
 <script setup>
+import { ref } from 'vue';
 const emits = defineEmits(['update:value', 'change-checkbox']);
 const props = defineProps({
     lable: {
@@ -34,6 +36,7 @@ const props = defineProps({
     },
     custom: { type: Boolean, default: false },
 });
+const input = ref(null);
 /**
  * Author: Tiến Trung (12/07/2023)
  * Description: Emit binding
@@ -42,6 +45,14 @@ const changeCheckbox = (e) => {
     emits('update:value', e.target.checked);
     emits('change-checkbox', e.target.checked);
 };
+/**
+ * Author: Tiến Trung (13/07/2023)
+ * Description: Hàm chủ động focus vào input
+ */
+const autoFocus = () => {
+    input.value.focus();
+};
+defineExpose({ autoFocus });
 </script>
 <style lang="scss">
 @import './checkbox.scss';

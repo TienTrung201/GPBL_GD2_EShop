@@ -5,19 +5,26 @@
     background-color: #fff;
     justify-content: space-between;
     row-gap: 0;
-    overflow: auto;
+    overflow: hidden;
     .wrapper-form {
         padding-left: 8px;
     }
     p {
         font-size: 13px;
     }
+    .wrapper-input {
+        max-width: 240px;
+    }
     .input-text-base {
         height: 32px;
-        max-width: 240px;
-        font-size: 12px;
-    }
 
+        font-size: 13px;
+    }
+    .label-input-row {
+        p {
+            min-width: 170px;
+        }
+    }
     .custom-combobox {
         height: 32px;
         max-width: 240px;
@@ -69,7 +76,7 @@
         // flex-direction: column;
         column-gap: 12px;
         .wrapper-image {
-            border: 1px var(--primary-color) dashed;
+            border: 1px #5fa2dd dashed;
             width: 220px;
             height: 200px;
             position: relative;
@@ -79,24 +86,43 @@
                 visibility: hidden;
             }
             .image-file {
-                max-width: 100px;
-                max-height: 100px;
+                max-width: 150px;
+                max-height: 150px;
                 position: absolute;
-                top: 50%;
+                top: 45%;
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
-            .btn-file {
+            .wrapper-button-file {
                 position: absolute;
                 bottom: 5px;
                 left: 50%;
                 transform: translateX(-50%);
-                width: 40px;
+
                 height: 24px;
+                display: flex;
+                column-gap: 10px;
+            }
+            .btn-file {
                 border-radius: 3px;
+                width: 40px;
                 background-color: var(--primary-color);
                 color: #fff;
+                // outline: none;
                 cursor: pointer;
+                // background-color: #5fa2dd;
+                border: none;
+            }
+            .btn-close {
+                background-color: #fff;
+
+                .ms-icon {
+                    background-color: var(--primary-color);
+                    transform: scale(0.8);
+                }
+            }
+            .btn-close:hover {
+                border: 1px solid var(--primary-color);
             }
             .btn-select__list-image {
                 position: absolute;

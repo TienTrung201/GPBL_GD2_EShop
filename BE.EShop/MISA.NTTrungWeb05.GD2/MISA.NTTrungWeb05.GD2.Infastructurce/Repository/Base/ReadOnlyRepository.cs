@@ -42,7 +42,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         /// <summary>
         /// Lấy bản ghi trong trang và lọc
         /// </summary>
-        /// <paran name="entity">List Filter</paran>
+        /// <paran name="filter">List Filter</paran>
         /// <returns>Danh sách bản ghi trong trang</returns>
         /// CreatedBy: NTTrung (14/07/2023)
         /// <summary>
@@ -50,48 +50,46 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
         {
             var storedProcedureName = $"Proc_Filter";
             var parameters = new DynamicParameters();
-            var query = new StringBuilder();
-            query.Append($"Select SQL_CALC_FOUND_ROWS * from view_{TableName.ToLower()} as view ");
+            var queryWhere = new StringBuilder();
+            var queryOrder = new StringBuilder();
+            var queryLimit = new StringBuilder();
+            var queryCode = new StringBuilder();
             int indexList = 0;
-            if (filter.Filter != null)
+            if (filter.Filter?.Any() == true)
             {
-                if (filter.Filter.Count() > 0)
-                {
-                    query.Append("Where ");
-                }
-
+                queryWhere.Append("Where ");
                 int lengFilterProperties = filter.Filter.Count();
                 filter.Filter.ForEach((filter) =>
                 {
                     switch (filter.Operator)
                     {
                         case Operator.EQual:
-                            query.Append($"view.{filter.Property} = '{filter.Value}' ");
+                            queryWhere.Append($"view.{filter.Property} = '{filter.Value.Replace("'", "''")}' ");
                             break;
                         case Operator.NotEqual:
-                            query.Append($"view.{filter.Property} != '{filter.Value}' ");
+                            queryWhere.Append($"view.{filter.Property} != '{filter.Value.Replace("'", "''")}' ");
                             break;
                         case Operator.Contain:
-                            query.Append($"view.{filter.Property} Like '%{filter.Value}%' ");
+                            queryWhere.Append($"view.{filter.Property} Like '%{filter.Value.Replace("'", "''")}%' ");
                             break;
                         case Operator.NotContain:
-                            query.Append($"view.{filter.Property} Not Like '%{filter.Value}%' ");
+                            queryWhere.Append($"view.{filter.Property} Not Like '%{filter.Value.Replace("'", "''")}%' ");
                             break;
                         case Operator.Smaller:
-                            query.Append($"view.{filter.Property} < '{filter.Value}' ");
+                            queryWhere.Append($"view.{filter.Property} < '{filter.Value.Replace("'", "''")}' ");
                             break;
                         case Operator.Greater:
-                            query.Append($"view.{filter.Property} > '{filter.Value}' ");
+                            queryWhere.Append($"view.{filter.Property} > '{filter.Value.Replace("'", "''")}' ");
                             break;
                         case Operator.AllData:
-                            query.Append($"view.{filter.Property} = true or view.{filter.Property} = false ");
+                            queryWhere.Append($"(view.{filter.Property} = true or view.{filter.Property} = false) ");
                             break;
                         default:
                             break;
                     }
                     if (indexList != lengFilterProperties - 1)
                     {
-                        query.Append("And ");
+                        queryWhere.Append("And ");
                     }
                     indexList++;
                 });
@@ -99,22 +97,49 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
 
             if (!string.IsNullOrEmpty(filter.PropertySort))
             {
-                query.Append($"Order by view.{filter.PropertySort} ");
+                switch (filter.TypeColumn)
+                {
+                    case TypeColumn.Code:
+                        string filterBy = "Desc";
+                        if (filter.SortBy == SortBy.Asc)
+                        {
+                            filterBy = "Asc";
+                        }
+                        queryOrder.Append($"Order by `Prefix` {filterBy}, `ValueCode` ");
+                        queryCode.Append($", REGEXP_REPLACE( view.{filter.PropertySort},'[^a-zA-Z]' , '') AS `Prefix`, ");
+                        queryCode.Append($"CAST( REGEXP_REPLACE( view.{filter.PropertySort},'[^0-9]' , '') AS UNSIGNED ) AS `ValueCode` ");
+                        break;
+                    default:
+                        queryOrder.Append($"Order by view.{filter.PropertySort} ");
+                        break;
+                }
+
                 switch (filter.SortBy)
                 {
                     case SortBy.Desc:
-                        query.Append($"Desc ");
+                        queryOrder.Append($"Desc ");
                         break;
                     case SortBy.Asc:
-                        query.Append($"Asc ");
+                        queryOrder.Append($"Asc ");
                         break;
                     default:
                         break;
                 }
             }
-            query.Append($"Limit {filter.PageSize} Offset {(filter.CurrentPage - 1) * filter.PageSize}");
-            var queryString = query.ToString();
-            parameters.Add("@QueryString", queryString);
+            if (filter.CurrentPage < 1)
+            {
+                filter.CurrentPage = 1;
+            }
+            queryLimit.Append($"Limit {filter.PageSize} Offset {(filter.CurrentPage - 1) * filter.PageSize}");
+            var queryLimitString = queryLimit.ToString();
+            var queryWhereString = queryWhere.ToString();
+            var queryOrderString = queryOrder.ToString();
+            var queryCodeString = queryCode.ToString();
+            parameters.Add("@QueryLimit", queryLimitString);
+            parameters.Add("@QueryWhere", queryWhereString);
+            parameters.Add("@QueryOrder", queryOrderString);
+            parameters.Add("@QueryCode", queryCodeString);
+            parameters.Add("@TableName", TableName.ToLower());
             parameters.Add("@TotalRecords", dbType: DbType.Int32, direction: ParameterDirection.Output);
             var listData = await _uow.Connection.QueryAsync<TModel>(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
             var totalRecords = parameters.Get<int>("@TotalRecords");

@@ -1,28 +1,37 @@
 <template lang="">
     <label class="label-input" :class="{ 'label-input-row': props.row }"
         ><p>{{ props.label }}<span v-if="require" :style="{ color: '#E60000', marginLeft: '4px' }">*</span></p>
-        <div class="wrapper-input">
+        <div class="wrapper-input error">
             <input
                 :autocomplete="false"
-                @focus="input.select()"
+                @focus="handleFocusInput"
                 ref="input"
                 :class="[
                     'input-text-base',
                     { 'ntt-success': props.isSuccess },
-                    { readonly: props.readonly },
+                    { readonly: readonly },
                     { validate: props.validate },
                     { 'ntt-error': errorMessage },
+                    { 'text-align--right': right },
+                    { noborder: noborder },
                 ]"
                 :type="type"
                 :name="''"
                 :placeholder="props.placeholder"
                 :readonly="props.readonly"
+                :tabindex="props.readonly ? -1 : null"
                 :value="value"
                 @input="handleChangeInput"
                 @blur="onBlur"
                 @keydown.enter="onEnter"
                 :title="tooltip"
             />
+            <div v-if="errorMessage && errorBottom === false" class="error-wrapper">
+                <div class="error-wrapper__icon center">
+                    <img src="../../../assets/icons/error-icon-circle.webp" alt="" />
+                </div>
+                <span :class="{ 'show-message': showMessage }" class="error-message">{{ errorMessage }}</span>
+            </div>
             <span v-if="props.isSuccess">
                 <img class="success-icon" src="../../../assets/icons/check-circle.svg" alt="" />
             </span>
@@ -32,15 +41,17 @@
                 </svg>
             </div>
         </div>
-        <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
+        <span v-if="errorMessage && errorBottom === true" class="error-message-bottom">{{ errorMessage }}</span>
     </label>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
+import { convertCurrency } from '../../../common/convert-data';
 
 const emit = defineEmits(['update:value', 'input-validation', 'blur', 'enter']);
 const props = defineProps({
     name: { String, default: () => 'name' }, //name input
+    right: { type: Boolean, default: false }, // text ở bên phải
     isSuccess: { Boolean, default: () => null },
     label: { String, default: () => '' }, //label input
     validate: { Boolean, default: () => false }, //có validate thì input nhập vào có màu
@@ -58,32 +69,61 @@ const props = defineProps({
         type: Number,
     },
     row: { type: Boolean, default: false },
+    autoFocusMount: { type: Boolean, default: false }, //Khi mount thì input tự động focus
+    money: { type: Boolean, default: false }, //Định dạng tiền tệ
+    noMoneyDefault: { type: Boolean, default: false }, //default thì k có giá là 0
+    notDelete: { type: Boolean, default: false }, //Định dạng tiền tệ
+    errorBottom: { type: Boolean, default: false }, //Error message ở dưới
+    noborder: { type: Boolean, default: false }, //input không có border
 });
 const input = ref(null);
+const oldValue = ref(props.value);
+const showMessage = ref(false);
+/**
+ * Author: Tiến Trung (29/06/2023)
+ * Description: hàm sự kiện focus vào input
+ */
+const handleFocusInput = () => {
+    if (!props.readonly) {
+        input.value.select();
+        showMessage.value = true;
+    }
+};
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm sự kiện blur
  */
 const onBlur = (e) => {
     try {
-        emit('blur', e.target.value);
+        if (e.target.value.trim('').length === 0 && props.notDelete) {
+            emit('update:value', oldValue.value);
+            emit('blur', oldValue.value, oldValue.value);
+        } else {
+            emit('blur', e.target.value, oldValue.value);
+        }
+
         if (props.isName) {
             const wordsUpperCase = convertToTitleCase(e.target.value);
             emit('update:value', wordsUpperCase);
         }
+        showMessage.value = false;
     } catch (error) {
         console.log(error);
     }
 };
+/**
+ * Author: Tiến Trung (29/06/2023)
+ * Description: hàm sự kiện khi enter
+ */
 const onEnter = (e) => {
     emit('enter', e.target.value);
-}
+};
 /**
  * Author: Tiến Trung (29/06/2023)
  * Description: hàm để binding Input
  */
 const handleChangeInput = (e) => {
-    //Nếu có max length thì
+    //Nếu có max length thì không cho nhập nữa
     if (e.target.value.length > props.maxLength) {
         input.value.value = props.value;
         return;
@@ -95,9 +135,26 @@ const handleChangeInput = (e) => {
         } else {
             input.value.value = props.value;
         }
+    } else if (props.money) {
+        if (e.target.value.trim('').length === 0) {
+            if (props.noMoneyDefault) {
+                emit('update:value', '');
+                emit('input-validation', '');
+            } else {
+                emit('update:value', '0');
+                emit('input-validation', '0');
+            }
+        }
+        const value = e.target.value.replace(/\./g, '');
+        if (/^\d+$/.test(value)) {
+            emit('update:value', convertCurrency(Number(value)));
+            emit('input-validation', convertCurrency(Number(value)), convertCurrency(Number(oldValue.value)));
+        } else {
+            input.value.value = props.value;
+        }
     } else {
         emit('update:value', e.target.value);
-        emit('input-validation', e.target.value);
+        emit('input-validation', e.target.value, oldValue.value);
     }
     // Nếu là chữ thì không cho nhập khi truyền props chỉ nhập số
 };
@@ -107,7 +164,11 @@ const handleChangeInput = (e) => {
  * động focus vào input có prop focus
  */
 onMounted(() => {
+    oldValue.value = props.value;
     if (props.focus) {
+        autoFocus();
+    }
+    if (props.autoFocusMount) {
         autoFocus();
     }
 });

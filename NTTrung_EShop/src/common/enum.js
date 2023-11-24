@@ -1,4 +1,8 @@
 const Enum = {
+    LocalStorage: {
+        LangCode: 'lang',
+        PageSize: 'pagesize',
+    },
     ApiMethod: {
         GET: 1,
         POST: 2,
@@ -22,8 +26,10 @@ const Enum = {
         Down: 40,
         Enter: 13,
         S: 83,
+        C: 67,
         ESC: 27,
         D: 68,
+        E: 69,
         Insert: 45,
         Delete: 46,
         Ctrl1: 49,
@@ -41,50 +47,59 @@ const Enum = {
         Default: 3,
         Show: 4,
         Business: 5,
+        Code: 6,
     },
     KeyboardShortcuts: {
         CtrlShiftS: 'Ctrl + Shift + S',
+        CtrlShiftC: 'Ctrl + Shift + C',
         CtrlS: 'Ctrl + S',
         Esc: 'Esc',
         CtrlD: 'Ctrl + D',
+        CtrlE: 'Ctrl + E',
+        CtrlC: 'Ctrl + C',
         Ctrl1: 'Ctrl + 1',
         Enter: 'Enter',
     },
     Router: {
-        Employee: {
-            Name: 'employee',
-            Path: '/employee',
-        },
-        Position: {
-            Name: 'position',
-            Path: '/position',
-        },
-        Department: {
-            Name: 'department',
-            Path: '/department',
-        },
         Home: {
-            Name: 'home',
+            Name: 'Home',
             Path: '/',
         },
         Inventory: {
-            Name: 'inventory',
-            Path: '/inventory',
+            Name: 'Inventory',
+            Path: '/Inventory',
             Api: '/inventories',
         },
         InventoryForm: {
             Name: 'inventory-form',
+            NameDetail: 'inventory-form-detail',
             Path: '/inventory-form',
+            PathDetail: ':id',
+        },
+        ItemCategory: {
+            Name: 'ItemCategory',
+            Path: '/ItemCategory',
+            Api: '/ItemCategories',
+        },
+        Unit: {
+            Name: 'Unit',
+            Path: '/Unit',
+            Api: '/Units',
+        },
+        Picture: {
+            Api: '/Pictures',
         },
     },
     ErorCode: {
         ExistedConstrain: 1003, //Có phát snh dữ liệu liên quan
         DuplicateCode: 1002, //Trùng mã
+        DuplicateCodeDetail: 1005, //Trùng mã detail
         NotFoundCode: 1001, //Không tìm thấy
         ErrorServerCode: 1000, //Lỗi Server
     },
     RegExp: {
         Code: /[A-Za-z]{1,2}-\d{4,}/g,
+        Guid: /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
     },
     ButtonType: {
         Pri: 'pri',
@@ -93,6 +108,11 @@ const Enum = {
         Link: 'link',
         Icon: 'icon',
         Danger: 'danger',
+    },
+    Icon: {
+        Success: 'success',
+        Error: 'error',
+        Info: 'info',
     },
     AlignColumn: {
         Center: 0,
@@ -123,6 +143,12 @@ const Enum = {
     TypeProperties: {
         Color: 'color',
         Size: 'size',
+    },
+    MaxLength: {
+        Money: 18,
+        Code: 20,
+        Default: 100,
+        Max: 255,
     },
 };
 export default Enum;

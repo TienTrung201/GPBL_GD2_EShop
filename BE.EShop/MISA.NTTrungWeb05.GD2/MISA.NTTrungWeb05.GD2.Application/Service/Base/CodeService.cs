@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using MISA.NTTrungWeb05.GD2.Application.Dtos;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Base;
+using MISA.NTTrungWeb05.GD2.Domain.Entity;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Base;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using System;
@@ -12,7 +14,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
 {
     public abstract class CodeService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>
     : CRUDService<TEntity, TModel, TEntityResponseDto, TEntityRequestDto>,
-        ICodeService<TEntityResponseDto, TEntityRequestDto, TModel>
+        ICodeService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto :BaseDto where TEntity : BaseAudiEntity
 
     {
         #region Fields
@@ -30,9 +32,9 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// </summary>
         /// <returns>Mã code mới</returns>
         /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<string> GetNewCodeAsync()
+        public async Task<string> GetNewCodeAsync(string prefix)
         {
-            var newCode = await _codeRepository.GetNewCodeAsync();
+            var newCode = await _codeRepository.GetNewCodeAsync(prefix);
             return newCode;
         }
         #endregion
