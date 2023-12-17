@@ -9,15 +9,15 @@
     --background-input-hover-color: #f6f6f6;
     --background-color: #f7f7f7;
     /* --text-primary-color: #212121; */
-    --primary-color: #1e235a;
-    --button-default-color: #2b3173;
-    --button-hover-color: #6b6f9d;
+    --primary-color: #304d30;
+    --button-default-color: #304d30;
+    --button-hover-color: #82a382;
     /* --primary-color: #007aff; */
 
-    --sidebar-background: #2b3173;
-    --sidebar-header: #1e235a;
-    --sidebar-active-background: #1e235a;
-    --sidebar-hover-background: #1e235a;
+    --sidebar-background: #304d30;
+    --sidebar-header: #304d30;
+    --sidebar-active-background: #ffffff;
+    --sidebar-hover-background: #ffffff;
     --white-color: #fff;
     --border-color: #e1e1e1;
     --border-input-color: #6500ff;

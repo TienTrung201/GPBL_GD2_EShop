@@ -15,11 +15,12 @@
 
 .menuBar {
     // padding: 20px 12px 0 12px;
-
+    display: flex;
+    column-gap: 40px;
     .menuBar__item {
         display: flex;
         font-size: 1.5rem;
-        height: 40px;
+        height: 60px;
         // border-radius: 5px;
         margin-bottom: 4px;
         transition: 0.1s ease-in-out;
@@ -28,6 +29,7 @@
         white-space: nowrap;
         flex-shrink: 0;
         padding: 0 12px;
+
         // &::after {
         //     content: '';
         //     width: 100%;
@@ -46,7 +48,7 @@
             display: flex;
             width: 100%;
             align-items: center;
-
+            transform: translateY(3px);
             .menuBar__icon {
                 padding: 0 12px 0 0;
                 // width: 46px;
@@ -60,27 +62,14 @@
             }
 
             .menuBar__content {
-                color: var(--text-primary-color-white);
-                font-size: 12px;
+                color: #000;
+                font-size: 14px;
             }
         }
 
         &:hover {
             background-color: var(--sidebar-hover-background);
             //   border: solid 1px var(--primary-color);
-            .menuBar__content {
-                color: #fff;
-            }
-
-            .iconMenuBar {
-                path {
-                    fill: #fff;
-                }
-            }
-
-            .ms-icon {
-                background-color: #fff;
-            }
 
             &::after {
                 display: block;
@@ -123,9 +112,9 @@
     }
 
     .active {
-        background-color: var(--sidebar-active-background);
+        // background-color: var(--sidebar-active-background);
         &:hover {
-            background-color: var(--sidebar-active-background);
+            // background-color: var(--sidebar-active-background);
         }
         &::after {
             display: block;
@@ -140,7 +129,7 @@
         }
 
         .menuBar__content {
-            color: #fff !important;
+            color: var(--primary-color) !important;
             font-weight: 700;
         }
     }

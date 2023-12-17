@@ -2,14 +2,14 @@
 // import { RouterView } from 'vue-router';
 import { RouterView } from 'vue-router';
 import TheHeader from './TheHeader.vue';
-import TheSidebar from './TheSidebar.vue';
+// import TheSidebar from './TheSidebar.vue';
 import TheContiner from './TheContiner.vue';
 </script>
 <template lang="">
     <div class="main">
         <TheHeader></TheHeader>
         <div class="main__content">
-            <TheSidebar></TheSidebar>
+            <!-- <TheSidebar></TheSidebar> -->
             <TheContiner>
                 <RouterView />
             </TheContiner>

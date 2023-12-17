@@ -4,20 +4,6 @@
         <nav>
             <ul class="menuBar">
                 <li
-                    @click="handleNavigateToPage(Enum.Router.Home.Name)"
-                    :class="{ active: pathName === '' || pathName === Enum.Router.Home.Name }"
-                    class="menuBar__item"
-                >
-                    <a class="menuBar__item-link" to="/">
-                        <p class="menuBar__icon center">
-                            <MISAIcon icon="home"></MISAIcon>
-                        </p>
-                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Home }}</p>
-                    </a>
-
-                    <p class="titleContent center">{{ MISAResource[resource.langCode]?.SideBar?.Home }}</p>
-                </li>
-                <li
                     @click="handleNavigateToPage(Enum.Router.Inventory.Name)"
                     :class="{
                         active: pathName === Enum.Router.Inventory.Name || pathName === Enum.Router.InventoryForm.Name,
@@ -115,15 +101,9 @@ const handleNavigateToPage = (pageName) => {
 onMounted(() => {
     pageNameOld.value = pathName.value.replace('/', '');
 });
-/**
- * Author: Tiến Trung (21/06/2023)
- * Description: Hàm đóng mở sideBar
- */
+
 const sideBar = ref(false);
-// const handleClickZoomOutSidebar = () => {
-//     sideBar.value = !sideBar.value;
-//     sideBarElement.value.style.zIndex = sideBar.value ? 2 : 1;
-// };
+
 </script>
 <style lang="scss">
 @import './thesidebar.scss';

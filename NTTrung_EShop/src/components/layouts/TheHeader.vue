@@ -17,32 +17,67 @@
                 <h1 class="header__right-title" :class="{ active: title.titleSec }">
                     {{ title.title }}<span v-if="title.titleSec">{{ ' / ' + title.titleSec }}</span>
                 </h1>
+                <ul class="menuBar">
+                <li
+                    @click="handleNavigateToPage(Enum.Router.Inventory.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.Inventory.Name || pathName === Enum.Router.InventoryForm.Name,
+                    }"
+                    class="menuBar__item"
+                >
+                    <a class="menuBar__item-link" :to="Enum.Router.Inventory.Path">
+                        <!-- <p class="menuBar__icon center">
+                            <MISAIcon icon="product"></MISAIcon>
+                        </p> -->
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Inventory }}</p>
+                    </a>
+
+                  
+                </li>
+                <li
+                    @click="handleNavigateToPage(Enum.Router.ItemCategory.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.ItemCategory.Name,
+                    }"
+                    class="menuBar__item"
+                >
+                    <a class="menuBar__item-link" :to="Enum.Router.ItemCategory.Path">
+                        <!-- <p class="menuBar__icon center">
+                            <MISAIcon icon="process"></MISAIcon>
+                        </p> -->
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.ItemCategory }}</p>
+                    </a>
+
+                  
+                </li>
+                <li
+                    @click="handleNavigateToPage(Enum.Router.Unit.Name)"
+                    :class="{
+                        active: pathName === Enum.Router.Unit.Name,
+                    }"
+                    class="menuBar__item"
+                >
+                    <a class="menuBar__item-link" :to="Enum.Router.Unit.Path">
+                        <!-- <p class="menuBar__icon center">
+                            <MISAIcon icon="calc"></MISAIcon>
+                        </p> -->
+                        <p class="menuBar__content">{{ MISAResource[resource.langCode]?.SideBar?.Unit }}</p>
+                    </a>
+
+                  
+                </li>
+            </ul>
             </div>
             <div class="header__controll center">
-                <!-- <div class="header__controll__language"> -->
-                <p
-                    @click="handleChangeLangCode(Enum.Language.VN)"
-                    :class="{ active: resource.langCode === Enum.Language.VN }"
-                    class="center"
-                >
-                    <MISAIcon width="24" height="18" icon="flag-vn"></MISAIcon>
-                </p>
-                <p
-                    @click="handleChangeLangCode(Enum.Language.EN)"
-                    :class="{ active: resource.langCode === Enum.Language.EN }"
-                    class="center"
-                >
-                    <MISAIcon width="24" height="18" icon="flag-en"></MISAIcon>
-                </p>
-                <MISADropdown v-model:value="account" :options="accountOption" selectEmpty></MISADropdown>
+               
                 <div class="wrapper-avatar">
                     <div class="avatar">
-                        <img src="../../assets/icons/avatar-default.png" alt="" />
+                        <img src="../../assets/icons/minhson.jpg" alt="" />
                     </div>
-                    <p class="name-user">User</p>
+                    <p class="name-user">Kiều Nguyễn Minh Sơn</p>
                 </div>
                 <div class="controll__menu">
-                    <ul class="controll__List">
+                    <!-- <ul class="controll__List">
                         <li class="controll__Item center">
                             <MISAIcon width="18" height="18" icon="message"></MISAIcon>
                         </li>
@@ -52,7 +87,7 @@
                         <li class="controll__Item center">
                             <MISAIcon width="18" height="18" icon="question"></MISAIcon>
                         </li>
-                    </ul>
+                    </ul> -->
                 </div>
                 <!-- </div> -->
                 <!-- <img class="header__controll-icon" src="../../assets/icons/cloud.svg" alt="" /> -->
@@ -68,28 +103,43 @@ import { useTitleHeader } from '../../stores/title-header';
 import MISAResource from '../../common/resource.js';
 import Enum from '../../common/enum';
 import { onMounted, ref } from 'vue';
-
+import router from '../../router';
 const resource = useResource();
 const title = useTitleHeader();
 const accountOption = ref([
     {
-        option: 'User',
-        value: 'User',
+        option: 'Kiều Nguyễn Minh Sơn',
+        value: 'Kiều Nguyễn Minh Sơn',
     },
 ]);
-const account = ref('User');
+const account = ref('Kiều Nguyễn Minh Sơn');
+const pathName = ref(window.location.pathname.split('/')[1]);
+const sideBarElement = ref(null);
+const pageNameOld = ref(Enum.Router.Home.Name);
+const handleChangeTab = (tab) => {
+    pathName.value = tab;
+};
+const handleNavigateToPage = (pageName) => {
+    if (pageNameOld.value !== pageName) {
+        pageNameOld.value = pageName;
+        router.push({ name: pageName });
+        handleChangeTab(pageName);
+        title.setTitle(MISAResource[resource.langCode]?.SideBar[pageName]);
+        return;
+    }
+};
 /**
  * Author: Tiến Trung (11/07/2023)
  * Description: Hàm thay đổi ngôn ngữ
  */
 
-const handleChangeLangCode = (langCode) => {
-    if (langCode === resource.langCode) {
-        return;
-    }
-    location.reload();
-    resource.setLangCode(langCode);
-};
+// const handleChangeLangCode = (langCode) => {
+//     if (langCode === resource.langCode) {
+//         return;
+//     }
+//     location.reload();
+//     resource.setLangCode(langCode);
+// };
 /**
  * Author: Tiến Trung (11/07/2023)
  * Description: khi component được tạo cài đặt title trang web cho web
@@ -98,8 +148,11 @@ onMounted(() => {
     document.title = MISAResource[resource.langCode]?.Title;
     const path = window.location.pathname.split('/')[1];
     title.setTitle(MISAResource[resource.langCode].SideBar[path ? path : 'Home']);
+    pageNameOld.value = pathName.value.replace('/', '');
+
 });
 </script>
 <style lang="scss">
 @import './theheader.scss';
+@import './thesidebar.scss';
 </style>

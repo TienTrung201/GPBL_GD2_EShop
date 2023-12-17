@@ -574,7 +574,7 @@ onUnmounted(() => {
                             <MISAIcon width="21" height="10" icon="plus" />
                         </template>
                     </MISAButton>
-                    <MISAButton
+                    <!-- <MISAButton
                         v-if="props.copy"
                         @click="handleReplication(dialog.objectData)"
                         :disable="
@@ -588,7 +588,7 @@ onUnmounted(() => {
                         <template #icon>
                             <MISAIcon width="25" height="15" icon="replication" />
                         </template>
-                    </MISAButton>
+                    </MISAButton> -->
                     <MISAButton
                         @click="handleShowEditInfo(dialog.objectData)"
                         :disable="
@@ -614,7 +614,7 @@ onUnmounted(() => {
                             <MISAIcon width="20" height="12" icon="delete" />
                         </template>
                     </MISAButton>
-                    <MISAButton
+                    <!-- <MISAButton
                         @click="reset"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Reset"
@@ -622,8 +622,8 @@ onUnmounted(() => {
                         <template #icon>
                             <MISAIcon width="20" height="14" icon="reset2" />
                         </template>
-                    </MISAButton>
-                    <MISAButton
+                    </MISAButton> -->
+                    <!-- <MISAButton
                         @click="showSettingTable = !showSettingTable"
                         :type="Enum.ButtonType.IconPri"
                         :action="MISAResource[resource.langCode]?.Button?.Setting"
@@ -631,9 +631,9 @@ onUnmounted(() => {
                         <template #icon>
                             <MISAIcon width="27" height="15" icon="setting2" />
                         </template>
-                    </MISAButton>
+                    </MISAButton> -->
 
-                    <div class="relative">
+                    <!-- <div class="relative">
                         <MISAButton
                             iconSec
                             :type="Enum.ButtonType.IconPri"
@@ -657,7 +657,7 @@ onUnmounted(() => {
                                 </li>
                             </template>
                         </MISAMenuContext>
-                    </div>
+                    </div> -->
                 </ul>
             </div>
             <div class="tt-continer__table-body">

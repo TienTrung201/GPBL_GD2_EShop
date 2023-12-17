@@ -10,7 +10,7 @@
     width: 160px;
     display: flex;
     align-items: center;
-    background-color: var(--sidebar-header);
+    // background-color: var(--sidebar-header);
     // padding-top: 3px;
     /* column-gap: 16px; */
     /* background-color: var(--sidebar-background); */
@@ -35,12 +35,12 @@
 }
 
 .header__logo {
-    background-image: url('../../assets/img/Logo_Full_White.png');
+    background-image: url('../../assets/img/logo.jpg');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 100%;
-    width: 100%;
-    transform: translateY(4px);
+    height: 200%;
+    width: 200%;
+    // transform: translateY(4px);
     /* filter: brightness(120%);
     filter: saturate(130%); */
 }
@@ -68,6 +68,7 @@
 }
 
 .header__menu .header__right-title {
+    width: 160px;
     font-size: 18px;
     color: var(--text-primary-color);
 

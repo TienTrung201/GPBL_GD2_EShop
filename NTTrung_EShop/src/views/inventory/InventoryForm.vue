@@ -96,14 +96,14 @@ const columnTable = ref([
         type: Enum.TypeDataTable.Code,
         // type: 'gender',
     },
-    {
-        title: MISAResource[resource.langCode]?.Manage?.Inventory?.Barcode,
-        key: 'Barcode',
-        width: '170',
-        isShow: true,
-        isEdit: true,
-        isBarcode: true,
-    },
+    // {
+    //     title: MISAResource[resource.langCode]?.Manage?.Inventory?.Barcode,
+    //     key: 'Barcode',
+    //     width: '170',
+    //     isShow: true,
+    //     isEdit: true,
+    //     isBarcode: true,
+    // },
     {
         title: MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice,
         key: 'CostPrice',
@@ -181,9 +181,8 @@ const getPropertiesDetail = (color, size) => {
     const sizeCodeDetail = size ? size.sizeCode : '';
     const colorCodeDetail = color ? color.colorCode : '';
     const SKUCode = formData.value.SKUCode ? formData.value.SKUCode : '';
-    const SKUCodeDetail = `${SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${
-        sizeCodeDetail ? '-' + sizeCodeDetail : ''
-    }`;
+    const SKUCodeDetail = `${SKUCode}${colorCodeDetail ? '-' + colorCodeDetail : ''}${sizeCodeDetail ? '-' + sizeCodeDetail : ''
+        }`;
     let nameDetail = formData.value.inventoryName ? formData.value.inventoryName : '';
     if (sizeDetail && colorDetail) {
         nameDetail = `${nameDetail} (${colorDetail}/${sizeDetail})`;
@@ -343,9 +342,8 @@ const getNewCode = async () => {
 const onBlurInputFormUpdateData = async (value, nameForm) => {
     // autoDataTable();
     dataTable.value.forEach((data) => {
-        const SKUCodeDetail = `${formData.value.SKUCode}${data.ColorCode ? '-' + data.ColorCode : ''}${
-            data.SizeCode ? '-' + data.SizeCode : ''
-        }`;
+        const SKUCodeDetail = `${formData.value.SKUCode}${data.ColorCode ? '-' + data.ColorCode : ''}${data.SizeCode ? '-' + data.SizeCode : ''
+            }`;
         let nameDetail = formData.value.inventoryName;
         if (data.Size && data.Color) {
             nameDetail = `${nameDetail} (${data.Color}/${data.Size})`;
@@ -988,181 +986,74 @@ watch(
                 <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.BasicInfomation }}</h3>
             </div>
             <div class="wrapper-form">
-                <MISARow justify="flex-start">
+                <MISARow justify="flex-start" colGap="24px">
                     <MISACol display="flex" direction="column" rowGap="12">
+
                         <MISARow>
-                            <MISARadioGroup :label="MISAResource[resource.langCode]?.Manage?.Inventory?.IsActive" row>
-                                <MISARadio
-                                    v-model:value="formData.isActive"
-                                    :valueRadio="1"
-                                    :optionName="MISAResource[resource.langCode]?.Manage?.Inventory?.Active"
-                                    name="active"
-                                >
-                                </MISARadio>
-                                <MISARadio
-                                    v-model:value="formData.isActive"
-                                    :valueRadio="0"
-                                    :optionName="MISAResource[resource.langCode]?.Manage?.Inventory?.NoActive"
-                                    name="active"
-                                ></MISARadio>
-                            </MISARadioGroup>
-                        </MISARow>
-                        <MISARow>
-                            <MISAInput
-                                v-model:value="formData.inventoryName"
-                                ref="iInventoryName"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.InventoryName"
-                                type="text"
-                                validate="true"
-                                row
-                                require
+                            <MISAInput v-model:value="formData.inventoryName" ref="iInventoryName"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.InventoryName" type="text"
+                                validate="true" row require
                                 @blur="(value) => onBlurInputFormUpdateData(value, inputType.Name)"
-                                @input-validation="validateName"
-                                :errorMessage="validateForm.inventoryName"
-                            ></MISAInput>
+                                @input-validation="validateName" :errorMessage="validateForm.inventoryName"></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <MISADropdown
-                                @next-tab-enter="iSKUCode.autoFocus()"
-                                combobox
-                                :options="itemCategories"
+                            <MISADropdown @next-tab-enter="iSKUCode.autoFocus()" combobox :options="itemCategories"
                                 v-model:value="formData.itemCategoryId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.Inventory?.SelectItem"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.ItemCategory"
-                                row
-                                buttonAdd
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.ItemCategory" row buttonAdd
                                 @blur="(value) => onBlurInputFormUpdateData(value, inputType.ItemCategory)"
-                                :function="() => handleOpenForm(Enum.Router.ItemCategory.Name)"
-                            ></MISADropdown>
+                                :function="() => handleOpenForm(Enum.Router.ItemCategory.Name)"></MISADropdown>
                         </MISARow>
                         <MISARow>
-                            <MISAInput
-                                v-model:value="formData.SKUCode"
-                                ref="iSKUCode"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode"
-                                type="text"
-                                validate="true"
-                                row
-                                @blur="
-                                    (value, oldValue) => {
-                                        onBlurInputFormUpdateData(value, inputType.SKUCode);
-                                        setDataEditMode(value, oldValue);
-                                    }
-                                "
-                                @input-validation="
-                                    (value, oldValue) => {
-                                        validateCode(value);
-                                        setDataEditMode(value, oldValue);
-                                    }
-                                "
-                                :errorMessage="validateForm.SKUCode"
-                            ></MISAInput>
+                            <MISAInput v-model:value="formData.SKUCode" ref="iSKUCode"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.SKUCode" type="text"
+                                validate="true" row @blur="(value, oldValue) => {
+                                    onBlurInputFormUpdateData(value, inputType.SKUCode);
+                                    setDataEditMode(value, oldValue);
+                                }
+                                    " @input-validation="(value, oldValue) => {
+        validateCode(value);
+        setDataEditMode(value, oldValue);
+    }
+        " :errorMessage="validateForm.SKUCode"></MISAInput>
                         </MISARow>
                         <MISARow>
-                            <MISAInput
-                                v-model:value="formData.costPrice"
-                                ref="iCostPrice"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice"
-                                type="text"
-                                :validate="dataTable.length === 0"
-                                row
-                                money
-                                right
-                                @input-validation="validateCostPrice"
-                                :errorMessage="validateForm.costPrice"
-                                :maxLength="18"
-                                :readonly="dataTable.length > 0"
-                            ></MISAInput>
-                        </MISARow>
-                        <MISARow>
-                            <MISAInput
-                                v-model:value="formData.unitPrice"
-                                ref="iUnitPrice"
-                                type="text"
-                                :validate="dataTable.length === 0"
-                                row
-                                money
-                                right
-                                @input-validation="validateUnitPrice"
-                                :errorMessage="validateForm.unitPrice"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice"
-                                :maxLength="18"
-                                :readonly="dataTable.length > 0"
-                            >
+                            <MISAInput v-model:value="formData.costPrice" ref="iCostPrice"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.CostPrice" type="text"
+                                :validate="dataTable.length === 0" row money right @input-validation="validateCostPrice"
+                                :errorMessage="validateForm.costPrice" :maxLength="18" :readonly="dataTable.length > 0">
                             </MISAInput>
                         </MISARow>
                         <MISARow>
-                            <MISADropdown
-                                @next-tab-enter="iIsShowMenu.autoFocus()"
-                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.Unit)"
-                                combobox
-                                :options="units"
-                                v-model:value="formData.unitId"
+                            <MISAInput v-model:value="formData.unitPrice" ref="iUnitPrice" type="text"
+                                :validate="dataTable.length === 0" row money right @input-validation="validateUnitPrice"
+                                :errorMessage="validateForm.unitPrice"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.UnitPrice" :maxLength="18"
+                                :readonly="dataTable.length > 0">
+                            </MISAInput>
+                        </MISARow>
+                        <MISARow>
+                            <MISADropdown @next-tab-enter="iIsShowMenu.autoFocus()"
+                                @blur="(value) => onBlurInputFormUpdateData(value, inputType.Unit)" combobox
+                                :options="units" v-model:value="formData.unitId"
                                 :placeholder="MISAResource[resource.langCode]?.Manage?.Inventory?.SelectUnit"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Unit"
-                                row
-                                buttonAdd
-                                :function="() => handleOpenForm(Enum.Router.Unit.Name)"
-                            ></MISADropdown>
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Unit" row buttonAdd
+                                :function="() => handleOpenForm(Enum.Router.Unit.Name)"></MISADropdown>
                         </MISARow>
                         <MISARow></MISARow>
                         <MISARow>
-                            <MISACheckbox
-                                ref="iIsShowMenu"
-                                custom
-                                :valueCheckbox="formData.isShowMenu"
+                            <MISACheckbox ref="iIsShowMenu" custom :valueCheckbox="formData.isShowMenu"
                                 v-model:value="formData.isShowMenu"
-                                :lable="MISAResource[resource.langCode]?.Manage?.Inventory?.IsShowMenu"
-                            >
+                                :lable="MISAResource[resource.langCode]?.Manage?.Inventory?.IsShowMenu">
                             </MISACheckbox>
                         </MISARow>
                     </MISACol>
-                </MISARow>
-            </div>
-            <div sty class="ntt-form__header" :style="{ marginTop: '30px' }">
-                <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.AttributeInfomation }}</h3>
-            </div>
-            <div class="wrapper-form">
-                <MISAInputManyTag
-                    @update-tag="autoDataTable"
-                    @remove-tag="handleRemoveTag"
-                    :properties="properties.color"
-                    :type="Enum.TypeProperties.Color"
-                    :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Color"
-                >
-                </MISAInputManyTag>
-                <MISAInputManyTag
-                    @update-tag="autoDataTable"
-                    @remove-tag="handleRemoveTag"
-                    :properties="properties.size"
-                    :type="Enum.TypeProperties.Size"
-                    :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Size"
-                >
-                </MISAInputManyTag>
-            </div>
-            <div v-if="dataTable.length" class="form-table">
-                <MISATableDetail @delete-detail="deleteDetail" :columns="columnTable" :dataTable="dataTable">
-                </MISATableDetail>
-            </div>
-            <div sty class="ntt-form__header" :style="{ marginTop: '10px' }">
-                <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.AdditionalInfomation }}</h3>
-            </div>
-            <div class="wrapper-form">
-                <MISARow>
                     <MISACol display="flex" direction="column" rowGap="12">
                         <MISARow>
-                            <MISATextArea
-                                ref="iDescription"
-                                isName
-                                v-model:value="formData.description"
-                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Description"
-                                validate="true"
-                                row
-                                class="custom-label"
-                                :maxLength="255"
-                                @input-validation="validateDescription"
-                                :errorMessage="validateForm.description"
-                            >
+                            <MISATextArea ref="iDescription" isName v-model:value="formData.description"
+                                :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Description" validate="true" row
+                                class="custom-label" :maxLength="255" @input-validation="validateDescription"
+                                :errorMessage="validateForm.description">
                             </MISATextArea>
                         </MISARow>
                         <MISARow>
@@ -1170,34 +1061,19 @@ watch(
                                 <div class="wrapper__label-image">
                                     <p class="label">{{ MISAResource[resource.langCode]?.Manage?.Inventory?.Image }}</p>
                                     <div class="wrapper-image">
-                                        <input
-                                            @change="handleChangeImg($event.target.files[0])"
-                                            ref="file"
-                                            type="file"
-                                            name="inventory"
-                                            id=""
-                                            accept=".jpg, .jpeg, .png, .gif"
-                                        />
+                                        <input @change="handleChangeImg($event.target.files[0])" ref="file" type="file"
+                                            name="inventory" id="" accept=".jpg, .jpeg, .png, .gif" />
                                         <img class="image-file" v-if="imgUrl" :src="imgUrl" alt="" />
 
-                                        <img
-                                            v-else
-                                            class="image-file"
-                                            src="../../assets/img/img-inventory-default.jpg"
-                                            alt=""
-                                        />
+                                        <img v-else class="image-file" src="../../assets/img/img-inventory-default.jpg"
+                                            alt="" />
                                         <div class="wrapper-button-file">
                                             <button @click="file.click()" class="btn-file">...</button>
-                                            <button
-                                                v-if="imgUrl"
-                                                @click="
-                                                    () => {
-                                                        imgUrl = null;
-                                                        formData.pictureId = null;
-                                                    }
-                                                "
-                                                class="btn-file center btn-close"
-                                            >
+                                            <button v-if="imgUrl" @click="() => {
+                                                imgUrl = null;
+                                                formData.pictureId = null;
+                                            }
+                                                " class="btn-file center btn-close">
                                                 <MISAIcon width="14" height="16" icon="close"></MISAIcon>
                                             </button>
                                         </div>
@@ -1222,55 +1098,49 @@ watch(
                     </MISACol>
                 </MISARow>
             </div>
+            <div sty class="ntt-form__header" :style="{ marginTop: '30px' }">
+                <h3 class="form__title">{{ MISAResource[resource.langCode]?.FormTitle?.AttributeInfomation }}</h3>
+            </div>
+            <div class="wrapper-form">
+                <MISAInputManyTag @update-tag="autoDataTable" @remove-tag="handleRemoveTag" :properties="properties.color"
+                    :type="Enum.TypeProperties.Color" :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Color">
+                </MISAInputManyTag>
+                <MISAInputManyTag @update-tag="autoDataTable" @remove-tag="handleRemoveTag" :properties="properties.size"
+                    :type="Enum.TypeProperties.Size" :label="MISAResource[resource.langCode]?.Manage?.Inventory?.Size">
+                </MISAInputManyTag>
+            </div>
+            <div v-if="dataTable.length" class="form-table">
+                <MISATableDetail @delete-detail="deleteDetail" :columns="columnTable" :dataTable="dataTable">
+                </MISATableDetail>
+            </div>
         </div>
 
         <div class="ntt-form__footer">
-            <MISAButton
-                ref="buttonSave"
-                :loading="loadingButton.save"
-                @click="submitForm(buttonTypeSave.save)"
-                :type="Enum.ButtonType.IconPri"
-                :action="MISAResource[resource.langCode]?.Button?.Save"
-                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlS"
-            >
+            <MISAButton ref="buttonSave" :loading="loadingButton.save" @click="submitForm(buttonTypeSave.save)"
+                :type="Enum.ButtonType.IconPri" :action="MISAResource[resource.langCode]?.Button?.Save"
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlS">
                 <template #icon>
                     <MISAIcon width="21" height="11" icon="save" />
                 </template>
             </MISAButton>
-            <MISAButton
-                ref="buttonReplication"
-                :loading="loadingButton.saveCopy"
-                @click="submitForm(buttonTypeSave.saveCopy)"
-                :type="Enum.ButtonType.IconPri"
+            <!-- <MISAButton ref="buttonReplication" :loading="loadingButton.saveCopy"
+                @click="submitForm(buttonTypeSave.saveCopy)" :type="Enum.ButtonType.IconPri"
                 :action="MISAResource[resource.langCode]?.Button?.SaveAndReplication"
-                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftC"
-                sec
-            >
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftC" sec>
                 <template #icon>
                     <MISAIcon width="25" height="15" icon="replication" />
                 </template>
-            </MISAButton>
-            <MISAButton
-                ref="buttonSaveAdd"
-                :loading="loadingButton.saveAdd"
-                @click="submitForm(buttonTypeSave.saveAdd)"
-                :type="Enum.ButtonType.IconPri"
-                :action="MISAResource[resource.langCode]?.Button?.SaveAdd"
-                sec
-                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftS"
-            >
+            </MISAButton> -->
+            <MISAButton ref="buttonSaveAdd" :loading="loadingButton.saveAdd" @click="submitForm(buttonTypeSave.saveAdd)"
+                :type="Enum.ButtonType.IconPri" :action="MISAResource[resource.langCode]?.Button?.SaveAdd" sec
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.CtrlShiftS">
                 <template #icon>
                     <MISAIcon width="21" height="10" icon="plus" />
                 </template>
             </MISAButton>
-            <MISAButton
-                ref="buttonCancel"
-                @click="closeForm"
-                :type="Enum.ButtonType.IconPri"
-                :action="MISAResource[resource.langCode]?.Button?.Cancel"
-                link
-                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc"
-            >
+            <MISAButton ref="buttonCancel" @click="closeForm" :type="Enum.ButtonType.IconPri"
+                :action="MISAResource[resource.langCode]?.Button?.Cancel" link
+                v-tooltip.absoluteTop="Enum.KeyboardShortcuts.Esc">
                 <template #icon>
                     <MISAIcon width="20" height="10" icon="close-eshop" />
                 </template>
