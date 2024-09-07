@@ -16,9 +16,30 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos
         /// <summary>
         /// Lấy tên id của đối tượng
         /// </summary>
-        /// <returns>Tên Id</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public abstract Guid GetKey();
+        /// <returns>Giá trị của thuộc tính Id hoặc Guid.Empty nếu không tồn tại</returns>
+        public Guid GetKey()
+        {
+            // Lấy tên của class hiện tại
+            var nameProperty = this.GetType().Name;
+
+            // Tìm thuộc tính có tên là ClassNameId
+            var property = this.GetType().GetProperty(nameProperty + "Id");
+
+            // Nếu thuộc tính tồn tại
+            if (property != null)
+            {
+                var value = property.GetValue(this);
+
+                // Kiểm tra nếu giá trị không null và có kiểu Guid
+                if (value != null && value is Guid)
+                {
+                    return (Guid)value;
+                }
+            }
+
+            // Trả về Guid.Empty nếu không tìm thấy thuộc tính hoặc giá trị là null
+            return Guid.Empty;
+        }
         /// <summary>
         /// hàm set giá trị cho property
         /// </summary>

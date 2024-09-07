@@ -21,7 +21,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Profiles
             CreateMap<Inventory, InventoryResponseDto>();
             CreateMap<InventoryModel, InventoryResponseDto>();
             CreateMap<InventoryRequestDto, Inventory>();
-            CreateMap<InventoryModel, Unit>();
+            CreateMap<InventoryModel, Inventory>();
         }
     }
 }

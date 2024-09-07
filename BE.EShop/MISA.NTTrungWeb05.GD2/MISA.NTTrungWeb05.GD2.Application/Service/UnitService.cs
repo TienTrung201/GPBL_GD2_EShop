@@ -39,43 +39,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
 
         #region Methods
         /// <summary>
-        /// Validate Nghiệp vụ
-        /// </summary>
-        /// <param name="createDto">Đối tượng thêm mới</param>
-        /// <returns>Thực thể tìm thấy</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public override async Task<Unit> MapCreateDtoToEntityValidateAsync(UnitRequestDto createDto)
-        {
-            // validate nghiệp vụ
-            // Kiểm tra trùng mã
-
-            var unit = _mapper.Map<Unit>(createDto);
-            unit.UnitId = Guid.NewGuid();
-            unit.CreatedDate = DateTime.Now;
-            unit.ModifiedDate = DateTime.Now;
-            return unit;
-        }
-
-        /// <summary>
-        /// Validate Nghiệp vụ
-        /// </summary>
-        /// <param name="createDto">Đối tượng được cập nhật</param>
-        /// <param name="id">Id được cập nhật</param>
-        /// <returns>Thực thể tìm thấy</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public override async Task<Unit> MapUpdateDtoToEntityValidateAsync(Guid id, UnitRequestDto updateDto)
-        {
-            // Kiểm tra có tồn tại không
-            var department = await _unitRepository.GetByIdAsync(id);
-
-            // Kiểm tra trùng tên
-
-            var updateEmployee = _mapper.Map<Unit>(updateDto);
-            updateEmployee.UnitId = department.UnitId;
-            updateEmployee.ModifiedDate = DateTime.Now;
-            return updateEmployee;
-        }
-        /// <summary>
         /// Ghi đè lại hàm xóa để kiểm tra xem có phát sinh dữ liệu liên quan không
         /// </summary>
         /// <paran name="id">id của bản ghi cần xóa</paran>

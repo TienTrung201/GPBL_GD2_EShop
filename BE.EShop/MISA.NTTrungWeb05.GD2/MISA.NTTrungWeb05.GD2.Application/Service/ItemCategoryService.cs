@@ -38,45 +38,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
 
         #region Methods
         /// <summary>
-        /// Validate Nghiệp vụ
-        /// </summary>
-        /// <param name="createDto">Đối tượng thêm mới</param>
-        /// <returns>Thực thể tìm thấy</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public override async Task<ItemCategory> MapCreateDtoToEntityValidateAsync(ItemCategoryRequestDto createDto)
-        {
-            // validate nghiệp vụ
-            // Kiểm tra trùng mã
-            await _itemCategoryManager.CheckDublicateCode(createDto.ItemCategoryCode, null);
-
-            var itemCategory = _mapper.Map<ItemCategory>(createDto);
-            itemCategory.ItemCategoryId = Guid.NewGuid();
-            itemCategory.CreatedDate = DateTime.Now;
-            itemCategory.ModifiedDate = DateTime.Now;
-            return itemCategory;
-        }
-
-        /// <summary>
-        /// Validate Nghiệp vụ
-        /// </summary>
-        /// <param name="createDto">Đối tượng được cập nhật</param>
-        /// <param name="id">Id được cập nhật</param>
-        /// <returns>Thực thể tìm thấy</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public override async Task<ItemCategory> MapUpdateDtoToEntityValidateAsync(Guid id, ItemCategoryRequestDto updateDto)
-        {
-            // Kiểm tra có tồn tại không
-            var department = await _itemCategoryRepository.GetByIdAsync(id);
-
-            // Kiểm tra trùng mã
-            await _itemCategoryManager.CheckDublicateCode(updateDto.ItemCategoryCode, department.ItemCategoryCode);
-
-            var updateEmployee = _mapper.Map<ItemCategory>(updateDto);
-            updateEmployee.ItemCategoryId = department.ItemCategoryId;
-            updateEmployee.ModifiedDate = DateTime.Now;
-            return updateEmployee;
-        }
-        /// <summary>
         /// Ghi đè lại hàm xóa để kiểm tra xem có phát sinh dữ liệu liên quan không
         /// </summary>
         /// <paran name="id">id của bản ghi cần xóa</paran>

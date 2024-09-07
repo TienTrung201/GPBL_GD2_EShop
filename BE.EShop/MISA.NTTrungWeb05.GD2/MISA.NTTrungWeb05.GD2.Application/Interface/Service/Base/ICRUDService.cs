@@ -8,20 +8,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Interface.Base
 {
     public interface ICRUDService<TEntityResponseDto, TEntityRequestDto, Tmodel> : IReadOnlyService<Tmodel, TEntityResponseDto>
     {
-
-        /// <summary>
-        /// Thêm bản ghi
-        /// </summary>
-        /// <paran name="entity">Thông tin chi tiết bản ghi được gửi đến</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> CreatetAsync(TEntityRequestDto entityCreateDto);
-        /// <summary>
-        /// Thêm bản ghi
-        /// </summary>
-        /// <paran name="entity">Thông tin chi tiết bản ghi được gửi đến</paran>
-        /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> UpdateAsync(Guid id, TEntityRequestDto entityUpdateDto);
         /// <summary>
         /// Xóa bản ghi
         /// </summary>

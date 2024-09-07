@@ -38,9 +38,5 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.ItemCategory
         /// </summary>  
         public bool IsUpdateCode { get; set; } = false;
 
-        public override Guid GetKey()
-        {
-            return ItemCategoryId;
-        }
     }
 }

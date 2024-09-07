@@ -26,10 +26,5 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Unit
         /// Có update tên hay không
         /// </summary>
         public bool IsUpdateName { get; set; } = false;
-
-        public override Guid GetKey()
-        {
-            return UnitId;
-        }
     }
 }

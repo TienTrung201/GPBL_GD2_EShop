@@ -25,36 +25,6 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
 
         #region Methods
         /// <summary>
-        /// Thêm một bản ghi mới vào cơ sở dữ liệu.
-        /// </summary>
-        /// <param name="entity">Thông tin chi tiết bản ghi được thêm</param>
-        /// <returns>Số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<int> InsertAsync(TEntity entity)
-        {
-            var storedProcedureName = $"Proc_{TableName}_Insert";
-
-            var parameters = CreateParametersFromEntity(entity);
-
-            var result = await _uow.Connection.ExecuteAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
-            return result;
-        }
-        /// <summary>
-        /// Sửa thông tin một bản ghi trong cơ sở dữ liệu.
-        /// </summary>
-        /// <param name="entity">Thông tin chi tiết bản ghi được sửa</param>
-        /// <returns>Số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public async Task<int> UpdateAsync(TEntity entity)
-        {
-            var storedProcedureName = $"Proc_{TableName}_Update";
-
-            var parameters = CreateParametersFromEntity(entity);
-
-            var result = await _uow.Connection.ExecuteAsync(storedProcedureName, parameters, commandType: CommandType.StoredProcedure, transaction: _uow.Transaction);
-            return result;
-        }
-        /// <summary>
         /// Xóa một bản ghi khỏi cơ sở dữ liệu.
         /// </summary>
         /// <param name="entity">Đối tượng cần xóa</param>

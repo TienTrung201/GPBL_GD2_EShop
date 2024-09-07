@@ -10,20 +10,6 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Interface.Base
     public interface ICRUDRepository<TEntity, TModel> : IReadOnlyRepository<TEntity, TModel>
     {
         /// <summary>
-        /// Thêm bản ghi
-        /// </summary>
-        /// <paran name="entity">Thông tin chi tiết bản ghi được thêm</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> InsertAsync(TEntity entity);
-        /// <summary>
-        /// Cập nhật bản ghi
-        /// </summary>
-        /// <paran name="entity">Thông tin chi tiết bản ghi sửa</paran>
-        /// <returns>Số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        Task<int> UpdateAsync(TEntity entity);
-        /// <summary>
         /// Xóa bản ghi
         /// </summary>
         /// <paran name="entity">Thông tin chi tiết bản ghi xóa</paran>

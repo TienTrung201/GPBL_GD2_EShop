@@ -135,10 +135,5 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Danh sách detail
         /// </summary>  
         public List<InventoryRequestDto>? Detail { get; set; }
-
-        public override Guid GetKey()
-        {
-            return InventoryId;
-        }
     }
 }

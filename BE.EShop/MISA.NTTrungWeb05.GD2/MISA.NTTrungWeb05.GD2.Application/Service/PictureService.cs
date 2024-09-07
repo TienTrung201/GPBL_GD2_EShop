@@ -54,7 +54,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             await _pictureRepository.InsertAsync(picture);
 
             var filePath = Path.Combine(uploadsPath, uniqueFileName);
-            var imageUrl = $"https://localhost:7170/api/Pictures/{picture.PictureId}";
+            var imageUrl = $"https://localhost:44352/api/Pictures/{picture.PictureId}";
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);

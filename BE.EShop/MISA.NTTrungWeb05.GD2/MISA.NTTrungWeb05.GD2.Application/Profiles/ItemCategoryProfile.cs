@@ -21,7 +21,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Profiles
             CreateMap<ItemCategory, ItemCategoryResponseDto>();
             CreateMap<ItemCategoryModel, ItemCategoryResponseDto>();
             CreateMap<ItemCategoryRequestDto, ItemCategory>();
-            CreateMap<ItemCategoryModel, Unit>();
+            CreateMap<ItemCategoryModel, ItemCategory>();
         }
     }
 }

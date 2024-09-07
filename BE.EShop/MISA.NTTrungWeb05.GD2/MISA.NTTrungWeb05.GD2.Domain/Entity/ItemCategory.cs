@@ -28,12 +28,5 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// Mô tả
         /// </summary>
         public string? Description { get; set; } = string.Empty;
-        /// <summary>
-        /// Lấy Id entity
-        /// </summary>
-        public override Guid GetKey()
-        {
-            return ItemCategoryId;
-        }
     }
 }

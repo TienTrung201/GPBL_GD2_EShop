@@ -19,31 +19,6 @@ namespace MISA.NTTrungWeb05.GD2.Controllers.Base
         #endregion
         #region Methods
         /// <summary>
-        /// DELETE - Xóa một bản ghi theo Id
-        /// </summary>
-        /// <param name="id">Id của bản ghi cần xóa</param>
-        /// <returns>Trạng thái HTTP 200 OK và số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (13/07/2023)
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TRequestDto entity)
-        {
-            var result = await _crudService.CreatetAsync(entity);
-            return StatusCode(StatusCodes.Status201Created, result);
-        }
-        /// <summary>
-        /// DELETE - Xóa nhiều bản ghi
-        /// </summary>
-        /// <param name="ids">Danh sách Id của các bản ghi cần xóa, phân tách bằng dấu ','</param>
-        /// <returns>Trạng thái HTTP 200 OK và số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (13/07/2023)
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] TRequestDto entity)
-        {
-            var result = await _crudService.UpdateAsync(id, entity);
-            return StatusCode(StatusCodes.Status200OK, result);
-        }
-
-        /// <summary>
         /// DELETE
         /// </summary>
         /// <param name="id"></param>

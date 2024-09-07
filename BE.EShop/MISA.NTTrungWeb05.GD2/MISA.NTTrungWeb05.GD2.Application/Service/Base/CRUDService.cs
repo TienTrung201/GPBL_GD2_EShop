@@ -33,32 +33,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         #endregion
         #region Methods
         /// <summary>
-        /// Thêm bản ghi
-        /// </summary>
-        /// <paran name="entity">Thông tin chi tiết bản ghi được thêm</paran>
-        /// <returns>số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public virtual async Task<int> CreatetAsync(TEntityRequestDto entityCreateDto)
-        {
-            //validate nghiệp vụ
-            var entity = await MapCreateDtoToEntityValidateAsync(entityCreateDto);
-            var result = await _crudRepository.InsertAsync(entity);
-            return result;
-        }
-        /// <summary>
-        /// Cập nhật bản ghi
-        /// </summary>
-        /// <paran name="entity">Thông tin chi tiết bản ghi sửa</paran>
-        /// <returns>số bản ghi thay đổi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public virtual async Task<int> UpdateAsync(Guid id, TEntityRequestDto entityUpdateDto)
-        {
-            //validate nghiệp vụ
-            var entity = await MapUpdateDtoToEntityValidateAsync(id, entityUpdateDto);
-            var result = await _crudRepository.UpdateAsync(entity);
-            return result;
-        }
-        /// <summary>
         /// Xóa bản ghi
         /// </summary>
         /// <paran name="id">id của bản ghi cần xóa</paran>
@@ -97,21 +71,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
             //}
 
         }
-        /// <summary>
-        /// Validate nghiệp vụ
-        /// </summary>
-        /// <paran name="createDto">thông tin bản ghi gửi đến</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public abstract Task<TEntity> MapCreateDtoToEntityValidateAsync(TEntityRequestDto createDto);
-        /// <summary>
-        /// Validate nghiệp vụ
-        /// </summary>
-        /// <paran name="ids">Id bản ghi gửi đến</paran>
-        /// <paran name="createDto">thông tin bản ghi gửi đến</paran>
-        /// <returns>Bản ghi</returns>
-        /// CreatedBy: NTTrung (14/07/2023)
-        public abstract Task<TEntity> MapUpdateDtoToEntityValidateAsync(Guid id, TEntityRequestDto updateDto);
 
 
         /// <summary>
