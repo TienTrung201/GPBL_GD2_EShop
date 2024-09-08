@@ -20,6 +20,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         ICRUDService<TEntityResponseDto, TEntityRequestDto, TModel> where TEntityRequestDto : BaseDto where TEntity : BaseAudiEntity
     {
         #region Fields
+
+        public virtual string TableName { get; protected set; } = typeof(TEntity).Name;
         protected readonly ICRUDRepository<TEntity, TModel> _crudRepository;
         protected readonly IUnitOfWork _unitOfWork;
         #endregion
@@ -96,7 +98,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
                 {
                     //Hàm validate xóa
                     await ValidateListDelete(listDelete);
-                    var listIdsDelete = listDelete.Select(entity => entity.GetKey().ToString());
+                    var listEntityDelete = _mapper.Map<List<TEntity>>(listDelete);
+                    var listIdsDelete = listEntityDelete.Select(entity => entity.GetKey().ToString());
                     var listIdsToString = string.Join(",", listIdsDelete);
                     result += await _crudRepository.DeleteManyAsync(listIdsToString);
                 }
@@ -140,7 +143,25 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.Base
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public virtual void PreSave(List<TEntityRequestDto> listData) { }
+        public virtual void PreSave(List<TEntityRequestDto> listData) {
+            foreach (var item in listData)
+            {
+
+                if (item.EditMode == EditMode.Create)
+                {
+                    item.SetValue($"{TableName}ID", Guid.NewGuid());
+                    item.SetValue($"CreatedDate", DateTimeOffset.Now);
+                    item.SetValue($"ModifiedDate", DateTimeOffset.Now);
+                    item.SetValue($"CreatedBy", "Tientrung");
+                    item.SetValue($"ModifiedBy", "Tientrung");
+                }
+                else if (item.EditMode == EditMode.Update)
+                {
+                    item.SetValue($"ModifiedBy", "Tientrung");
+                    item.SetValue($"ModifiedDate", DateTimeOffset.Now);
+                }
+            }
+        }   
         /// <summary>
         /// Sau khi lưu
         /// </summary>

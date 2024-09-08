@@ -81,21 +81,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             var listCodesCreate = data.Where(itemCategory => itemCategory.EditMode == EditMode.Create).Select((itemCategory) => itemCategory.ItemCategoryCode);
             await _itemCategoryManager.CheckDublicateListCodes(string.Join(',', listCodesCreate));
         }
-        /// <summary>
-        /// Trước khi lưu
-        /// </summary>
-        /// <param name="data">Bản ghi được gửi đến</param>
-        /// CreatedBy: NTTrung (27/08/2023)
-        public override void PreSave(List<ItemCategoryRequestDto> listData)
-        {
-            listData.ForEach(data =>
-            {
-                if(data.EditMode == EditMode.Create)
-                {
-                    data.ItemCategoryId = Guid.NewGuid();
-                }
-            });
-        }
         #endregion
     }
 }

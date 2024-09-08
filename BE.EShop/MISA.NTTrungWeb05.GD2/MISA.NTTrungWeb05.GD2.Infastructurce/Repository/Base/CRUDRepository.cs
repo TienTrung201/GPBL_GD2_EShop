@@ -95,11 +95,12 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             listEntity.ForEach((entity) =>
             {
                 var entityIdName = $"{TableName}Id";
-                //entity.SetValue(entityIdName, Guid.NewGuid());
+                var idKey = entity.GetKey();
+                if(idKey == null  || idKey == Guid.Empty)
+                {
+                     entity.SetValue(entityIdName, Guid.NewGuid());
+                }
                 entity.CreatedDate = DateTime.Now;
-
-                //entity.AvgCostPrice = 0;
-                //entity.AvgUnitPrice = 0;
                 query.Append("( ");
                 int indexColumn = 0;
                 foreach (var property in properties)

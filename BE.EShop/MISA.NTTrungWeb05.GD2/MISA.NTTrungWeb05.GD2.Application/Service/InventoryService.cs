@@ -62,10 +62,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 dataUpdateCreate.ForEach(inventory =>
                 {
                     inventory.ParentId = master?.InventoryId;
-                    if (inventory.EditMode == EditMode.Create)
-                    {
-                        inventory.InventoryId = Guid.NewGuid();
-                    }
+                    //if (inventory.EditMode == EditMode.Create)
+                    //{
+                    //    inventory.InventoryId = Guid.NewGuid();
+                    //}
                     if (inventory.UnitPrice.HasValue)
                     {
                         totalUnitPrice += inventory.UnitPrice;

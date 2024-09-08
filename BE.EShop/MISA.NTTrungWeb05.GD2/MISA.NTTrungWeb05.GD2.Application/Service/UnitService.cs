@@ -81,21 +81,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             var listNamesCreate = data.Where(unit => unit.EditMode == EditMode.Create).Select((unit) => unit.UnitName);
             await _unitManager.CheckDublicateListNames(string.Join(',', listNamesCreate));
         }
-        /// <summary>
-        /// Trước khi lưu
-        /// </summary>
-        /// <param name="data">Bản ghi được gửi đến</param>
-        /// CreatedBy: NTTrung (27/08/2023)
-        public override void PreSave(List<UnitRequestDto> listData)
-        {
-            listData.ForEach(data =>
-            {
-                if (data.EditMode == EditMode.Create)
-                {
-                    data.UnitId = Guid.NewGuid();
-                }
-            });
-        }
         #endregion
     }
 }
