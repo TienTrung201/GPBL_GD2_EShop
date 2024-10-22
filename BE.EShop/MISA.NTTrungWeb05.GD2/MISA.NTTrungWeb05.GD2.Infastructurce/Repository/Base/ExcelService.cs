@@ -207,7 +207,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                     //worksheet.Cells[startRow+1, i + 2].Value = value;
                 }
                 //Custom data
-                startRow = await AddDetailDataExcel(worksheet, convertColumnToList, data.GetKey().Value, startRow);
+                startRow = await AddDetailDataExcel(worksheet, convertColumnToList, data.GetKey(), startRow);
                 index++;
                 startRow++; //Tăng vị trí hàng tiếp theo
             }
