@@ -9,10 +9,13 @@ using MISA.NTTrungWeb05.GD2.Domain.Interface.Manager;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Repository;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using MISA.NTTrungWeb05.GD2.Domain.Model;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MISA.NTTrungWeb05.GD2.Application.Service
@@ -21,14 +24,17 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly IOrderDetailService _orderDetailService;
 
         public OrderService(
             IOrderRepository orderRepository,
+            IOrderDetailService orderDetailService,
             IOrderDetailRepository orderDetailRepository,
             IMapper mapper, IUnitOfWork unitOfWork) : base(orderRepository, mapper, unitOfWork)
         {
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository;
+            _orderDetailService = orderDetailService;
         }
         /// <summary>
         /// Trước khi lưu
@@ -41,27 +47,39 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             decimal amountOrder = 0;
             foreach (var item in listData)
             {
-                var masterID = Guid.NewGuid();
-                item.OrderId = masterID;
-                foreach (var orderDetail in item.LstOrderDetail)
+                if(item.EditMode == EditMode.Create)
                 {
-                    decimal amount = (decimal)(orderDetail.UnitPrice * orderDetail.Quantity);
-                    amountOrder += amount;
-                    orderDetail.OrderId = Guid.NewGuid();
-                    orderDetail.OrderDetailId = masterID;
-                }
+                    var masterID = Guid.NewGuid();
+                    item.OrderId = masterID;
+                    foreach (var orderDetail in item.LstOrderDetail)
+                    {
+                        decimal amount = (decimal)(orderDetail.UnitPrice * orderDetail.Quantity);
+                        amountOrder += amount;
+                        orderDetail.OrderId = masterID;
+                        orderDetail.OrderDetailId = Guid.NewGuid();
+                    }
 
-                totalAmountOrder = amountOrder;
-                item.TotalAmount = totalAmountOrder;
-                item.Amount = totalAmountOrder;
+                    totalAmountOrder = amountOrder;
+                    item.TotalAmount = totalAmountOrder;
+                    item.Amount = totalAmountOrder;
+                }
             }
         }
         public async override Task AfterSaveSuccess(List<OrderDTO> listData)
         {
             foreach (var item in listData)
             {
+                if (item.EditMode == EditMode.Create)
+                {
+                    string pattern = "^[A-Za-z]+";
+                    string prefix = Regex.Match(item.OrderNo, pattern).Value;
 
+                    await _orderRepository.UpdateCodeAsync(prefix);
+                }
             }
+            // Sử dụng LINQ để lấy tất cả OrderDetail vào một biến
+            var allOrderDetails = listData.SelectMany(o => o.LstOrderDetail).ToList();
+            await _orderDetailService.SaveData(allOrderDetails);
         }
     }
 }

@@ -11,11 +11,18 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.OrderDetail
         public Guid OrderDetailId { get; set; }
         public Guid OrderId { get; set; }
 
-        public Guid? ItemId { get; set; } // Tương ứng với ItemId varchar(255) DEFAULT NULL
-
-        public decimal? Amount { get; set; } // Tương ứng với Amount decimal(8, 2) DEFAULT NULL
-        public decimal? UnitPrice { get; set; } // Tương ứng với Amount decimal(8, 2) DEFAULT NULL
-
-        public int? Quantity { get; set; } // Tương ứng với Quantity smallint(6) DEFAULT NULL
+        public string OrderDetailStatus { get; set; } // trạng thái chi tiết đơn hàng
+        public decimal Amount { get; set; } // tổng tiền cho sản phẩm
+        public decimal TotalAmount { get; set; } // tổng tiền chi tiết đơn hàng
+        public int ItemType { get; set; } // kiểu sản phẩm (int)
+        public Guid InventoryId { get; set; } // ID kho hàng
+        public string InventoryName { get; set; } // Tên hàng hóa
+        public string SKUCode { get; set; } // Mã hàng hóa
+        public string SKUCodeCustom { get; set; } // Mã hàng hóa tùy chỉnh
+        public decimal UnitPrice { get; set; } // Giá bán
+        public string PictureId { get; set; } // Ảnh (có thể null)
+        public string ParentId { get; set; } // Id của master (có thể null)
+        public int Quantity { get; set; } // Số lượng
+        public decimal TotalPrice { get; set; } // Tổng tiền
     }
 }
