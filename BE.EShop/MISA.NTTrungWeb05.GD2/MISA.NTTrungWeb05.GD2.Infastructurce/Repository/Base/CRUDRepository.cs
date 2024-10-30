@@ -83,7 +83,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             var query = new StringBuilder();
             var properties = typeof(TEntity).GetProperties();//Lấy danh sách các thuộc tính của đối tượng
 
-            query.Append($"INSERT INTO {TableName} ");
+            query.Append($"INSERT INTO `{TableName}` ");
             var listPropertiesToString = new List<string>();
 
             foreach (var property in properties)

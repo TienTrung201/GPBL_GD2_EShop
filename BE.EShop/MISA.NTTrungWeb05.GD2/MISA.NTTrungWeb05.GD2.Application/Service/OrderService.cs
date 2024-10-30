@@ -51,7 +51,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 {
                     var masterID = Guid.NewGuid();
                     item.OrderId = masterID;
-                    foreach (var orderDetail in item.LstOrderDetail)
+                    foreach (var orderDetail in item.OrderDetails)
                     {
                         decimal amount = (decimal)(orderDetail.UnitPrice * orderDetail.Quantity);
                         amountOrder += amount;
@@ -78,7 +78,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 }
             }
             // Sử dụng LINQ để lấy tất cả OrderDetail vào một biến
-            var allOrderDetails = listData.SelectMany(o => o.LstOrderDetail).ToList();
+            var allOrderDetails = listData.SelectMany(o => o.OrderDetails).ToList();
             await _orderDetailService.SaveData(allOrderDetails);
         }
     }

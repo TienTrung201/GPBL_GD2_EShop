@@ -48,7 +48,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.UnitOfWork
         {
             if (_connection.State == ConnectionState.Open)
             {
-                _transaction = await _connection.BeginTransactionAsync();
+                //_transaction = await _connection.BeginTransactionAsync();
             }
             else
             {
