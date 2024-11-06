@@ -24,7 +24,7 @@ namespace MISA.NTTrungWeb05.GD2.Controllers
         public async Task<IActionResult> UploadFile()
         {
             var file = Request.Form.Files[0];
-            string uploadsPath = @"D:\Wep\learnCode\Misa\Uploads";
+            string uploadsPath = @"A:\Wep\May";
             if (!Directory.Exists(uploadsPath))
             {
                 Directory.CreateDirectory(uploadsPath);

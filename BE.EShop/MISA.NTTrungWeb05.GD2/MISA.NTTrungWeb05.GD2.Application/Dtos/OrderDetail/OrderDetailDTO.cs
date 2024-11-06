@@ -17,7 +17,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.OrderDetail
         public int? ItemType { get; set; } // kiểu sản phẩm (int)
         public Guid InventoryId { get; set; } // ID kho hàng
         public string? InventoryName { get; set; } // Tên hàng hóa
-        public decimal? UnitPrice { get; set; } // Giá bán
+        public decimal UnitPrice { get; set; } // Giá bán
         public Guid? PictureId { get; set; } // Ảnh (có thể null)
         public Guid? ParentId { get; set; } // Id của master (có thể null)
         public int Quantity { get; set; } // Số lượng

@@ -66,7 +66,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                     //{
                     //    inventory.InventoryId = Guid.NewGuid();
                     //}
-                    if (inventory.UnitPrice.HasValue)
+                    if (inventory.UnitPrice > 0)
                     {
                         totalUnitPrice += inventory.UnitPrice;
                     }

@@ -50,7 +50,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// Giá bán
         /// </summary>
         [RegularExpression(@"^\d{0,14}(\.\d{1,4})?$", ErrorMessageResourceName = nameof(ValidateInput.MaxPrice), ErrorMessageResourceType = typeof(ValidateInput))]
-        public decimal? UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>

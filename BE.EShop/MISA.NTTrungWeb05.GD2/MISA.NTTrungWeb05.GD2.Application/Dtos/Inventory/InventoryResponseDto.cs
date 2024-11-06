@@ -41,7 +41,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory
         /// <summary>
         /// Giá bán
         /// </summary>
-        public decimal? UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>

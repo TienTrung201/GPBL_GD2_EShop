@@ -39,7 +39,7 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         /// <summary>
         /// Giá bán
         /// </summary>
-        public decimal? UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
         /// <summary>
         /// Giá trung bình bán
         /// </summary>

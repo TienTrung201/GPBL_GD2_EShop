@@ -13,8 +13,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Order
         public Guid? OrderId { get; set; }
         public string OrderNo { get; set; }
 
-        public decimal? TotalAmount { get; set; } // Tương ứng với TotalAmount decimal(10, 0) DEFAULT NULL
-        public decimal? Amount { get; set; } // Tương ứng với TotalAmount decimal(10, 0) DEFAULT NULL
+        public decimal TotalAmount { get; set; } // Tương ứng với TotalAmount decimal(10, 0) DEFAULT NULL
+        public decimal Amount { get; set; } // Tương ứng với TotalAmount decimal(10, 0) DEFAULT NULL
 
         public int? OrderStatus { get; set; } // Tương ứng với OrderStatus varchar(255) DEFAULT NULL
 
