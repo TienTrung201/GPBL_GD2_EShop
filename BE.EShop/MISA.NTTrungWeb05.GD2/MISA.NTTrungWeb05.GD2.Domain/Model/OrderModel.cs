@@ -8,6 +8,6 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
 {
     public class OrderModel : Order
     {
-       public List<OrderDetail> OrderDetails { get; set; }
+       public List<OrderDetail>? OrderDetails { get; set; }
     }
 }
