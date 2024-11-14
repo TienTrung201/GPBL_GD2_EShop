@@ -10,7 +10,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Order
 {
     public class OrderDTO : BaseDto
     {
-        public Guid? OrderId { get; set; }
+        public Guid OrderId { get; set; }
         public string OrderNo { get; set; }
 
         public decimal TotalAmount { get; set; } // Tương ứng với TotalAmount decimal(10, 0) DEFAULT NULL
@@ -26,6 +26,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Order
         public string Street { get; set; } // Đường
         public string OrderType { get; set; } // Loại đơn hàng
 
-        public List<OrderDetailDTO> OrderDetails { get; set; }
+        public List<OrderDetailDTO>? OrderDetails { get; set; }
     }
 }

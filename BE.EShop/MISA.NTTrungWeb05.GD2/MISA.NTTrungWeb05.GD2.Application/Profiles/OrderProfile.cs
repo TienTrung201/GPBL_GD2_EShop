@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Order;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.OrderDetail;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.SAInvoice;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Unit;
 using MISA.NTTrungWeb05.GD2.Domain.Entity;
 using MISA.NTTrungWeb05.GD2.Domain.Model;
@@ -29,7 +30,11 @@ namespace MISA.NTTrungWeb05.GD2.Application.Profiles
             CreateMap<OrderDetail, OrderDetailDTO>();
             CreateMap<OrderDetailDTO, OrderDetailDTO>();
             CreateMap<OrderDetailDTO, OrderDetail>();
-            CreateMap<OrderDetailDTO, OrderDetail>();
+
+
+            CreateMap<SAInvoice, SAInvoiceDTO>();
+            CreateMap<SAInvoiceDTO, SAInvoiceDTO>();
+            CreateMap<SAInvoiceDTO, SAInvoice>();
         }
     }
 }

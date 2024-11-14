@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Inventory;
 using MISA.NTTrungWeb05.GD2.Application.Dtos.Order;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.OrderDetail;
+using MISA.NTTrungWeb05.GD2.Application.Dtos.SAInvoice;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
 using MISA.NTTrungWeb05.GD2.Application.Service.Base;
+using MISA.NTTrungWeb05.GD2.Domain;
 using MISA.NTTrungWeb05.GD2.Domain.Entity;
 using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Manager;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Repository;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
 using MISA.NTTrungWeb05.GD2.Domain.Model;
+using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
@@ -25,31 +29,49 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly IOrderDetailService _orderDetailService;
+        private readonly ISAInvoiceService _invoiceService;
 
         public OrderService(
             IOrderRepository orderRepository,
             IOrderDetailService orderDetailService,
             IOrderDetailRepository orderDetailRepository,
+            ISAInvoiceService sAInvoiceService,
             IMapper mapper, IUnitOfWork unitOfWork) : base(orderRepository, mapper, unitOfWork)
         {
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository;
             _orderDetailService = orderDetailService;
+            _invoiceService = sAInvoiceService;
+        }
+        private SAInvoiceDTO CreateSAInvoice(OrderDTO order)
+        {
+            var saInvoice = new SAInvoiceDTO();
+            saInvoice.OrderID = order.OrderId;
+            saInvoice.TotalAmount = order.TotalAmount;
+            saInvoice.PaymentStatus = (int)PaymentStatus.Done;
+            saInvoice.RefId = Guid.NewGuid();
+            saInvoice.EditMode = EditMode.Create;
+            saInvoice.PaymentType = 1;
+            return saInvoice;
         }
         /// <summary>
         /// Trước khi lưu
         /// </summary>
         /// <param name="data">Bản ghi được gửi đến</param>
         /// CreatedBy: NTTrung (27/08/2023)
-        public override void PreSave(List<OrderDTO> listData)
+        public override async void PreSave(List<OrderDTO> listData)
         {
-            decimal totalAmountOrder = 0;
-            decimal amountOrder = 0;
             foreach (var item in listData)
             {
-                if(item.EditMode == EditMode.Create)
+                if(item.EditMode == EditMode.Update)
                 {
-                    var masterID = Guid.NewGuid();
+                    var isDeleteDetail = await _orderDetailRepository.DeleteOrderDetailByOrderID(item.OrderId);
+                }
+                decimal totalAmountOrder = 0;
+                decimal amountOrder = 0;
+                if (item.EditMode == EditMode.Create || item.EditMode == EditMode.Update)
+                {
+                    var masterID = item.EditMode == EditMode.Create ? Guid.NewGuid() : item.OrderId;
                     item.OrderId = masterID;
                     foreach (var orderDetail in item.OrderDetails)
                     {
@@ -76,10 +98,23 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
 
                     await _orderRepository.UpdateCodeAsync(prefix);
                 }
+                if(item.EditMode != EditMode.Delete)
+                {
+                    // Sử dụng LINQ để lấy tất cả OrderDetail vào một biến
+                    await _orderDetailService.SaveData(item.OrderDetails.ToList());
+                    if (item.OrderStatus == (int)OrderStatus.Done)
+                    {
+                        var saInvoice = CreateSAInvoice(item);
+                        var lstSAInvoice = new List<SAInvoiceDTO>();
+                        lstSAInvoice.Add(saInvoice);
+                        await _invoiceService.SaveData(lstSAInvoice);
+                    }
+                }
+                else
+                {
+                    await _orderDetailRepository.DeleteOrderDetailByOrderID(item.OrderId);
+                }
             }
-            // Sử dụng LINQ để lấy tất cả OrderDetail vào một biến
-            var allOrderDetails = listData.SelectMany(o => o.OrderDetails).ToList();
-            await _orderDetailService.SaveData(allOrderDetails);
         }
     }
 }

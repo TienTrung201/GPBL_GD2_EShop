@@ -50,6 +50,7 @@ builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 builder.Services.AddScoped<IPictureRepository, PictureRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+builder.Services.AddScoped<ISAInvoiceRepository, SAInvoiceRepository>();
 //
 builder.Services.AddScoped<IInventoryManager, InventoryManager>();
 builder.Services.AddScoped<IItemCategoryManager, ItemCategoryManager>();
@@ -64,6 +65,7 @@ builder.Services.AddScoped<IItemCategoryExcelService, ItemCategoryExcelService>(
 builder.Services.AddScoped<IPictureService, PictureService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
+builder.Services.AddScoped<ISAInvoiceService, SAInvoiceService>();
 
 // Add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
