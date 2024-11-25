@@ -20,11 +20,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Order
 
         public DateTime? OrderTime { get; set; }
         public DateTime? ShippingDate { get; set; } // ngày giao hàng, có thể null
-        public string ShippingAddress { get; set; } // địa chỉ giao hàng
+        public string? CustomerName { get; set; } // địa chỉ giao hàng
+        public string? PhoneNumber { get; set; } // địa chỉ giao hàng
+        public string? Note { get; set; } // địa chỉ giao hàng
+        public string? ShippingAddress { get; set; } // địa chỉ giao hàng
         public string District { get; set; } // Quận/Huyện
         public string Ward { get; set; } // Phố/Phường
         public string Street { get; set; } // Đường
-        public string OrderType { get; set; } // Loại đơn hàng
+        public int OrderType { get; set; } // Loại đơn hàng
 
         public List<OrderDetailDTO>? OrderDetails { get; set; }
     }

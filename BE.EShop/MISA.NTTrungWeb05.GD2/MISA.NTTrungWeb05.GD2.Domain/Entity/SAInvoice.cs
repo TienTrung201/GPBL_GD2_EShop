@@ -8,12 +8,14 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
 {
     public class SAInvoice : BaseAudiEntity
     {
-        public Guid RefId { get; set; }
+        public Guid SAInvoiceId { get; set; }
         public Guid OrderID { get; set; }
         public decimal TotalAmount { get; set; }
         public int? PaymentType { get; set; } 
         public int? PaymentStatus { get; set; }
         public string RefNo { get; set; }
+
+        public int? SAInvoiceType { get; set; }
 
     }
 }

@@ -49,7 +49,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             saInvoice.OrderID = order.OrderId;
             saInvoice.TotalAmount = order.TotalAmount;
             saInvoice.PaymentStatus = (int)PaymentStatus.Done;
-            saInvoice.RefId = Guid.NewGuid();
+            saInvoice.SAInvoiceId = Guid.NewGuid();
+            saInvoice.SAInvoiceType = order.OrderType;
             saInvoice.EditMode = EditMode.Create;
             saInvoice.PaymentType = 1;
             return saInvoice;
