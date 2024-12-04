@@ -81,8 +81,11 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                         case Operator.Greater:
                             queryWhere.Append($"view.{filter.Property} > '{filter.Value.Replace("'", "''")}' ");
                             break;
+                        case Operator.FilterFromToDate:
+                            queryWhere.Append(BuildQueryWhereDateFilter(filter.Value.Replace("'", "''"), filter.Property));
+                            break;
                         case Operator.AllData:
-                            queryWhere.Append($"(view.{filter.Property} = true or view.{filter.Property} = false) ");
+                            queryWhere.Append($"(view.{filter.Property} IS NULL or view.{filter.Property} IS NOT NULL) ");
                             break;
                         default:
                             break;
@@ -146,6 +149,39 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
 
             var result = new Pagination<TModel>(listData.ToList(), totalRecords);
             return result;
+        }
+
+        private string BuildQueryWhereDateFilter(string typeFilterDate, string Property)
+        {
+            var whereString = new StringBuilder();
+            switch (int.Parse(typeFilterDate)) { 
+                case (int)FilterTypeDate.None: 
+                    whereString.Append($""); 
+                    break; 
+                case (int)FilterTypeDate.ToDay: 
+                    whereString.Append($"view.{Property} >= '{DateTime.Today.ToString("yyyy-MM-dd")}' AND view.{Property} < '{DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")}'");
+                    break; 
+                case (int)FilterTypeDate.Yesterday: 
+                    whereString.Append($"view.{Property} >= '{DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd")}' AND view.{Property} < '{DateTime.Today.ToString("yyyy-MM-dd")}'"); 
+                    break;
+                case (int)FilterTypeDate.Last7Days: 
+                    whereString.Append($"view.{Property} >= '{DateTime.Today.AddDays(-7).ToString("yyyy-MM-dd")}' AND view.{Property} < '{DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")}'"); 
+                    break;
+                case (int)FilterTypeDate.ThisMonth: 
+                    whereString.Append($"view.{Property} >= '{new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("yyyy-MM-dd")}' AND view.{Property} < '{new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).ToString("yyyy-MM-dd")}'"); 
+                    break;
+                case (int)FilterTypeDate.LastMonth: 
+                    whereString.Append($"view.{Property} >= '{new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1).ToString("yyyy-MM-dd")}' AND view.{Property} < '{new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("yyyy-MM-dd")}'"); 
+                    break;
+                case (int)FilterTypeDate.ThisYear: 
+                    whereString.Append($"view.{Property} >= '{new DateTime(DateTime.Today.Year, 1, 1).ToString("yyyy-MM-dd")}' AND view.{Property} < '{new DateTime(DateTime.Today.Year + 1, 1, 1).ToString("yyyy-MM-dd")}'"); 
+                    break;
+                case (int)FilterTypeDate.LastYear: 
+                    whereString.Append($"view.{Property} >= '{new DateTime(DateTime.Today.Year - 1, 1, 1).ToString("yyyy-MM-dd")}' AND view.{Property} < '{new DateTime(DateTime.Today.Year, 1, 1).ToString("yyyy-MM-dd")}'"); 
+                    break;
+                default: 
+                    break; }
+            return whereString.ToString();
         }
         //public void BuildQueryStringWhere(StringBuilder query, string propertyName, object value, Operator operatorType)
         //{

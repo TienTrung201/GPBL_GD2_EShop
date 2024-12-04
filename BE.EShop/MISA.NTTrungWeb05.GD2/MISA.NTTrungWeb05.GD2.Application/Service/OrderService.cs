@@ -53,6 +53,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             saInvoice.SAInvoiceType = order.OrderType;
             saInvoice.EditMode = EditMode.Create;
             saInvoice.PaymentType = 1;
+            saInvoice.RefNo = order.OrderNo;
             return saInvoice;
         }
         /// <summary>

@@ -33,7 +33,9 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         [Description("Smaller")]
         Smaller = 6,
         [Description("All")]
-        AllData =7
+        AllData = 7,
+        [Description("FilterFromToDate")]
+        FilterFromToDate = 8
     }
     public enum RelationType
     {
@@ -48,5 +50,16 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         Desc = 1,
         [Description("Asc")]
         Asc = 2,
+    }
+    public enum FilterTypeDate
+    {
+        None = 0,
+        ToDay = 1,
+        Yesterday = 2,
+        Last7Days = 7,
+        ThisMonth = 3,
+        LastMonth = 4,
+        ThisYear = 5,
+        LastYear = 6,
     }
 }
