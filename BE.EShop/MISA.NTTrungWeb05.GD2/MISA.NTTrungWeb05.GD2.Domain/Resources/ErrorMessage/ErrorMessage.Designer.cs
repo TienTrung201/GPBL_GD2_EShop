@@ -142,6 +142,15 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Đăng nhập không thành công.
+        /// </summary>
+        public static string LoginError {
+            get {
+                return ResourceManager.GetString("LoginError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không bản ghi nào bị thay đổi trong database..
         /// </summary>
         public static string NoAffectedRows {
@@ -160,11 +169,29 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Có lỗi xảy ra! vui lòng liên hệ với MISA..
+        ///   Looks up a localized string similar to Đăng ký không thành công.
+        /// </summary>
+        public static string RegisterError {
+            get {
+                return ResourceManager.GetString("RegisterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string SystemError {
             get {
                 return ResourceManager.GetString("SystemError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Không có quyền truy cập.
+        /// </summary>
+        public static string Unauthorized {
+            get {
+                return ResourceManager.GetString("Unauthorized", resourceCulture);
             }
         }
     }

@@ -28,7 +28,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Dtos.Order
         public string Ward { get; set; } // Phố/Phường
         public string Street { get; set; } // Đường
         public int OrderType { get; set; } // Loại đơn hàng
-
+        public bool IsOrderFromWeb { get; set; } // Loại đơn hàng
+        
         public List<OrderDetailDTO>? OrderDetails { get; set; }
     }
 }

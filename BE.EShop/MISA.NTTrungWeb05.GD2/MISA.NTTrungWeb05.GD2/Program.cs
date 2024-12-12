@@ -11,6 +11,10 @@ using MISA.NTTrungWeb05.GD2.Infastructurce.Repository;
 using MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Excel;
 using MISA.NTTrungWeb05.GD2.Infastructurce.Repository.UnitOfWork;
 using MISA.NTTrungWeb05.GD2.Middleware;
+using NTTRUNG_BaseWebAPI_Application.Interface.Service;
+using NTTRUNG_BaseWebAPI_Application.Service;
+using NTTRUNG_baseWebAPI_Domain.Interface.Repository;
+using NTTRUNG_BaseWebAPI_Infastructurce.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +48,9 @@ var connectionstring = builder.Configuration.GetConnectionString("MISAEShop");
 
 // Add DI
 builder.Services.AddScoped<IUnitOfWork>(provider => new UnitOfWork(connectionstring));
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
@@ -51,6 +58,8 @@ builder.Services.AddScoped<IPictureRepository, PictureRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 builder.Services.AddScoped<ISAInvoiceRepository, SAInvoiceRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 //
 builder.Services.AddScoped<IInventoryManager, InventoryManager>();
 builder.Services.AddScoped<IItemCategoryManager, ItemCategoryManager>();
@@ -66,6 +75,8 @@ builder.Services.AddScoped<IPictureService, PictureService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<ISAInvoiceService, SAInvoiceService>();
+
+
 
 // Add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

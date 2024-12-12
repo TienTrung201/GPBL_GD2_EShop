@@ -26,5 +26,6 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Entity
         public string Ward { get; set; } // Phố/Phường
         public string Street { get; set; } // Đường
         public int OrderType { get; set; } // Loại đơn hàng
+        public bool IsOrderFromWeb { get; set; } // Loại đơn hàng
     }
 }

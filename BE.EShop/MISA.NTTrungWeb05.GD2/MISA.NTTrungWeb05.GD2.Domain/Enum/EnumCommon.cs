@@ -50,4 +50,13 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         /// </summary>
         Debit = 3,
     }
+    public enum EnumRole
+    {
+        [Description("Admin")]
+        Admin = 1,
+        [Description("Người cho thuê")]
+        Lessee = 2,
+        [Description("Người thuê")]
+        Tenant = 3,
+    }
 }

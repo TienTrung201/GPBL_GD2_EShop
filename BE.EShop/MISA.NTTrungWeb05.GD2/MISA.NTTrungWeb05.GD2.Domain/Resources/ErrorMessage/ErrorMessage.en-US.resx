@@ -161,4 +161,13 @@
     <value>An error occurred! please contact MISA.</value>
     <comment>Có lỗi xảy ra! vui lòng liên hệ với MISA.</comment>
   </data>
+  <data name="LoginError" xml:space="preserve">
+    <value>Đăng nhập không thành công</value>
+  </data>
+  <data name="RegisterError" xml:space="preserve">
+    <value>Đăng ký không thành công</value>
+  </data>
+  <data name="Unauthorized" xml:space="preserve">
+    <value>Không có quyền truy cập</value>
+  </data>
 </root>
