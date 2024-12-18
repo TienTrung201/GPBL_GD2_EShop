@@ -12,5 +12,6 @@ namespace NTTRUNG_BaseWebAPI_Domain.Model
     {
         public EnumRole? RoleType { get; set; }
         public string? RoleName { get; set; }
+        public string? Token { get; set; }
     }
 }

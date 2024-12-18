@@ -51,30 +51,39 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
              return tokenHandler.WriteToken(token);
         }
 
-        public bool ValidateJwtToken(string token)
+        public async Task<UserModel> ValidateJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secretKey);
             try
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = false,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = _issuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                    IssuerSigningKey = new SymmetricSecurityKey(key), // Thêm thiết lập này để không xác thực thời hạn của token (có thể tắt nếu không cần) ValidateLifetime = false }, out SecurityToken validatedToken); // Trả về ClaimsPrincipal chứa các thông tin trong token return principal;
                 }, out SecurityToken validatedToken);
-                return true;
+                var user = new UserModel();
+                if (principal != null && principal.Identity != null && !string.IsNullOrWhiteSpace(principal.Identity.Name))
+                {
+                     user = await _userRepository.GetUserByCodeOrEmail(userCode: principal.Identity.Name);
+                    if (user != null)
+                    {
+                        return user;
+                    }
+                }
+                return user;
             }
             catch
             {
-                return false;
+                throw new AuthenticationException(ErrorMessage.LoginError, (int)ErrorCode.LoginError);
             }
         }
 
         // Method to authenticate user - Check credentials and return JWT if valid
-        public async Task<string> AuthenticateUser(LoginDto loginDto)
+        public async Task<UserModel> AuthenticateUser(LoginDto loginDto)
         {
             var user = new UserModel();
             if (!string.IsNullOrWhiteSpace(loginDto.UserCode))
@@ -84,11 +93,15 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
             {
                 user = await _userRepository.GetUserByCodeOrEmail(email: loginDto.Email);
             }
-            // Validate username and password (you might want to retrieve this from a database)
-            if (user.PassWord == loginDto.PassWord)
+            if(user != null)
             {
-                // Generate JWT token
-                return GenerateJwtToken(user.UserCode);
+                // Validate username and password (you might want to retrieve this from a database)
+                if (user.PassWord == loginDto.PassWord)
+                {
+                    user.Token = GenerateJwtToken(user.UserCode);
+                    // Generate JWT token
+                    return user;
+                }
             }
             throw new AuthenticationException(ErrorMessage.LoginError, (int)ErrorCode.LoginError);
         }

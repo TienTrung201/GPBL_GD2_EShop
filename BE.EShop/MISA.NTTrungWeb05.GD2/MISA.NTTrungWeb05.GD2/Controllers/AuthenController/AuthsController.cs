@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using NTTRUNG_BaseWebAPI_Application.Service;
 using NTTRUNG_BaseWebAPI_Application.Interface.Service;
 using NTTRUNG_BaseWebAPI_Application.Dtos.Entity.Account;
+using System.Text;
 namespace NTTRUNG_BaseWebAPI_Controllers
 {
     [Route("api/[controller]")]
@@ -29,6 +30,12 @@ namespace NTTRUNG_BaseWebAPI_Controllers
         {
             var token = await _authService.RegisterUser(registerModel);
             return Ok(new { token });
+        }
+        [HttpPost("loginToken")]
+        public async Task<IActionResult> loginToken(LoginDto loginModel)
+        {
+            var isValid = await _authService.ValidateJwtToken(loginModel.Token);
+            return Ok(isValid);
         }
     }
 

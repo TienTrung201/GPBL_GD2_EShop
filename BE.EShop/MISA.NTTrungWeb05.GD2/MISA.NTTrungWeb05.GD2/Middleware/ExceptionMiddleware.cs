@@ -1,6 +1,7 @@
 ﻿using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
 using MISA.NTTrungWeb05.GD2.Domain;
+using NTTRUNG_BaseWebAPI_Domain;
 
 namespace MISA.NTTrungWeb05.GD2.Middleware
 {
@@ -99,6 +100,29 @@ namespace MISA.NTTrungWeb05.GD2.Middleware
                         ErrorCode = ((BadRequestException)exception).ErrorCode,
                         UserMessage = exception.Message,
                         DevMessage = "Duplicate Code!",
+                        TraceId = context.TraceIdentifier,
+                        MoreInfo = exception.HelpLink
+                    }.ToString() ?? "");
+                    break;
+                    
+                case AuthenticationException:
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync(text: new BaseException()
+                    {
+                        ErrorCode = ((AuthenticationException)exception).ErrorCode,
+                        UserMessage = exception.Message,
+                        DevMessage = "Authentication Exception",
+                        TraceId = context.TraceIdentifier,
+                        MoreInfo = exception.HelpLink
+                    }.ToString() ?? "");
+                    break;
+                case Unauthorized:
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    await context.Response.WriteAsync(text: new BaseException()
+                    {
+                        ErrorCode = ((Unauthorized)exception).ErrorCode,
+                        UserMessage = exception.Message,
+                        DevMessage = "Unauthorized",
                         TraceId = context.TraceIdentifier,
                         MoreInfo = exception.HelpLink
                     }.ToString() ?? "");
