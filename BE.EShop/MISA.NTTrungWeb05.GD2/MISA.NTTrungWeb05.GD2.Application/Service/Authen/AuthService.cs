@@ -17,6 +17,7 @@ using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
 using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using NTTRUNG_BaseWebAPI_Application.Dtos.Entity;
 using MISA.NTTrungWeb05.GD2.Domain;
+using MISA.NTTrungWeb05.GD2.Domain.Common;
 namespace NTTRUNG_BaseWebAPI_Application.Service
 {
     public class AuthService : IAuthService
@@ -96,7 +97,8 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
             if(user != null)
             {
                 // Validate username and password (you might want to retrieve this from a database)
-                if (user.PassWord == loginDto.PassWord)
+                var password = CommonFunction.Encrypt(loginDto.PassWord);
+                if (user.PassWord == password)
                 {
                     user.Token = GenerateJwtToken(user.UserCode);
                     // Generate JWT token
@@ -107,16 +109,19 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
         }
 
         // Method to register new user (you might want to save this info to a database)
-        public async Task<string> RegisterUser(RegisterDto registerDto)
+        public async Task<UserDto> RegisterUser(RegisterDto registerDto)
         {
             var user = _mapper.Map<UserDto>(registerDto);
+            user.PassWord = CommonFunction.Encrypt(user.PassWord);
             var lstUser = new List<UserDto>();
             lstUser.Add(user);
             user.EditMode = EditMode.Create;
             var result = await _userService.SaveData(lstUser);
             if (result > 0)
             {
-                return GenerateJwtToken(user.UserCode);
+                user.Token = GenerateJwtToken(user.UserCode);
+                // Generate JWT token
+                return user;
             }
             throw new DBException(ErrorMessage.RegisterError, (int)ErrorCode.RegisterError);
             // Save username and password to database

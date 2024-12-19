@@ -21,8 +21,8 @@ namespace NTTRUNG_BaseWebAPI_Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginModel)
         {
-            var token = await _authService.AuthenticateUser(loginModel);
-            return Ok(new { token });
+            var user = await _authService.AuthenticateUser(loginModel);
+            return Ok(user);
         }
 
         [HttpPost("register")]

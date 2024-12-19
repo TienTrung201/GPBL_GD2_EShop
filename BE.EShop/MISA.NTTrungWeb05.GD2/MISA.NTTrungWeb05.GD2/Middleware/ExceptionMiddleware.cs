@@ -106,7 +106,7 @@ namespace MISA.NTTrungWeb05.GD2.Middleware
                     break;
                     
                 case AuthenticationException:
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.StatusCode = StatusCodes.Status200OK;
                     await context.Response.WriteAsync(text: new BaseException()
                     {
                         ErrorCode = ((AuthenticationException)exception).ErrorCode,

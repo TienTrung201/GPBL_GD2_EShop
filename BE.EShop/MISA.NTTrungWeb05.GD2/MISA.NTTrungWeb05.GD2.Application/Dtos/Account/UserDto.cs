@@ -51,5 +51,8 @@ namespace NTTRUNG_BaseWebAPI_Application.Dtos.Entity
         /// </summary>
         /// CreatedBy: NTTrung (16/07/2023) 
         public string? ModifiedBy { get; set; }
+
+
+        public string? Token { get; set; }
     }
 }

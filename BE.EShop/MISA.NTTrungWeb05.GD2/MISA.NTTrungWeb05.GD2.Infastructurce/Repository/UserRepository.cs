@@ -31,10 +31,10 @@ namespace NTTRUNG_BaseWebAPI_Infastructurce.Repository
             var queryString = query.ToString();
 
             var result = await _uow.Connection.QueryFirstOrDefaultAsync<UserModel>(queryString, parameters, commandType: CommandType.Text, transaction: _uow.Transaction);
-            if (result == null)
-            {
-                throw new NotFoundException(string.Format(ErrorMessage.NotFound, userCode), (int)ErrorCode.NotFoundCode);
-            }
+            //if (result == null)
+            //{
+            //    throw new NotFoundException(string.Format(ErrorMessage.NotFound, userCode), (int)ErrorCode.LoginError);
+            //}
             return result;
         }
     }

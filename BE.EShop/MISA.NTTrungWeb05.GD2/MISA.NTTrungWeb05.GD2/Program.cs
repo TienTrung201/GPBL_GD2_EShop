@@ -75,6 +75,8 @@ builder.Services.AddScoped<IPictureService, PictureService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<ISAInvoiceService, SAInvoiceService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 
 
