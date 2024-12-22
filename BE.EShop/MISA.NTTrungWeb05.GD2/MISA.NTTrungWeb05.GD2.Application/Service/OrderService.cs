@@ -30,18 +30,20 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly IOrderDetailService _orderDetailService;
         private readonly ISAInvoiceService _invoiceService;
-
+        private readonly IWebSocketMPos _webSocketMPos;
         public OrderService(
             IOrderRepository orderRepository,
             IOrderDetailService orderDetailService,
             IOrderDetailRepository orderDetailRepository,
             ISAInvoiceService sAInvoiceService,
+            IWebSocketMPos webSocketMPos,
             IMapper mapper, IUnitOfWork unitOfWork) : base(orderRepository, mapper, unitOfWork)
         {
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository;
             _orderDetailService = orderDetailService;
             _invoiceService = sAInvoiceService;
+            _webSocketMPos = webSocketMPos;
         }
         private SAInvoiceDTO CreateSAInvoice(OrderDTO order)
         {
@@ -95,9 +97,12 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
             {
                 if (item.EditMode == EditMode.Create)
                 {
+                    if(item.OrderStatus == (int)OrderStatus.None)
+                    {
+                        await _webSocketMPos.SendNotiOrderData();
+                    }
                     string pattern = "^[A-Za-z]+";
                     string prefix = Regex.Match(item.OrderNo, pattern).Value;
-
                     await _orderRepository.UpdateCodeAsync(prefix);
                 }
                 if(item.EditMode != EditMode.Delete)

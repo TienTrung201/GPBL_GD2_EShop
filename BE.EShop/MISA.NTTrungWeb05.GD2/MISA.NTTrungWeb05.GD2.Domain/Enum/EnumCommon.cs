@@ -59,4 +59,11 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         [Description("Người thuê")]
         Tenant = 3,
     }
+    public enum SignalRType
+    {
+        [Description("Thông báo có đơn hàng")]
+        NotiOrder = 1,
+        [Description("Cập nhật trạng thái order")]
+        UpdateOrderStatus = 2,
+    }
 }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using MISA.NTTrungWeb05.GD2.Application;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Excel;
 using MISA.NTTrungWeb05.GD2.Application.Interface.Service;
 using MISA.NTTrungWeb05.GD2.Application.Service;
+using MISA.NTTrungWeb05.GD2.Application.Service.SignalR;
 using MISA.NTTrungWeb05.GD2.Domain;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Manager;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.Repository;
@@ -77,8 +79,8 @@ builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<ISAInvoiceService, SAInvoiceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-
-
+/// Web socket
+builder.Services.AddTransient<IWebSocketMPos, WebSocketMPos>();
 
 // Add auto mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -91,6 +93,8 @@ builder.Services.AddCors(options =>
         policyBuilder.AllowAnyOrigin();
         policyBuilder.AllowAnyMethod();
         policyBuilder.AllowAnyHeader();
+        policyBuilder.WithOrigins("http://localhost:5173");
+        policyBuilder.AllowCredentials();
     });
 });
 
@@ -103,7 +107,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 //app.UseRequestLocalization(localizationOptions);
 // Configure the HTTP request pipeline.
@@ -116,11 +120,13 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 app.UseHttpsRedirection();
-
+app.UseRouting();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseEndpoints(endpoints => {
+    endpoints.MapHub<WebSocketMPos>("/websocket");
+});
 
 app.Run();
