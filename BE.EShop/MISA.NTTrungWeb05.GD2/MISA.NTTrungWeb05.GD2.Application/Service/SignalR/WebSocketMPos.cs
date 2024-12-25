@@ -13,8 +13,13 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.SignalR
 {
     public class WebSocketMPos : Hub, IWebSocketMPos
     {
-        private readonly IHubContext<WebSocketMPos> _hubContext; 
+        private readonly IHubContext<WebSocketMPos> _hubContext;
         public WebSocketMPos(IHubContext<WebSocketMPos> hubContext) { _hubContext = hubContext; }
+        // Phương thức để thêm user vào nhóm Admin
+        public async Task JoinAdminGroup() {
+           var adminGroup = EnumRole.Admin.ToString();
+            await _hubContext.Groups.AddToGroupAsync(Context.ConnectionId, adminGroup);
+        }
         /// <summary>
         /// Thông báo có đơn hàng đặt từ web
         /// </summary>
@@ -25,7 +30,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service.SignalR
             {
                 SignalRType = SignalRType.NotiOrder,
             };
-            await _hubContext.Clients.All.SendAsync("NotiOrderData", data);
+            var admin = EnumRole.Admin.ToString();
+            await _hubContext.Clients.Group(admin).SendAsync("NotiOrderData", data);
         }
         /// <summary>
         /// Cập nhật trạng thái order cho người dùng

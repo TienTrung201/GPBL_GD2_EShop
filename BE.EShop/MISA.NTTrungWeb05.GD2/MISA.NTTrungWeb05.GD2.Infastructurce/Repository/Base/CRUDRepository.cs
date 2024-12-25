@@ -147,7 +147,7 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
             int indexData = 0;
             listEntity.ForEach((entity) =>
             {
-                entity.ModifiedDate = DateTime.Now;
+                entity.ModifiedDate = DateTimeOffset.Now;
                 query.Append($"Update `{TableName}` Set ");
                 int indexColumn = 0;
                 foreach (var property in properties)

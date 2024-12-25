@@ -17,6 +17,8 @@ namespace MISA.NTTrungWeb05.GD2.Application
         /// </summary>
         /// <returns></returns>
         public Task SendNotiOrderData();
+        public Task JoinAdminGroup();
+        
         /// <summary>
         /// Cập nhật trạng thái order cho người dùng
         /// </summary>

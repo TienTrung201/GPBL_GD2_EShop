@@ -71,6 +71,14 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 {
                     var isDeleteDetail = await _orderDetailRepository.DeleteOrderDetailByOrderID(item.OrderId);
                 }
+                if (item.EditMode == EditMode.Create)
+                {
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                    // Lấy thời gian hiện tại theo UTC
+                    DateTime localDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
+                    DateTime utcDateTime = TimeZoneInfo.ConvertTimeToUtc(localDateTime, timeZone);
+                    item.OrderTime = localDateTime;
+                }
                 decimal totalAmountOrder = 0;
                 decimal amountOrder = 0;
                 if (item.EditMode == EditMode.Create || item.EditMode == EditMode.Update)

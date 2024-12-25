@@ -18,6 +18,7 @@ using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using NTTRUNG_BaseWebAPI_Application.Dtos.Entity;
 using MISA.NTTrungWeb05.GD2.Domain;
 using MISA.NTTrungWeb05.GD2.Domain.Common;
+using MISA.NTTrungWeb05.GD2.Application;
 namespace NTTRUNG_BaseWebAPI_Application.Service
 {
     public class AuthService : IAuthService
@@ -28,7 +29,8 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
-        public AuthService(IUserService userService, IMapper mapper, IUserRepository userRepository, IConfiguration configuration)
+        private readonly IWebSocketMPos _signalR;
+        public AuthService(IUserService userService, IMapper mapper, IUserRepository userRepository, IConfiguration configuration, IWebSocketMPos webSocketMPos)
         {
             _userService = userService;
             _mapper = mapper;
@@ -36,6 +38,7 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
             _config = configuration;
             _secretKey = _config["JWT:SecretKey"];
             _issuer = _config["JWT:Issuer"];
+            _signalR = webSocketMPos;
         }
         public string GenerateJwtToken(string userCode)
         {
@@ -75,7 +78,7 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
                         return user;
                     }
                 }
-                return user;
+                return null;
             }
             catch
             {
