@@ -16,7 +16,7 @@ namespace NTTRUNG_BaseWebAPI_Domain.Entity
         /// <summary>
         /// Định danh
         /// </summary>
-        public Guid UserID { get; set; }
+        public Guid UserId { get; set; }
         public Guid? AddressID { get; set; }
         public Guid? RoleID { get; set; }
         public string UserCode { get; set; }

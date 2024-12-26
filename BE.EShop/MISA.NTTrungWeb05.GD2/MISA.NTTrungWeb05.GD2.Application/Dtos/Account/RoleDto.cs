@@ -8,7 +8,7 @@ namespace NTTRUNG_BaseWebAPI_Application.Dtos.Entity
         /// <summary>
         /// Định danh
         /// </summary>
-        public Guid? RoleID { get; set; }
+        public Guid? RoleId { get; set; }
         public EnumRole? RoleType { get; set; }
         /// <summary>
         /// Tên user
