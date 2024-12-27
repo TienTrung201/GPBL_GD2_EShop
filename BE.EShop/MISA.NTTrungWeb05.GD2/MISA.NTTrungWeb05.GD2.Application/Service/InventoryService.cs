@@ -53,7 +53,10 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                 master.InventoryId = Guid.NewGuid();
             }
             var detail = listData.Where(data => !string.IsNullOrEmpty(data.ColorCode) || !string.IsNullOrEmpty(data.SizeCode)).ToList();
-
+            foreach(var item in listData)
+            {
+                item.PictureId = master.PictureId;
+            }
             var dataUpdateCreate = detail.Where((data) => data.EditMode != EditMode.Delete).ToList();
             if (dataUpdateCreate.Count() > 0)
             {
