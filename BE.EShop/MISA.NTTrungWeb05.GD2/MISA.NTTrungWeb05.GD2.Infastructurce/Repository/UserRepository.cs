@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using MISA.NTTrungWeb05.GD2.Domain;
+using MISA.NTTrungWeb05.GD2.Domain.Common;
 using MISA.NTTrungWeb05.GD2.Domain.Enum;
 using MISA.NTTrungWeb05.GD2.Domain.Interface.UnitOfWork;
+using MISA.NTTrungWeb05.GD2.Domain.Model;
 using MISA.NTTrungWeb05.GD2.Domain.Resources.ErrorMessage;
 using MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base;
 using NTTRUNG_baseWebAPI_Domain.Interface.Repository;
@@ -36,6 +38,17 @@ namespace NTTRUNG_BaseWebAPI_Infastructurce.Repository
             //    throw new NotFoundException(string.Format(ErrorMessage.NotFound, userCode), (int)ErrorCode.LoginError);
             //}
             return result;
+        }
+        /// <summary>
+        /// Hàm custtom kết quả cho master
+        /// </summary>
+        /// <paran name="entity">master</paran>
+        /// <returns>Hàng hóa đã có detail</returns>
+        /// CreatedBy: NTTrung (24/08/2023)
+        public override async Task<UserModel> CustomResult(UserModel user)
+        {
+            user.PassWord = CommonFunction.Decrypt(user.PassWord);
+            return user;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace NTTRUNG_BaseWebAPI_Application.Dtos.Entity
         /// </summary>
         public Guid? UserId { get; set; }
         public Guid? AddressID { get; set; }
-        public Guid? RoleID { get; set; }
+        public Guid? RoleId { get; set; }
         public string UserCode { get; set; }
         public string PassWord { get; set; }
         /// <summary>
