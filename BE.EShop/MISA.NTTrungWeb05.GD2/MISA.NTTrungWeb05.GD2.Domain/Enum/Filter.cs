@@ -35,7 +35,9 @@ namespace MISA.NTTrungWeb05.GD2.Domain.Enum
         [Description("All")]
         AllData = 7,
         [Description("FilterFromToDate")]
-        FilterFromToDate = 8
+        FilterFromToDate = 8,
+        [Description("SearchMuntiWhere")]
+        SearchMuntiWhere = 9,
     }
     public enum RelationType
     {

@@ -115,7 +115,6 @@ namespace NTTRUNG_BaseWebAPI_Application.Service
         public async Task<UserDto> RegisterUser(RegisterDto registerDto)
         {
             var user = _mapper.Map<UserDto>(registerDto);
-            user.PassWord = CommonFunction.Encrypt(user.PassWord);
             var lstUser = new List<UserDto>();
             lstUser.Add(user);
             user.EditMode = EditMode.Create;
