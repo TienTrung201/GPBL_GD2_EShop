@@ -100,7 +100,10 @@ namespace MISA.NTTrungWeb05.GD2.Infastructurce.Repository.Base
                 {
                      entity.SetValue(entityIdName, Guid.NewGuid());
                 }
-                entity.CreatedDate = DateTime.Now;
+                TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                // Lấy thời gian hiện tại theo UTC
+                DateTime localDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
+                entity.CreatedDate = localDateTime;
                 query.Append("( ");
                 int indexColumn = 0;
                 foreach (var property in properties)

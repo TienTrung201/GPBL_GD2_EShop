@@ -76,7 +76,6 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
                     TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
                     // Lấy thời gian hiện tại theo UTC
                     DateTime localDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
-                    DateTime utcDateTime = TimeZoneInfo.ConvertTimeToUtc(localDateTime, timeZone);
                     item.OrderTime = localDateTime;
                 }
                 decimal totalAmountOrder = 0;
