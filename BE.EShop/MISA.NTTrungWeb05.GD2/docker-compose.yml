@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mshopdb_container
+    restart: no
+    # Container sẽ luôn tự động khởi động lại nếu bị dừng hoặc gặp lỗi
+    environment:
+      MYSQL_ROOT_PASSWORD: nttrung2
+      # Đặt mật khẩu root của database là "nttrung2".
+      MYSQL_DATABASE: mshop
+      MYSQL_USER: nttrung2
+      MYSQL_PASSWORD: 14122001
+    ports:
+      - "3306:3306"
+      # Mở cổng 3306 của container MariaDB ra cổng 3306 của máy host.
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      # Gắn thư mục ./db trên máy host vào /docker-entrypoint-initdb.d trong container.
+      # MariaDB sẽ tự động chạy file .sql trong thư mục này khi container khởi chạy lần đầu.
+      - ./db:/docker-entrypoint-initdb.d  # Mount file backup.sql vào container
+       # Gắn file cấu hình MariaDB từ máy host vào container
+      - ./config/my.cnf:/etc/mysql/my.cnf:ro  # Chỉ đọc (read-only)
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_api
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./uploads:/app/uploads  # Mount thư mục trên máy host vào container
+
+volumes:
+  mariadb_data:

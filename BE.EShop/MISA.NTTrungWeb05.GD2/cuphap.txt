@@ -1,0 +1,149 @@
+-------------------------------------------Xóa container xóa volume---------------------------------------
+1️⃣ Xóa tất cả container liên quan (docker-compose down -v xóa cả volume)
+Dừng và xóa tất cả container đang chạy trong docker-compose.yml:
+
+docker-compose down
+2️⃣ Xóa volume cũ để đảm bảo MariaDB không lưu dữ liệu trước đó
+docker volume rm mariadb_data
+docker volume ls  # Liệt kê tất cả volume
+docker volume rm tên_volume  # Xóa volume theo tên
+3️⃣ Kiểm tra lại xem volume và container đã xóa chưa
+
+docker ps -a  # Kiểm tra danh sách container (không nên thấy container cũ)
+docker volume ls  # Kiểm tra danh sách volume (không nên thấy `mariadb_data`)
+4️⃣ Chạy lại Docker Compose từ đầu
+Sau khi xóa volume, MariaDB sẽ chạy lại file SQL từ ./db/ khi container khởi động:
+
+
+docker compose up --build -d
+
+Sau đó kiểm tra MariaDB có dữ liệu không:
+
+docker exec -i mshopdb_container mariadb -u nttrung2 -p14122001 -e "SHOW TABLES FROM mshop;"
+
+Kiểm tra file SQL có được mount vào container không
+Chạy lệnh sau để kiểm tra trong container:
+
+docker exec -it mshopdb_container ls -l /docker-entrypoint-initdb.d/
+-------------------------------------------Xóa container xóa volume---------------------------------------
+
+
+
+
+------------------------------------------Thêm DB thủ công-------------------------------
+
+Thêm DB thủ công
+docker exec -it mshopdb_container sh
+Sau đó kiểm tra file SQL:
+
+ls -l /docker-entrypoint-initdb.d/
+Nếu thấy data.sql, chạy lệnh:
+
+mariadb -u nttrung2 -p14122001 mshop < /docker-entrypoint-initdb.d/data.sql
+-------------------------------------------Thêm DB thủ công-------------------------------
+
+
+
+------------------------------------------- kiểm tra thư mục tồn tại-------------------------------
+ ls -l /uploads/
+------------------------------------------- kiểm tra thư mục tồn tại-------------------------------
+------------------------------------------- Cách auto vào server không cần mật khẩu-------------------------------
+🔐 Hướng dẫn thiết lập SSH Key để đăng nhập không cần mật khẩu
+Việc thiết lập SSH Key giúp bạn đăng nhập vào server mà không cần nhập mật khẩu mỗi lần.
+
+✅ 1️⃣ Kiểm tra xem bạn đã có SSH Key hay chưa
+Mở terminal (hoặc Command Prompt trên Windows) và chạy:
+
+ls ~/.ssh
+📌 Nếu thấy file id_rsa và id_rsa.pub, nghĩa là bạn đã có SSH Key.
+📌 Nếu không có file nào, hoặc muốn tạo mới, làm bước tiếp theo.
+
+✅ 2️⃣ Tạo SSH Key mới
+Chạy lệnh sau để tạo SSH Key (bỏ qua nếu đã có):
+
+
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+📌 Giải thích:
+
+-t rsa: Tạo key theo chuẩn RSA.
+-b 4096: Độ dài key 4096-bit (bảo mật cao).
+-C "your_email@example.com": Gán email vào key để nhận diện.
+🔹 Khi được hỏi "Enter file in which to save the key", nhấn Enter để lưu vào mặc định (~/.ssh/id_rsa).
+🔹 Khi được hỏi "Enter passphrase (empty for no passphrase)", bạn có thể để trống (hoặc đặt mật khẩu nếu muốn bảo mật hơn).
+
+📌 Sau khi tạo xong, bạn sẽ có 2 file:
+
+~/.ssh/id_rsa → Private Key (bí mật, không chia sẻ)
+~/.ssh/id_rsa.pub → Public Key (dùng để đưa lên server)
+✅ 3️⃣ Copy SSH Public Key lên server
+Chạy lệnh sau để copy SSH Key vào server (thay IP của bạn vào):
+
+
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@103.163.118.217
+📌 Nếu ssh-copy-id không có trên máy của bạn, làm thủ công:
+
+Mở file Public Key trên máy:
+
+cat ~/.ssh/id_rsa.pub
+Copy toàn bộ nội dung (nó sẽ bắt đầu bằng ssh-rsa ...).
+SSH vào server:
+
+ssh root@103.163.118.217
+Dán key vào file ~/.ssh/authorized_keys:
+
+echo "NỘI_DUNG_KEY_BẠN_VỪA_COPY" >> ~/.ssh/authorized_keys
+Đảm bảo quyền đúng cho file:
+
+chmod 600 ~/.ssh/authorized_keys
+✅ 4️⃣ Kiểm tra đăng nhập bằng SSH Key
+Bây giờ, thử đăng nhập vào server mà không cần nhập mật khẩu:
+
+
+ssh root@103.163.118.217
+✔ Nếu vào được mà không hỏi mật khẩu → Thành công! 🎉
+
+✅ 5️⃣ (Tùy chọn) Tắt đăng nhập bằng mật khẩu (bảo mật hơn)
+Nếu bạn chỉ muốn dùng SSH Key, có thể vô hiệu hóa đăng nhập bằng mật khẩu để tăng bảo mật:
+
+Mở file cấu hình SSH:
+
+sudo nano /etc/ssh/sshd_config
+Tìm dòng:
+
+PasswordAuthentication yes
+và sửa thành:
+
+PasswordAuthentication no
+Lưu lại (Ctrl + X, Y, Enter).
+Restart SSH để áp dụng thay đổi:
+
+sudo systemctl restart ssh
+📌 Lưu ý: Trước khi tắt đăng nhập bằng mật khẩu, hãy đảm bảo bạn có thể SSH vào bằng key!
+
+🚀 Tóm lại:
+✔ Tạo SSH Key: ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+✔ Copy Key lên server: ssh-copy-id -i ~/.ssh/id_rsa.pub root@103.163.118.217
+✔ Đăng nhập bằng SSH Key: ssh root@103.163.118.217
+✔ (Tùy chọn) Tắt đăng nhập bằng mật khẩu để tăng bảo mật.
+
+💡 Bạn làm thử đi, nếu có lỗi gì báo mình nhé! 🚀
+------------------------------------------- Cách auto vào server không cần mật khẩu-------------------------------
+
+
+
+
+------------------------------------------- Cách pushs vào docker-------------------------------
+
+----------- image-------------- name/ name repo:tag
+docker tag misanttrungweb05gd2-api itrung/mshop_api:v1.0
+docker tag mariadb itrung/mshop_api:v1.0
+---------------------------- push v1.0
+docker push itrung/mshop_api:v1.0
+docker pull itrung/mshop_api:v1.0
+docker pull itrung/mshop_api:db-v1.0
+
+------------------------------------------- Cách pushs vào docker-------------------------------
+
+--------------------------------------- Cấp quyền cho winscp có thể đọc file
+chmod 755 /itrung/api-mshop
+--------------------------------------- Cấp quyền cho winscp có thể đọc file

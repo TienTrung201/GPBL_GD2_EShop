@@ -31,7 +31,7 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         /// <returns></returns>
         public async Task<PictureResponseDto> UploadAndInsertAsync(IFormFile file)
         {
-            string uploadsPath = @"A:\Wep\May";
+            string uploadsPath = @"./uploads";
             string[] validExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
             string fileExtension = Path.GetExtension(file.FileName);
             if (!validExtensions.Contains(fileExtension.ToLower()))
@@ -74,8 +74,8 @@ namespace MISA.NTTrungWeb05.GD2.Application.Service
         /// <returns></returns>
         public async Task<byte[]> GetFileByIdAsync(Guid id)
         {
-            string uploadsPath = @"A:\Wep\May";
-            string pathDefault = @"A:\Wep\May";
+            string uploadsPath = @"./uploads";
+            string pathDefault = @"./uploads";
             var picture = await _pictureRepository.GetByIdAsync(id);
             string imagePath = "";
             //Nếu không tìm thấy theo id thì trả về ảnh mặc định
