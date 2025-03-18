@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   mariadb:
@@ -13,7 +12,7 @@ services:
       MYSQL_USER: nttrung2
       MYSQL_PASSWORD: 14122001
     ports:
-      - "3306:3306"
+      - "3307:3306"
       # Mở cổng 3306 của container MariaDB ra cổng 3306 của máy host.
     volumes:
       - mariadb_data:/var/lib/mysql

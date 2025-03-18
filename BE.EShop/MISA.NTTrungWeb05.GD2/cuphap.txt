@@ -2,7 +2,7 @@
 1️⃣ Xóa tất cả container liên quan (docker-compose down -v xóa cả volume)
 Dừng và xóa tất cả container đang chạy trong docker-compose.yml:
 
-docker-compose down
+docker compose down
 2️⃣ Xóa volume cũ để đảm bảo MariaDB không lưu dữ liệu trước đó
 docker volume rm mariadb_data
 docker volume ls  # Liệt kê tất cả volume
@@ -88,7 +88,7 @@ cat ~/.ssh/id_rsa.pub
 Copy toàn bộ nội dung (nó sẽ bắt đầu bằng ssh-rsa ...).
 SSH vào server:
 
-ssh root@103.163.118.217
+F
 Dán key vào file ~/.ssh/authorized_keys:
 
 echo "NỘI_DUNG_KEY_BẠN_VỪA_COPY" >> ~/.ssh/authorized_keys
@@ -135,7 +135,7 @@ sudo systemctl restart ssh
 ------------------------------------------- Cách pushs vào docker-------------------------------
 
 ----------- image-------------- name/ name repo:tag
-docker tag misanttrungweb05gd2-api itrung/mshop_api:v1.0
+docker tag misanttrungweb05gd2-api itrung/mshop_api:v1.1
 docker tag mariadb itrung/mshop_api:v1.0
 ---------------------------- push v1.0
 docker push itrung/mshop_api:v1.0
@@ -147,3 +147,45 @@ docker pull itrung/mshop_api:db-v1.0
 --------------------------------------- Cấp quyền cho winscp có thể đọc file
 chmod 755 /itrung/api-mshop
 --------------------------------------- Cấp quyền cho winscp có thể đọc file
+
+---------------------------------------Tạo ram ảo =--------------------------
+
+
+fallocate -l 1G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+---------------------------------------Tạo ram ảo =--------------------------
+
+
+---------------------------------------- nginx cấp SSL https----------------------
+Chạy lệnh sau để cài đặt Certbot và plugin cho Nginx:
+sudo lsof -i :80               kiểm tra gì đang chạy cổng 80
+
+sudo apt update && sudo apt install certbot python3-certbot-nginx -y: cài ngĩnx
+sudo systemctl restart nginx :  restart 
+sudo nginx -t :                 kiểm tra lỗi
+sudo systemctl status nginx.service: kiểm tra lỗi
+
+sudo systemctl stop nginx
+sudo pkill -9 nginx  # Kill tất cả tiến trình nginx
+
+sudo systemctl start nginx   : start
+
+certbot --version               version 
+cấp chứng chỉ ssl
+sudo certbot --nginx -d mshop-api.itrung.online
+---------------------------------------- nginx cấp SSL https----------------------
+---------------------------------------- build vercel----------------------
+
+
+---------------------------------------- build vercel----------------------
+---------------------------------------- Kiểm tra kết nối vào db container----------------------
+
+
+apt-get update && apt-get install -y mariadb-client
+
+apt-get install -y netcat  
+nc -zv mshopdb_container 3306
+
+---------------------------------------- Kiểm tra kết nối vào db container----------------------
