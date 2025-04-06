@@ -1,0 +1,77 @@
+
+# Tạo RAM swap 10GB
+sudo fallocate -l 10G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+sudo sysctl vm.swappiness=10
+echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+
+# Cài đặt LXQt
+sudo apt update && sudo apt upgrade
+sudo apt install lxqt-core
+sudo apt install sddm  # Trình quản lý hiển thị cho LXQt
+sudo systemctl enable sddm  # Kích hoạt SDDM làm mặc định
+
+# Cài đặt Vivaldi
+wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
+echo "deb [arch=amd64] https://repo.vivaldi.com/archive/deb/ stable main" | sudo tee /etc/apt/sources.list.d/vivaldi.list
+sudo apt update
+sudo apt install vivaldi-stable
+
+
+
+# snap install novnc
+Bước 2: Khởi chạy VNC Server
+vncserver :1 -geometry 1280x720
+vncserver :1 -geometry 1920x1080
+
+vncserver -list
+Bước 3: Cài đặt noVNC trên máy chủ
+sudo apt install novnc websockify -y
+novnc --vnc localhost:5901 --listen 6080
+# Tạo file cấu hình dịch vụ noVNC
+sudo nano /etc/systemd/system/novnc.service
+
+# Thêm nội dung sau vào file cấu hình
+[Unit]
+Description=noVNC Service
+After=network.target
+
+[Service]
+ExecStart=/snap/bin/novnc --vnc localhost:5901 --listen 6080
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+
+# Tải lại daemon của systemd
+sudo systemctl daemon-reload
+
+# Kích hoạt dịch vụ để khởi động cùng hệ thống
+sudo systemctl enable novnc.service
+
+# Khởi động dịch vụ
+sudo systemctl start novnc.service
+sudo systemctl restart novnc.service
+
+# Kiểm tra trạng thái dịch vụ
+sudo systemctl status novnc.service
+
+
+# node js bản 18 để cài code server
+cài node 18 bằng nvm
+
+ install -g code-server@4.17.1 --unsafe-perm --legacy-peer-deps
+
+ nano ~/.config/code-server/config.yaml
+bind-addr: 0.0.0.0:8080  # Chạy trên cổng 8080
+auth: password           # Bảo vệ bằng mật khẩu
+password: "yourpassword" # Mật khẩu bạn đặt
+code-server
+
+#ibus
+sudo apt install dbus-x11
+ibus-setup

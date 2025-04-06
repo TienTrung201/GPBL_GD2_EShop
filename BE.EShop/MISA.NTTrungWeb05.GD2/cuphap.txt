@@ -205,3 +205,24 @@ apt-get install -y netcat
 nc -zv mshopdb_container 3306
 
 ---------------------------------------- Kiểm tra kết nối vào db container----------------------
+----------------------------------LXQT----------------------------------
+
+
+VNC Server trên máy chủ:
+sudo apt update
+sudo apt install tigervnc-standalone-server tigervnc-xorg-extension -y
+vncpasswd
+snap install novnc
+Bước 2: Khởi chạy VNC Server
+vncserver :1 -geometry 1280x720
+vncserver -list
+Bước 3: Cài đặt noVNC trên máy chủ
+sudo apt install novnc websockify -y
+novnc --vnc localhost:5901 --listen 6080
+
+snap install novnc
+
+----------------------------------LXQT----------------------------------
+
+
+
